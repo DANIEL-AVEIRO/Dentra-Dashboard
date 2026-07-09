@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          var raw =
+            localStorage.getItem("dentra-admin-brand") ||
+            localStorage.getItem("arrow-admin-brand");
+          if (!raw) return;
+          var b = JSON.parse(raw);
+          if (!b || !b.primary) return;
+          var r = document.documentElement;
+          var hex = function (h) {
+            var n = (h || "").replace("#", "").trim();
+            if (n.length !== 6) return null;
+            var v = parseInt(n, 16);
+            return isNaN(v) ? null : { v: v };
+          };
+          r.style.setProperty("--brand-primary", b.primary);
+          if (b.secondary) r.style.setProperty("--brand-secondary", b.secondary);
+          if (b.dark) r.style.setProperty("--brand-dark", b.dark);
+          if (b.darker) r.style.setProperty("--brand-darker", b.darker);
+          var p = hex(b.primary);
+          if (p) {
+            r.style.setProperty(
+              "--brand-primary-rgb",
+              (p.v >> 16) & 255 + ", " + ((p.v >> 8) & 255) + ", " + (p.v & 255)
+            );
+          }
+          var s = b.secondary ? hex(b.secondary) : null;
+          if (s) {
+            r.style.setProperty(
+              "--brand-secondary-rgb",
+              (s.v >> 16) & 255 + ", " + ((s.v >> 8) & 255) + ", " + (s.v & 255)
+            );
+          }
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m) m.setAttribute("content", b.primary);
+        } catch (e) {}
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#EC0D13" />
+    <title>dentra</title>
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
