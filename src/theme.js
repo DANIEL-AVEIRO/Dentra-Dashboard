@@ -3,6 +3,7 @@ import { createElement } from "react";
 import CheckboxVisual from "@/components/common/CheckboxVisual";
 import { tableCheckboxSx } from "@/constants/tableStyles";
 import {
+  BUTTON_TRANSITION,
   DURATION,
   EASE_SOFT,
   THEME_SWITCH_MS,
@@ -48,9 +49,7 @@ const tableCell = {
 const softShadow = (color, opacity = 0.08) =>
   `0 4px 20px ${alpha(color, opacity)}, 0 1px 3px ${alpha(color, opacity * 0.6)}`;
 
-const interactiveTransition = transition(
-  "background-color, color, border-color, box-shadow, opacity"
-);
+const interactiveTransition = BUTTON_TRANSITION;
 
 export const getTheme = (mode, brandInput = {}) => {
   const brand = resolveBrand(brandInput);
@@ -76,8 +75,8 @@ export const getTheme = (mode, brandInput = {}) => {
         contrastText: BRAND_WHITE,
       },
       background: {
-        default: mode === "light" ? "#faf6f6" : "#140e0e",
-        paper: mode === "light" ? BRAND_WHITE : "#241818",
+        default: mode === "light" ? "#f4f7fb" : "#0a1220",
+        paper: mode === "light" ? BRAND_WHITE : "#111d2e",
       },
       divider:
         mode === "light"
@@ -181,7 +180,7 @@ export const getTheme = (mode, brandInput = {}) => {
             transition: interactiveTransition,
           },
           contained: {
-            transition: `${interactiveTransition}, transform 0.18s ease`,
+            transition: interactiveTransition,
             "&.Mui-disabled": {
               opacity: 1,
             },
@@ -204,6 +203,10 @@ export const getTheme = (mode, brandInput = {}) => {
             transition: interactiveTransition,
             "&:hover": {
               bgcolor: alpha(BRAND_PRIMARY, 0.08),
+              transform: "translateY(-1px)",
+            },
+            "&:active": {
+              transform: "translateY(0) scale(0.96)",
             },
           },
         },
@@ -458,17 +461,43 @@ export const getTheme = (mode, brandInput = {}) => {
       },
       MuiDialogTitle: {
         styleOverrides: {
-          root: { fontSize: "1.125rem", fontWeight: 700, padding: "16px 24px" },
+          root: ({ theme }) => ({
+            fontSize: "1.125rem",
+            fontWeight: 700,
+            padding: "16px 16px",
+            flexShrink: 0,
+            [theme.breakpoints.down("sm")]: {
+              fontSize: "1rem",
+              padding: "14px 16px",
+            },
+          }),
         },
       },
       MuiDialogContent: {
         styleOverrides: {
-          root: { padding: "16px 24px 20px" },
+          root: ({ theme }) => ({
+            padding: "16px 16px 20px",
+            [theme.breakpoints.down("sm")]: {
+              padding: "12px 16px 16px",
+            },
+          }),
         },
       },
       MuiDialogActions: {
         styleOverrides: {
-          root: { padding: "12px 20px 20px" },
+          root: ({ theme }) => ({
+            padding: "12px 16px 20px",
+            flexShrink: 0,
+            [theme.breakpoints.down("sm")]: {
+              padding: "12px 16px calc(12px + env(safe-area-inset-bottom, 0px))",
+              flexDirection: "column-reverse",
+              alignItems: "stretch",
+              "& > .MuiButton-root": {
+                width: "100%",
+                margin: 0,
+              },
+            },
+          }),
         },
       },
       MuiPaper: {

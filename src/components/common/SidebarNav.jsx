@@ -157,6 +157,120 @@ export default function SidebarNav({ onNavigate }) {
     onNavigate?.();
   };
 
+  const renderSections = (sections) => (
+    <List disablePadding sx={{ px: 0.5 }}>
+      {sections.map((section) => {
+        const isOpen = Boolean(openSections[section.id]);
+        const hasActiveChild = section.items.some((item) =>
+          isPathActive(pathname, item.path)
+        );
+
+        return (
+          <Box key={section.id} sx={{ mb: 0.375 }}>
+            <ListItemButton
+              onClick={() => toggleSection(section.id)}
+              sx={{
+                ...headerSx,
+                bgcolor: hasActiveChild
+                  ? alpha(brandPrimary, 0.06)
+                  : "transparent",
+              }}
+            >
+              <ListItemText
+                primary={t(section.titleKey)}
+                primaryTypographyProps={{
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: hasActiveChild ? brandPrimary : "text.secondary",
+                }}
+              />
+              <ExpandMoreIcon
+                sx={{
+                  fontSize: 18,
+                  color: "text.secondary",
+                  transition: transition("transform"),
+                  transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                }}
+              />
+            </ListItemButton>
+
+            <Collapse
+              in={isOpen}
+              timeout={{ enter: DURATION.normal, exit: DURATION.fast }}
+              easing={{ enter: EASE_SOFT, exit: EASE_SOFT }}
+              unmountOnExit
+            >
+              <List component="div" disablePadding>
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  const selected = isPathActive(pathname, item.path);
+                  const badge = navBadgeCount(item, badgeCounts);
+                  return (
+                    <ListItemButton
+                      key={item.path}
+                      component={Link}
+                      to={navItemTo(item, pathname)}
+                      selected={selected}
+                      onClick={onNavigate}
+                      sx={itemSx}
+                    >
+                      <ListItemIcon sx={{ minWidth: 32 }}>
+                        <Icon sx={{ fontSize: NAV_ICON_SIZE }} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={
+                          <Box
+                            component="span"
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              gap: 1,
+                            }}
+                          >
+                            <span>{t(item.labelKey)}</span>
+                            {badge > 0 ? (
+                              <Badge
+                                badgeContent={Math.min(badge, 99)}
+                                color="error"
+                                aria-label={t("nav.unreadAlerts", {
+                                  count: badge,
+                                  defaultValue: `${badge} unread alerts`,
+                                })}
+                                sx={{
+                                  "& .MuiBadge-badge": {
+                                    fontSize: "0.65rem",
+                                    minWidth: 18,
+                                    height: 18,
+                                    fontWeight: 700,
+                                    position: "static",
+                                    transform: "none",
+                                  },
+                                }}
+                              />
+                            ) : null}
+                          </Box>
+                        }
+                        primaryTypographyProps={{
+                          fontSize: NAV_LABEL_FONT,
+                          fontWeight: selected ? 600 : 500,
+                          lineHeight: 1.35,
+                          component: "div",
+                        }}
+                      />
+                    </ListItemButton>
+                  );
+                })}
+              </List>
+            </Collapse>
+          </Box>
+        );
+      })}
+    </List>
+  );
+
   return (
     <Box>
       <Box
@@ -214,189 +328,79 @@ export default function SidebarNav({ onNavigate }) {
 
       {isSearching ? (
         <List disablePadding sx={{ px: 0.5 }}>
-          {searchResults.length === 0 ? (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ px: 2, py: 2, textAlign: "center" }}
-            >
-              {t("nav.searchNoResults")}
-            </Typography>
-          ) : (
-            searchResults.map((entry) => {
-              const Icon = entry.icon;
-              const selected = isPathActive(pathname, entry.path);
-              const badge = navBadgeCount(entry, badgeCounts);
-              return (
-                <ListItemButton
-                  key={`${entry.sectionId}-${entry.path}`}
-                  component={Link}
-                  to={navItemTo(entry, pathname)}
-                  selected={selected}
-                  onClick={handleNavClick}
-                  sx={itemSx}
-                >
-                  <ListItemIcon sx={{ minWidth: 32 }}>
-                    <Icon sx={{ fontSize: NAV_ICON_SIZE }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Box
-                        component="span"
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          gap: 1,
-                        }}
-                      >
-                        <span>{entry.itemLabel}</span>
-                        {badge > 0 ? (
-                          <Badge
-                            badgeContent={Math.min(badge, 99)}
-                            color="error"
-                            sx={{
-                              "& .MuiBadge-badge": {
-                                fontSize: "0.65rem",
-                                minWidth: 18,
-                                height: 18,
-                                fontWeight: 700,
-                                position: "static",
-                                transform: "none",
-                              },
-                            }}
-                          />
-                        ) : null}
-                      </Box>
-                    }
-                    secondary={entry.sectionTitle}
-                    primaryTypographyProps={{
-                      fontSize: NAV_LABEL_FONT,
-                      fontWeight: selected ? 600 : 500,
-                      lineHeight: 1.35,
-                    }}
-                    secondaryTypographyProps={{
-                      fontSize: "0.7rem",
-                      lineHeight: 1.3,
-                    }}
-                  />
-                </ListItemButton>
-              );
-            })
-          )}
-        </List>
-      ) : (
-        <List disablePadding sx={{ px: 0.5 }}>
-          {visibleSections.map((section) => {
-            const isOpen = Boolean(openSections[section.id]);
-            const hasActiveChild = section.items.some((item) =>
-              isPathActive(pathname, item.path)
-            );
-
-            return (
-              <Box key={section.id} sx={{ mb: 0.375 }}>
-                <ListItemButton
-                  onClick={() => toggleSection(section.id)}
-                  sx={{
-                    ...headerSx,
-                    bgcolor: hasActiveChild
-                      ? alpha(brandPrimary, 0.06)
-                      : "transparent",
-                  }}
-                >
-                  <ListItemText
-                    primary={t(section.titleKey)}
-                    primaryTypographyProps={{
-                      fontSize: "0.75rem",
-                      fontWeight: 700,
-                      letterSpacing: "0.06em",
-                      textTransform: "uppercase",
-                      color: hasActiveChild ? brandPrimary : "text.secondary",
-                    }}
-                  />
-                  <ExpandMoreIcon
-                    sx={{
-                      fontSize: 18,
-                      color: "text.secondary",
-                      transition: transition("transform"),
-                      transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                    }}
-                  />
-                </ListItemButton>
-
-                <Collapse
-                  in={isOpen}
-                  timeout={{ enter: DURATION.normal, exit: DURATION.fast }}
-                  easing={{ enter: EASE_SOFT, exit: EASE_SOFT }}
-                  unmountOnExit
-                >
-                  <List component="div" disablePadding>
-                    {section.items.map((item) => {
-                      const Icon = item.icon;
-                      const selected = isPathActive(pathname, item.path);
-                      const badge = navBadgeCount(item, badgeCounts);
-                      return (
-                        <ListItemButton
-                          key={item.path}
-                          component={Link}
-                          to={navItemTo(item, pathname)}
-                          selected={selected}
-                          onClick={onNavigate}
-                          sx={itemSx}
+            {searchResults.length === 0 ? (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ px: 2, py: 2, textAlign: "center" }}
+              >
+                {t("nav.searchNoResults")}
+              </Typography>
+            ) : (
+              searchResults.map((entry) => {
+                const Icon = entry.icon;
+                const selected = isPathActive(pathname, entry.path);
+                const badge = navBadgeCount(entry, badgeCounts);
+                return (
+                  <ListItemButton
+                    key={`${entry.sectionId}-${entry.path}`}
+                    component={Link}
+                    to={navItemTo(entry, pathname)}
+                    selected={selected}
+                    onClick={handleNavClick}
+                    sx={itemSx}
+                  >
+                    <ListItemIcon sx={{ minWidth: 32 }}>
+                      <Icon sx={{ fontSize: NAV_ICON_SIZE }} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={
+                        <Box
+                          component="span"
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: 1,
+                          }}
                         >
-                          <ListItemIcon sx={{ minWidth: 32 }}>
-                            <Icon sx={{ fontSize: NAV_ICON_SIZE }} />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Box
-                                component="span"
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  gap: 1,
-                                }}
-                              >
-                                <span>{t(item.labelKey)}</span>
-                                {badge > 0 ? (
-                                  <Badge
-                                    badgeContent={Math.min(badge, 99)}
-                                    color="error"
-                                    aria-label={t("nav.unreadAlerts", {
-                                      count: badge,
-                                      defaultValue: `${badge} unread alerts`,
-                                    })}
-                                    sx={{
-                                      "& .MuiBadge-badge": {
-                                        fontSize: "0.65rem",
-                                        minWidth: 18,
-                                        height: 18,
-                                        fontWeight: 700,
-                                        position: "static",
-                                        transform: "none",
-                                      },
-                                    }}
-                                  />
-                                ) : null}
-                              </Box>
-                            }
-                            primaryTypographyProps={{
-                              fontSize: NAV_LABEL_FONT,
-                              fontWeight: selected ? 600 : 500,
-                              lineHeight: 1.35,
-                              component: "div",
-                            }}
-                          />
-                        </ListItemButton>
-                      );
-                    })}
-                  </List>
-                </Collapse>
-              </Box>
-            );
-          })}
-        </List>
+                          <span>{entry.itemLabel}</span>
+                          {badge > 0 ? (
+                            <Badge
+                              badgeContent={Math.min(badge, 99)}
+                              color="error"
+                              sx={{
+                                "& .MuiBadge-badge": {
+                                  fontSize: "0.65rem",
+                                  minWidth: 18,
+                                  height: 18,
+                                  fontWeight: 700,
+                                  position: "static",
+                                  transform: "none",
+                                },
+                              }}
+                            />
+                          ) : null}
+                        </Box>
+                      }
+                      secondary={entry.sectionTitle}
+                      primaryTypographyProps={{
+                        fontSize: NAV_LABEL_FONT,
+                        fontWeight: selected ? 600 : 500,
+                        lineHeight: 1.35,
+                      }}
+                      secondaryTypographyProps={{
+                        fontSize: "0.7rem",
+                        lineHeight: 1.3,
+                      }}
+                    />
+                  </ListItemButton>
+                );
+              })
+            )}
+          </List>
+      ) : (
+        renderSections(visibleSections)
       )}
     </Box>
   );

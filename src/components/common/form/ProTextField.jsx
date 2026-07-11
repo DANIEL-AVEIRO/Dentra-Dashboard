@@ -1,8 +1,20 @@
 import { useState } from "react";
-import { IconButton, InputAdornment, TextField, useTheme } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Tooltip,
+  useTheme,
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import ProSelect from "@/components/common/form/ProSelect";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import KeyOutlinedIcon from "@mui/icons-material/KeyOutlined";
+import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
+import { toast } from "@/utils/toast";
+import { useTranslation } from "@/context/LanguageContext";
 import {
   outlinedInputRootSx,
   filterOutlinedInputRootSx,
@@ -10,10 +22,29 @@ import {
   filterInputLabelSx,
   inputBaseSx,
   filterInputBaseSx,
-  adornmentIconSx,
-  inputAdornmentSx,
 } from "@/components/common/form/fieldStyles";
 import { multilineTextFieldProps } from "@/utils/fieldTypes";
+
+function generateStrongPassword(length = 8) {
+  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const lower = "abcdefghjkmnpqrstuvwxyz";
+  const digits = "23456789";
+  const special = "!@#$%&*";
+  const all = upper + lower + digits + special;
+  const pick = (pool) => pool[Math.floor(Math.random() * pool.length)];
+  const chars = [
+    pick(upper),
+    pick(lower),
+    pick(digits),
+    pick(special),
+    ...Array.from({ length: length - 4 }, () => pick(all)),
+  ];
+  for (let i = chars.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [chars[i], chars[j]] = [chars[j], chars[i]];
+  }
+  return chars.join("");
+}
 
 /**
  * Pro-level MUI Outlined TextField — shared styling for forms & filters.
@@ -24,6 +55,7 @@ export default function ProTextField({
   InputProps,
   InputLabelProps,
   filterBar = false,
+  passwordTools = true,
   labelPlacement = "outlined",
   fullWidth = true,
   required: showRequired,
@@ -46,6 +78,7 @@ export default function ProTextField({
   ...props
 }) {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
 
   if (select) {
@@ -85,29 +118,110 @@ export default function ProTextField({
       })
     : {};
 
-  const passwordToggle = isPassword ? (
-    <InputAdornment position="end" sx={inputAdornmentSx(theme, "end")}>
-      <IconButton
-        type="button"
-        edge="end"
-        size="small"
-        onClick={() => setShowPassword((v) => !v)}
-        aria-label={showPassword ? "Hide password" : "Show password"}
-        tabIndex={-1}
+  const passwordIconBtnSx = {
+    p: "4px",
+    width: 26,
+    height: 26,
+    flexShrink: 0,
+    color: alpha(theme.palette.text.secondary, 0.82),
+    borderRadius: "6px",
+    "&:hover": {
+      color: theme.palette.primary.main,
+      bgcolor: alpha(theme.palette.primary.main, theme.palette.mode === "light" ? 0.1 : 0.18),
+    },
+    "&.Mui-disabled": {
+      color: theme.palette.action.disabled,
+    },
+  };
+
+  const handleGeneratePassword = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const generated = generateStrongPassword(8);
+    onChange?.({ target: { value: generated } });
+    setShowPassword(true);
+    toast.success(t("fields.passwordGenerated"));
+  };
+
+  const handleCopyPassword = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const text = value == null ? "" : String(value);
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(t("fields.passwordCopied"));
+    } catch {
+      toast.error(t("fields.passwordCopyFailed"));
+    }
+  };
+
+  const passwordAdornment = isPassword ? (
+    <InputAdornment
+      position="end"
+      sx={{
+        ml: 0.25,
+        mr: 0.25,
+        maxHeight: "none",
+        height: "auto",
+        alignSelf: "center",
+      }}
+    >
+      <Box
+        component="span"
         sx={{
-          p: 0,
-          width: 24,
-          height: 24,
-          color: "inherit",
-          "&:hover": { bgcolor: "transparent" },
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "1px",
+          lineHeight: 0,
         }}
       >
-        {showPassword ? (
-          <VisibilityOffOutlinedIcon sx={adornmentIconSx(theme)} />
-        ) : (
-          <VisibilityOutlinedIcon sx={adornmentIconSx(theme)} />
-        )}
-      </IconButton>
+        {passwordTools ? (
+          <>
+            <Tooltip title={t("fields.generatePassword")}>
+              <IconButton
+                type="button"
+                size="small"
+                disabled={disabled}
+                onClick={handleGeneratePassword}
+                aria-label={t("fields.generatePassword")}
+                tabIndex={-1}
+                sx={passwordIconBtnSx}
+              >
+                <KeyOutlinedIcon sx={{ fontSize: 16 }} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t("fields.copyPassword")}>
+              <IconButton
+                type="button"
+                size="small"
+                disabled={disabled || !value}
+                onClick={handleCopyPassword}
+                aria-label={t("fields.copyPassword")}
+                tabIndex={-1}
+                sx={passwordIconBtnSx}
+              >
+                <ContentCopyOutlinedIcon sx={{ fontSize: 15 }} />
+              </IconButton>
+            </Tooltip>
+          </>
+        ) : null}
+        <IconButton
+          type="button"
+          size="small"
+          disabled={disabled}
+          onClick={() => setShowPassword((v) => !v)}
+          aria-label={showPassword ? "Hide password" : "Show password"}
+          tabIndex={-1}
+          sx={passwordIconBtnSx}
+        >
+          {showPassword ? (
+            <VisibilityOffOutlinedIcon sx={{ fontSize: 16 }} />
+          ) : (
+            <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+          )}
+        </IconButton>
+      </Box>
     </InputAdornment>
   ) : null;
 
@@ -156,15 +270,15 @@ export default function ProTextField({
         input: {
           ...inputSlot,
           startAdornment: existingStart,
-          endAdornment: passwordToggle
+          endAdornment: passwordAdornment
             ? existingEnd
               ? (
                   <>
                     {existingEnd}
-                    {passwordToggle}
+                    {passwordAdornment}
                   </>
                 )
-              : passwordToggle
+              : passwordAdornment
             : existingEnd,
           sx: {
             ...(filterBar ? filterInputBaseSx() : inputBaseSx()),

@@ -16,6 +16,20 @@ import ProfilePage from "@/pages/ProfilePage";
 import RolesPage from "@/pages/system/RolesPage";
 import PlansPage from "@/pages/plans/PlansPage";
 import LaboratoriesPage from "@/pages/laboratories/LaboratoriesPage";
+import MyLaboratoryPage from "@/pages/laboratories/MyLaboratoryPage";
+import LabUsersPage from "@/pages/laboratories/LabUsersPage";
+import ClinicsPage from "@/pages/laboratories/ClinicsPage";
+import DentistsPage from "@/pages/laboratories/DentistsPage";
+import StorageAnalysisPage from "@/pages/laboratories/StorageAnalysisPage";
+import MaterialsPage from "@/pages/operations/MaterialsPage";
+import MaterialCategoriesPage from "@/pages/operations/MaterialCategoriesPage";
+import RestorationsPage from "@/pages/operations/RestorationsPage";
+import RestorationCategoriesPage from "@/pages/operations/RestorationCategoriesPage";
+import PriceListPage from "@/pages/operations/PriceListPage";
+import CasesPage from "@/pages/operations/CasesPage";
+import CaseFormPage from "@/pages/operations/CaseFormPage";
+import FabricationPage from "@/pages/operations/FabricationPage";
+import DeliveriesPage from "@/pages/operations/DeliveriesPage";
 import AuditLogsPage from "@/pages/system/AuditLogsPage";
 import TrashPage from "@/pages/system/TrashPage";
 import SettingsPage from "@/pages/system/SettingsPage";
@@ -54,6 +68,28 @@ function AppRoutes() {
         <Route path="roles" element={<RolesPage />} />
         <Route path="plans" element={<PlansPage />} />
         <Route path="laboratories" element={<LaboratoriesPage />} />
+        <Route path="storage-analysis" element={<StorageAnalysisPage />} />
+        <Route path="my-laboratory" element={<MyLaboratoryPage />} />
+        <Route
+          path="lab-users"
+          element={
+            <PermissionRoute labOwnerOnly>
+              <LabUsersPage />
+            </PermissionRoute>
+          }
+        />
+        <Route path="clinics" element={<ClinicsPage />} />
+        <Route path="dentists" element={<DentistsPage />} />
+        <Route path="material-categories" element={<MaterialCategoriesPage />} />
+        <Route path="materials" element={<MaterialsPage />} />
+        <Route path="restoration-categories" element={<RestorationCategoriesPage />} />
+        <Route path="restorations" element={<RestorationsPage />} />
+        <Route path="price-list" element={<PriceListPage />} />
+        <Route path="cases/new" element={<CaseFormPage />} />
+        <Route path="cases/:id/edit" element={<CaseFormPage />} />
+        <Route path="cases" element={<CasesPage />} />
+        <Route path="fabrication" element={<FabricationPage />} />
+        <Route path="deliveries" element={<DeliveriesPage />} />
         <Route
           path="settings"
           element={
@@ -90,24 +126,24 @@ function AppRoutes() {
 export default function App() {
   return (
     <LanguageProvider>
-      <BrandProvider>
-        <AppThemeProvider>
-        <LoadingProvider>
-          <ToastProvider>
-            <AuthProvider>
-              <LockScreenProvider>
-                <BrowserRouter>
-                  <ScrollToTop />
-                  <ErrorBoundary>
-                    <AppRoutes />
-                  </ErrorBoundary>
-                </BrowserRouter>
-              </LockScreenProvider>
-            </AuthProvider>
-          </ToastProvider>
-        </LoadingProvider>
-        </AppThemeProvider>
-      </BrandProvider>
+      <AuthProvider>
+        <BrandProvider>
+          <AppThemeProvider>
+            <LoadingProvider>
+              <ToastProvider>
+                <LockScreenProvider>
+                  <BrowserRouter>
+                    <ScrollToTop />
+                    <ErrorBoundary>
+                      <AppRoutes />
+                    </ErrorBoundary>
+                  </BrowserRouter>
+                </LockScreenProvider>
+              </ToastProvider>
+            </LoadingProvider>
+          </AppThemeProvider>
+        </BrandProvider>
+      </AuthProvider>
     </LanguageProvider>
   );
 }

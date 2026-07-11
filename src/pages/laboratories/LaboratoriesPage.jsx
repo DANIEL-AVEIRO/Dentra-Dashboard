@@ -5,11 +5,14 @@ export default function LaboratoriesPage() {
     <ResourceListPage
       endpoint="laboratories"
       title="Laboratories"
-      subtitle="Manage dental laboratories and their plans"
+      subtitle="Manage dental laboratories, owners, and plans"
       searchPlaceholder="Search laboratories…"
       columns={[
         { key: "name", label: "Laboratory name" },
         { key: "plan_name", label: "Plan" },
+        { key: "owner_name", label: "Owner name" },
+        { key: "owner_email", label: "Owner email" },
+        { key: "users_usage", label: "Users" },
       ]}
       fields={[
         {
@@ -24,6 +27,26 @@ export default function LaboratoriesPage() {
           type: "select",
           optionsFrom: "plans",
           required: true,
+        },
+        {
+          name: "owner_name",
+          label: "Owner name",
+          requiredOnCreate: true,
+          placeholder: "e.g. Dr. Aung",
+        },
+        {
+          name: "owner_email",
+          label: "Owner email",
+          type: "email",
+          requiredOnCreate: true,
+          placeholder: "owner@lab.com",
+        },
+        {
+          name: "owner_password",
+          label: "Owner password",
+          type: "password",
+          requiredOnCreate: true,
+          helperText: "Minimum 6 characters",
         },
       ]}
     />

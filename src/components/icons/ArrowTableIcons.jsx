@@ -87,6 +87,16 @@ export function ArrowAssignIcon({ size = 18, ...props }) {
   );
 }
 
+export function ArrowDuplicateIcon({ size = 18, ...props }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden {...props}>
+      <rect {...stroke} x="7.5" y="7.5" width="9" height="10" rx="1.5" />
+      <path {...stroke} d="M5.5 13V6.5A1.5 1.5 0 0 1 7 5h5.5" />
+      <path {...stroke} d="M9.5 11h4M9.5 13.5h2.5" opacity="0.85" />
+    </svg>
+  );
+}
+
 export function ArrowStatusIcon({ size = 18, ...props }) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" aria-hidden {...props}>

@@ -103,6 +103,41 @@ export function isBooleanFieldName(name) {
   return false;
 }
 
+const ACTIVE_INACTIVE_VALUES = new Set(["active", "inactive"]);
+
+/** True when options are exactly active + inactive (Plans status, etc.). */
+export function isActiveInactiveOptions(options = []) {
+  if (!Array.isArray(options) || options.length !== 2) return false;
+  const values = options.map((o) =>
+    String(o?.id ?? o?.value ?? o?.name ?? o).toLowerCase(),
+  );
+  return values.every((v) => ACTIVE_INACTIVE_VALUES.has(v));
+}
+
+/** Form fields that use the Active / Inactive toggle (string status or activeStatus type). */
+export function isActiveStatusFormField(field) {
+  if (!field) return false;
+  if (field.type === "activeStatus") return true;
+  if (
+    field.type === "select" &&
+    (field.name === "status" || isActiveInactiveOptions(field.options))
+  ) {
+    return isActiveInactiveOptions(field.options);
+  }
+  return false;
+}
+
+export function activeStatusFieldMode(field) {
+  if (
+    field?.type === "boolean" ||
+    field?.name === "is_active" ||
+    field?.name === "active"
+  ) {
+    return "boolean";
+  }
+  return "string";
+}
+
 export function isLongTextFieldName(name) {
   if (!name || typeof name !== "string") return false;
   if (LONG_TEXT_FIELD_NAMES.has(name)) return true;

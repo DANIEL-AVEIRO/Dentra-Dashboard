@@ -35,6 +35,11 @@ export const transition = (
   return list.map((p) => `${p} ${duration}ms ${easing}`).join(", ");
 };
 
+/** Unified smooth hover/active for buttons and icon buttons */
+export const BUTTON_TRANSITION = transition(
+  "background-color, color, border-color, box-shadow, opacity, transform, filter"
+);
+
 /** Subtle hover — color/shadow only (no transform to avoid click jitter) */
 export const hoverLift = {
   transition: transition("box-shadow, border-color"),

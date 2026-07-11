@@ -2,10 +2,10 @@ import { normalizeBrandPalette } from "@/utils/brandPalette";
 
 /** Brand — values synced from project.frame.env */
 export const BRAND_LOGO = "/logo.png";
-export const BRAND_PRIMARY = "#EC0D13";
-export const BRAND_SECONDARY = "#FF3535";
-export const BRAND_DARK = "#B8090E";
-export const BRAND_DARKER = "#7A0508";
+export const BRAND_PRIMARY = "#011A47";
+export const BRAND_SECONDARY = "#1BAAC0";
+export const BRAND_DARK = "#001235";
+export const BRAND_DARKER = "#000A1F";
 export const BRAND_WHITE = "#ffffff";
 export const APP_TITLE = "dentra";
 

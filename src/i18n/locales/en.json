@@ -6,11 +6,11 @@
   "errors": {
     "notFoundTitle": "Page not found",
     "notFoundBody": "The page you requested does not exist or is not available.",
-    "notFoundBadge": "Off route",
+    "notFoundBadge": "Page not found",
     "goBack": "Go back"
   },
   "brand": {
-    "name": "dentra",
+    "name": "DENTRA",
     "product": "Lab Management",
     "adminBadge": "Admin Panel",
     "admin": "Admin",
@@ -67,8 +67,10 @@
       "attendance": "Attendance & payroll",
       "access": "Users & roles",
       "laboratories": "Laboratories",
-      "partners": "Merchants & riders",
-      "locations": "Locations",
+      "myLab": "My laboratory",
+      "operations": "Operations",
+      "partners": "Partners",
+      "catalog": "Product catalog",
       "pricing": "Pricing",
       "content": "Content",
       "communications": "Communications",
@@ -88,6 +90,16 @@
     "invoicesRegenerate": "Regenerate",
     "unreadAlerts": "{{count}} unread alerts",
     "operations": "Operations",
+    "cases": "Cases",
+    "clinics": "Clinics",
+    "dentists": "Dentists",
+    "materials": "Materials",
+    "materialCategories": "Material categories",
+    "restorations": "Restorations",
+    "restorationCategories": "Restoration categories",
+    "priceList": "Price list",
+    "regions": "Regions",
+    "fabrication": "Fabrication",
     "liveMap": "Live map",
     "analytics": "Analytics",
     "reports": "Reports",
@@ -127,6 +139,9 @@
     "roles": "Roles",
     "plans": "Plans",
     "laboratories": "Laboratories",
+    "storageAnalysis": "Storage analysis",
+    "myLaboratory": "My laboratory",
+    "labUsers": "Lab users",
     "settings": "Settings",
     "siteSettings": "Site Settings",
     "auditLogs": "Activity Log",
@@ -205,7 +220,7 @@
   },
   "validation": {
     "required": "{{field}} is required",
-    "fixErrors": "Please fill in the required fields (marked with *)"
+    "fixErrors": "Please correct the errors highlighted in the form"
   },
   "chat": {
     "title": "Live chat",
@@ -433,6 +448,9 @@
     "attachments": "Signatures & vouchers",
     "proofPhoto": "Proof photo",
     "signedBy": "Signed by"
+  },
+  "formPage": {
+    "backToList": "Back to list"
   },
   "dialog": {
     "add": "Add {{resource}}",
@@ -1057,8 +1075,151 @@
     },
     "laboratories": {
       "title": "Laboratories",
-      "subtitle": "Manage dental laboratories and their plans",
+      "subtitle": "Manage dental laboratories, owners, and plans",
       "search": "Search laboratories…"
+    },
+    "myLaboratory": {
+      "title": "My Laboratory",
+      "subtitle": "View and update your laboratory details",
+      "search": "Search…",
+      "loadFailed": "Could not load laboratory details",
+      "detailsSubtitle": "Your laboratory plan and account summary",
+      "editTitle": "Edit laboratory",
+      "emptyTitle": "No laboratory found",
+      "emptySubtitle": "Your account is not linked to a laboratory yet",
+      "emptyHint": "Contact platform support if this looks wrong",
+      "fields": {
+        "name": "Laboratory name",
+        "plan": "Plan",
+        "users": "Users",
+        "owner": "Owner",
+        "ownerEmail": "Owner email"
+      },
+      "brand": {
+        "title": "Laboratory logo",
+        "desc": "Add your laboratory logo for your team across the admin panel",
+        "hint": "Use a clear PNG or SVG logo. Changes apply for everyone in your laboratory after you save.",
+        "logoLabel": "Upload logo",
+        "save": "Save logo",
+        "saved": "Laboratory logo saved",
+        "saveFailed": "Could not save laboratory logo",
+        "reset": "Use default logo",
+        "resetDone": "Laboratory logo reset",
+        "resetFailed": "Could not reset laboratory logo",
+        "extractFailed": "Could not use this image. Please try another file."
+      }
+    },
+    "labUsers": {
+      "title": "Lab Users",
+      "subtitle": "Create and manage user accounts for your laboratory",
+      "search": "Search lab users…"
+    },
+    "cases": {
+      "title": "Cases",
+      "subtitle": "Manage dental lab cases",
+      "search": "Search cases…",
+      "sections": {
+        "notes": "Notes",
+        "workItems": "Work items",
+        "financial": "Financial"
+      },
+      "lineItems": {
+        "help": "Add each restoration with its material, tooth, and shade. Unit price loads from the price list when both restoration and material are selected.",
+        "add": "Add item",
+        "empty": "No work items yet. Add a restoration and material to describe what to fabricate.",
+        "selectRestoration": "Select restoration…",
+        "selectMaterial": "Select material…",
+        "grandTotal": "Work items total"
+      },
+      "financial": {
+        "workItemsSubtotal": "Work items subtotal",
+        "totalAmount": "Total amount",
+        "itemCount": "{{count}} priced line(s)"
+      }
+    },
+    "materials": {
+      "title": "Materials",
+      "subtitle": "Manage fabrication materials for your laboratory",
+      "search": "Search materials…"
+    },
+    "material-categories": {
+      "title": "Material categories",
+      "subtitle": "Group materials by type (ceramic, metal, resin, etc.)",
+      "search": "Search material categories…"
+    },
+    "restorations": {
+      "title": "Restorations",
+      "subtitle": "Manage restoration types your laboratory offers",
+      "search": "Search restorations…"
+    },
+    "restoration-categories": {
+      "title": "Restoration categories",
+      "subtitle": "Group restorations by type (crown, bridge, veneer, etc.)",
+      "search": "Search restoration categories…"
+    },
+    "price-list": {
+      "title": "Price list",
+      "subtitle": "Set unit prices for each restoration and material combination",
+      "search": "Search price list…"
+    },
+    "clinics": {
+      "title": "Clinics",
+      "subtitle": "Manage partner clinics for your laboratory",
+      "search": "Search clinics…"
+    },
+    "regions": {
+      "title": "Regions",
+      "subtitle": "Manage regions for clinic addresses",
+      "search": "Search regions…"
+    },
+    "dentists": {
+      "title": "Dentists",
+      "subtitle": "Manage dentists and their associated clinics",
+      "search": "Search dentists…"
+    },
+    "fabrication": {
+      "title": "Fabrication",
+      "subtitle": "Track production and fabrication workflows"
+    },
+    "deliveries": {
+      "title": "Deliveries",
+      "subtitle": "Manage case deliveries to clinics"
+    },
+    "storageAnalysis": {
+      "title": "Storage analysis",
+      "subtitlePlatform": "Allocated vs used storage across all laboratories",
+      "subtitleLab": "Your laboratory storage usage against the plan limit",
+      "loadFailed": "Could not load storage analysis",
+      "empty": "No laboratories to analyze",
+      "emptyHint": "Storage usage will appear here once a laboratory is available",
+      "loadingDetails": "Loading storage details…",
+      "noPlan": "No plan assigned",
+      "cards": {
+        "allocated": "Total allocated",
+        "allocatedHint": "Combined plan storage limits",
+        "used": "Total used",
+        "usedHint": "Uploaded files across labs",
+        "labs": "Laboratories",
+        "overallUsage": "{{percent}}% overall usage",
+        "alerts": "Storage alerts",
+        "alertValue": "{{atRisk}} at risk · {{over}} over limit",
+        "alertsHint": "At risk: 75%+ usage"
+      },
+      "columns": {
+        "laboratory": "Laboratory",
+        "plan": "Plan",
+        "limit": "Limit",
+        "used": "Used",
+        "usage": "Usage",
+        "progress": "Progress",
+        "status": "Status"
+      },
+      "status": {
+        "ok": "Healthy",
+        "warning": "Warning",
+        "critical": "Critical",
+        "over": "Over limit"
+      }
     },
     "settings": {
       "title": "Settings",
@@ -1176,6 +1337,19 @@
       "clearing": "Clearing…"
     }
   },
+  "datePresets": {
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "plus3Days": "+3 Days",
+    "plus7Days": "+7 Days",
+    "custom": "Custom"
+  },
+  "inlineCreate": {
+    "new": "New",
+    "newClinic": "Add clinic",
+    "newDentist": "Add dentist",
+    "selectClinicFirst": "Select a clinic first"
+  },
   "fields": {
     "id": "ID",
     "username": "Username",
@@ -1190,12 +1364,51 @@
     "password": "Password",
     "passwordHelp": "Minimum 6 characters",
     "passwordKeep": "Leave blank to keep unchanged",
+    "generatePassword": "Generate password",
+    "copyPassword": "Copy password",
+    "passwordGenerated": "Password generated",
+    "passwordCopied": "Password copied",
+    "passwordCopyFailed": "Could not copy password",
     "name": "Name",
     "plan": "Plan",
     "plan_name": "Plan",
+    "owner_name": "Owner name",
+    "owner_email": "Owner email",
+    "owner_password": "Owner password",
+    "case_id": "Case ID",
+    "clinic_code": "Clinic code",
+    "clinic_name": "Clinic name",
+    "dentist_name": "Dentist name",
+    "associated_clinics": "Associated clinics",
+    "clinic_names": "Associated clinics",
+    "clinic_ids": "Associated clinics",
+    "region": "Region",
+    "region_name": "Region",
+    "case_type": "Case type",
+    "case_source": "Case source",
+    "due_date": "Due date",
+    "priority": "Priority",
+    "reference_po": "Reference PO",
+    "clinic_note": "Clinic note",
+    "internal_note": "Internal note",
+    "code": "Code",
+    "category": "Category",
+    "sort_order": "Sort order",
+    "turnaround_days": "Turnaround (days)",
+    "restoration": "Restoration",
+    "material": "Material",
+    "tooth_number": "Tooth #",
+    "shade": "Shade",
+    "quantity": "Qty",
+    "unit_price": "Unit price",
+    "line_total": "Line total",
+    "line_items_count": "Items",
+    "users_usage": "Users",
+    "users_count": "Users",
+    "user_limit": "User limit",
     "price": "Price",
     "user_limit": "User limit",
-    "storage_limit": "Storage limit (GB)",
+    "storage_limit": "Storage limit (MB)",
     "permissions_count": "Permissions",
     "permission_ids": "Permissions",
     "key": "Key",
@@ -1439,6 +1652,48 @@
     "received": "Received",
     "short": "Short"
   },
+  "caseTypes": {
+    "new_case": "New case",
+    "redo": "Redo",
+    "repair": "Repair",
+    "lab_to_lab": "Lab to lab",
+    "rejected": "Rejected",
+    "cancelled": "Cancelled"
+  },
+  "caseSources": {
+    "clinic": "Clinic",
+    "lab_to_lab": "Lab to lab",
+    "internal": "Internal"
+  },
+  "casePriorities": {
+    "normal": "Normal",
+    "urgent": "Urgent",
+    "vip": "VIP"
+  },
+  "materialCategories": {
+    "metal": "Metal",
+    "ceramic": "Ceramic",
+    "resin": "Resin / Composite",
+    "acrylic": "Acrylic",
+    "titanium": "Titanium",
+    "other": "Other"
+  },
+  "restorationCategories": {
+    "crown": "Crown",
+    "bridge": "Bridge",
+    "veneer": "Veneer",
+    "inlay": "Inlay",
+    "onlay": "Onlay",
+    "denture": "Denture",
+    "implant": "Implant prosthetic",
+    "other": "Other"
+  },
+  "toothChart": {
+    "title": "Select tooth",
+    "select": "Select tooth…",
+    "clear": "Clear",
+    "hint": "Click teeth on the chart. Select multiple for bridges."
+  },
   "resources": {
     "UserModel": "Users",
     "RiderModel": "Riders",
@@ -1447,6 +1702,12 @@
     "RoleModel": "Roles",
     "PlanModel": "Plans",
     "LaboratoryModel": "Laboratories",
+    "CaseModel": "Cases",
+    "MaterialModel": "Materials",
+    "MaterialCategoryModel": "Material categories",
+    "RestorationModel": "Restorations",
+    "RestorationCategoryModel": "Restoration categories",
+    "PriceListItemModel": "Price list",
     "SiteModel": "Site Settings",
     "SliderModel": "Sliders",
     "PaymentMethodModel": "Payment Methods",
@@ -1460,6 +1721,12 @@
   "trashResources": {
     "roles": "Roles",
     "users": "Users",
+    "cases": "Cases",
+    "materials": "Materials",
+    "material-categories": "Material categories",
+    "restorations": "Restorations",
+    "restoration-categories": "Restoration categories",
+    "price-list": "Price list",
     "merchants": "Merchants",
     "riders": "Riders",
     "pickups": "Pickups",
@@ -1710,6 +1977,30 @@
       "netProfit": "Net profit",
       "financeHint": "Based on income and expense records this month",
       "quickLinks": "Quick links"
+    },
+    "lab": {
+      "welcome": "Welcome, {{name}}",
+      "subtitle": "Your laboratory overview and quick access",
+      "subtitleNamed": "{{lab}} — overview and quick access",
+      "loading": "Loading lab overview…",
+      "loadFailed": "Failed to load lab overview",
+      "memberSubtitle": "Use the sidebar to open your assigned pages",
+      "quickLinksTitle": "Quick links",
+      "cards": {
+        "cases": "Cases",
+        "casesHint": "{{dueToday}} due today · {{urgent}} urgent",
+        "users": "Lab users",
+        "plan": "Plan: {{plan}}",
+        "storage": "Storage used",
+        "storageHint": "{{percent}}% of plan limit",
+        "laboratory": "Laboratory"
+      },
+      "quickLinks": {
+        "cases": "View and manage dental cases",
+        "myLaboratory": "Update lab details and branding",
+        "labUsers": "Create and manage team accounts",
+        "storage": "Check storage usage against your plan"
+      }
     }
   },
   "hr": {

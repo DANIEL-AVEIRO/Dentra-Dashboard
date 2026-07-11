@@ -32,13 +32,13 @@ export function tableCheckboxCellSx(extra = {}) {
   };
 }
 
-/** Row number (#) column — overrides body minWidth so it stays narrow */
+/** Row number (#) column — width: 1% keeps the column content-sized (like checkbox) */
 export function tableRowIndexCellSx(extra = {}) {
   return {
-    width: 1,
-    minWidth: 32,
+    width: "1%",
+    minWidth: TABLE_ROW_INDEX_WIDTH,
     maxWidth: TABLE_ROW_INDEX_WIDTH,
-    px: 0.75,
+    px: 0.5,
     py: { xs: 1, sm: TABLE_CELL_PY },
     textAlign: "center",
     verticalAlign: "middle",
@@ -176,6 +176,51 @@ export function tableCellInnerSx(truncate = false) {
   return {
     display: "inline-block",
     whiteSpace: "nowrap",
+  };
+}
+
+/** Action column body cell — no opaque bg unless sticky (so row hover shows through). */
+export function tableActionCellSx(theme, { sticky = false, compactSx = {} } = {}) {
+  const isLight = theme.palette.mode === "light";
+  const primary = brandPrimary(theme);
+
+  const base = {
+    ...tableBodyCellSx(),
+    ...compactSx,
+    py: 0.5,
+    px: 0.75,
+    width: TABLE_ACTIONS_WIDTH,
+    minWidth: TABLE_ACTIONS_MIN_WIDTH,
+    whiteSpace: "nowrap",
+  };
+
+  if (!sticky) return base;
+
+  const stickyShadow =
+    theme.palette.mode === "light" ? "rgba(0,0,0,0.06)" : "rgba(0,0,0,0.25)";
+
+  return {
+    ...base,
+    position: "sticky",
+    right: 0,
+    zIndex: 2,
+    boxShadow: `-4px 0 8px ${stickyShadow}`,
+    bgcolor: "background.paper",
+    ".MuiTableRow-root:nth-of-type(even) &": {
+      bgcolor: alpha(primary, isLight ? 0.015 : 0.04),
+    },
+    ".MuiTableRow-root:hover &": {
+      bgcolor: alpha(primary, 0.05),
+    },
+    ".MuiTableRow-root:nth-of-type(even):hover &": {
+      bgcolor: alpha(primary, 0.06),
+    },
+    ".MuiTableRow-root.Mui-selected &": {
+      bgcolor: alpha(primary, isLight ? 0.07 : 0.12),
+    },
+    ".MuiTableRow-root.Mui-selected:hover &": {
+      bgcolor: alpha(primary, isLight ? 0.09 : 0.15),
+    },
   };
 }
 

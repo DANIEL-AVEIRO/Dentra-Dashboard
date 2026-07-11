@@ -11,6 +11,51 @@ import UploadDocumentGallery, {
   shouldUseUploadGallery,
 } from "@/components/common/form/UploadDocumentGallery";
 
+function GroupTitle({ title, first }) {
+  return (
+    <Typography
+      variant="body2"
+      sx={{
+        fontWeight: 700,
+        color: "text.secondary",
+        mt: first ? 0 : 1,
+        mb: 0.5,
+        pb: 0.5,
+        borderBottom: 1,
+        borderColor: (t) =>
+          alpha(BRAND_PRIMARY, t.palette.mode === "light" ? 0.1 : 0.18),
+      }}
+    >
+      {title}
+    </Typography>
+  );
+}
+
+function pushGroupTitle(nodes, field, lastGroupTitle, { grid = false, first = false } = {}) {
+  const groupTitle = field.groupTitle || field.uploadGroupTitle;
+  if (!groupTitle || groupTitle === lastGroupTitle) {
+    return lastGroupTitle;
+  }
+
+  if (grid) {
+    nodes.push(
+      <Grid item xs={12} key={`${field.name}-group`}>
+        <GroupTitle title={groupTitle} first={first && nodes.length === 0} />
+      </Grid>,
+    );
+  } else {
+    nodes.push(
+      <GroupTitle
+        key={`${field.name}-group`}
+        title={groupTitle}
+        first={first && nodes.length === 0}
+      />,
+    );
+  }
+
+  return groupTitle;
+}
+
 function renderFieldsBlock(
   fields,
   twoColumn,
@@ -40,7 +85,15 @@ function renderFieldsBlock(
   }
 
   if (!twoColumn) {
-    return fields.map((f) => renderField(f));
+    const nodes = [];
+    let lastGroupTitle = null;
+    fields.forEach((f, index) => {
+      lastGroupTitle = pushGroupTitle(nodes, f, lastGroupTitle, {
+        first: index === 0,
+      });
+      nodes.push(renderField(f));
+    });
+    return nodes;
   }
 
   const gridSizes = computeFieldGridSizes(fields);
@@ -48,29 +101,10 @@ function renderFieldsBlock(
   let lastGroupTitle = null;
 
   fields.forEach((f, index) => {
-    const groupTitle = f.uploadGroupTitle;
-    if (groupTitle && groupTitle !== lastGroupTitle) {
-      nodes.push(
-        <Grid item xs={12} key={`${f.name}-upload-group`}>
-          <Typography
-            variant="body2"
-            sx={{
-              fontWeight: 700,
-              color: "text.secondary",
-              mt: nodes.length > 0 ? 1 : 0,
-              mb: 0.5,
-              pb: 0.5,
-              borderBottom: 1,
-              borderColor: (t) =>
-                alpha(BRAND_PRIMARY, t.palette.mode === "light" ? 0.1 : 0.18),
-            }}
-          >
-            {groupTitle}
-          </Typography>
-        </Grid>,
-      );
-      lastGroupTitle = groupTitle;
-    }
+    lastGroupTitle = pushGroupTitle(nodes, f, lastGroupTitle, {
+      grid: true,
+      first: index === 0,
+    });
 
     nodes.push(
       <Grid item xs={12} sm={gridSizes[index] ?? 12} key={f.name}>

@@ -39,6 +39,7 @@ const FK_LABEL_KEYS = {
   township: ["township_name"],
   branch: ["branch_name"],
   role: ["role_name"],
+  plan: ["plan_name"],
   to_user: ["to_user_name"],
   category: ["category_name"],
   created_by: ["created_by_name", "created_by_username", "created_by_display"],
@@ -116,8 +117,11 @@ const FK_NAME_FALLBACK = {
   user: "user_name",
   branch: "branch_name",
   role: "role_name",
+  plan: "plan_name",
   category: "category_name",
   to_user: "to_user_name",
+  clinic: "clinic_name",
+  dentist: "dentist_name",
 };
 
 /** Export / display label for FK fields when API omits UUID. */

@@ -4,12 +4,13 @@ import {
   ArrowAssignIcon,
   ArrowEditIcon,
   ArrowDeleteForeverIcon,
+  ArrowDuplicateIcon,
   ArrowRestoreIcon,
   ArrowStatusIcon,
   ArrowViewIcon,
 } from "@/components/icons/ArrowTableIcons";
 import { useTranslation } from "@/context/LanguageContext";
-import { transition } from "@/constants/motion";
+import { BUTTON_TRANSITION } from "@/constants/motion";
 
 const VARIANT_TITLE_KEYS = {
   edit: "common.edit",
@@ -19,6 +20,7 @@ const VARIANT_TITLE_KEYS = {
   view: "common.view",
   assign: "bulk.assignRider",
   status: "bulk.updateStatus",
+  duplicate: "table.duplicateRow",
 };
 
 const VARIANTS = {
@@ -63,6 +65,12 @@ const VARIANTS = {
     colorKey: "secondary",
     tint: "#6b4c8a",
   },
+  duplicate: {
+    Icon: ArrowDuplicateIcon,
+    title: "Duplicate",
+    colorKey: "info",
+    tint: "#5b6b8a",
+  },
 };
 
 /**
@@ -103,10 +111,14 @@ export default function TableActionButton({
             color: tint,
             bgcolor: alpha(tint, isDark ? 0.22 : 0.1),
             border: `1px solid ${alpha(tint, isDark ? 0.35 : 0.2)}`,
-            transition: transition("background-color, border-color, box-shadow"),
+            transition: BUTTON_TRANSITION,
             "&:hover": {
               bgcolor: alpha(tint, isDark ? 0.32 : 0.16),
               boxShadow: `0 2px 6px ${alpha(tint, 0.18)}`,
+              transform: "translateY(-1px)",
+            },
+            "&:active": {
+              transform: "translateY(0) scale(0.96)",
             },
             "&.Mui-disabled": {
               opacity: 0.45,

@@ -25,6 +25,9 @@ export default function SmoothDatePicker({
   minDate,
   maxDate,
   filterBar = false,
+  open,
+  onOpen,
+  onClose,
   sx,
 }) {
   const theme = useTheme();
@@ -39,6 +42,9 @@ export default function SmoothDatePicker({
       format={DISPLAY_DATE_FORMAT}
       minDate={minDate ? parseDateValue(minDate) : undefined}
       maxDate={maxDate ? parseDateValue(maxDate) : undefined}
+      open={open}
+      onOpen={onOpen}
+      onClose={onClose}
       reduceAnimations={false}
       dayOfWeekFormatter={(day) => day.format("dd")}
       slotProps={buildPickerSlotProps({

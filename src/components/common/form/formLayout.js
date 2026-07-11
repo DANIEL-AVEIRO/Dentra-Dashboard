@@ -181,17 +181,34 @@ export function isFormFieldFullWidth(field) {
     type === "permissionMatrix"
   )
     return true;
+  if (field?.datePresets) return true;
   if (field?.multiline) return true;
   return false;
 }
+
+/** Shared horizontal inset for create/edit dialog chrome (title, body, footer) */
+export const FORM_DIALOG_PX = { xs: 1.5, sm: 2 };
+
+export const formDialogTitleSx = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  gap: 1,
+  py: { xs: 1.5, sm: 2 },
+  px: FORM_DIALOG_PX,
+  flexShrink: 0,
+};
 
 export const dialogFormContentSx = {
   display: "flex",
   flexDirection: "column",
   gap: 1.25,
-  pt: 0.5,
+  px: FORM_DIALOG_PX,
+  pt: { xs: 2, sm: 2 },
+  pb: { xs: 2.5, sm: 2.5 },
   width: "100%",
   boxSizing: "border-box",
+  scrollbarGutter: "stable",
   "& > *:not(.MuiGrid-root)": {
     width: "100%",
     maxWidth: "100%",
@@ -220,7 +237,7 @@ export const roleDialogFormContentSx = {
   ...dialogFormContentSx,
   gap: 0,
   pt: 0,
-  px: { xs: 2, sm: 3 },
+  px: FORM_DIALOG_PX,
   py: { xs: 2, sm: 2.5 },
   overflow: "hidden",
   display: "flex",
@@ -230,12 +247,19 @@ export const roleDialogFormContentSx = {
 };
 
 export const roleDialogActionsSx = {
-  px: { xs: 2, sm: 3 },
+  px: FORM_DIALOG_PX,
   py: 2,
+  pb: { xs: "calc(16px + env(safe-area-inset-bottom, 0px))", sm: 2 },
   gap: 1,
   borderTop: 1,
   borderColor: "divider",
   bgcolor: "background.paper",
+  flexDirection: { xs: "column-reverse", sm: "row" },
+  alignItems: { xs: "stretch", sm: "center" },
+  "& > .MuiButton-root": {
+    width: { xs: "100%", sm: "auto" },
+    m: 0,
+  },
 };
 
 export const pageFormSx = {

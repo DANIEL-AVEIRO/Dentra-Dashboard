@@ -604,6 +604,12 @@ html[data-theme="dark"] .Toastify__toast.arrow-toast .Toastify__close-button {
     scroll-behavior: auto;
   }
 
+  .MuiButton-root,
+  .MuiIconButton-root,
+  .MuiToggleButton-root {
+    transition-duration: 0.01ms !important;
+  }
+
   html.theme-transitioning,
   html.theme-transitioning *:not(.no-theme-transition),
   html.theme-transitioning *:not(.no-theme-transition)::before,

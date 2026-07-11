@@ -1,6 +1,5 @@
 import { Box, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { BRAND_PRIMARY } from "@/theme";
 import { resolveMediaUrl } from "@/utils/mediaUrl";
 
 export default function PhotoThumbStrip({
@@ -60,7 +59,7 @@ export default function PhotoThumbStrip({
                 border: 1,
                 borderColor: "divider",
                 aspectRatio: "4 / 3",
-                bgcolor: (theme) => alpha(BRAND_PRIMARY, theme.palette.mode === "light" ? 0.04 : 0.1),
+                bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.mode === "light" ? 0.04 : 0.1),
                 transition: "transform 0.2s ease, box-shadow 0.2s ease",
                 "&:hover": {
                   transform: "translateY(-2px)",
@@ -93,8 +92,8 @@ export default function PhotoThumbStrip({
             overflow: "hidden",
             flexShrink: 0,
             border: 1,
-            borderColor: (theme) => alpha(BRAND_PRIMARY, theme.palette.mode === "light" ? 0.18 : 0.28),
-            bgcolor: (theme) => alpha(BRAND_PRIMARY, theme.palette.mode === "light" ? 0.04 : 0.1),
+            borderColor: (theme) => alpha(theme.palette.primary.main, theme.palette.mode === "light" ? 0.18 : 0.28),
+            bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.mode === "light" ? 0.04 : 0.1),
             boxShadow: (theme) =>
               `0 1px 3px ${alpha(theme.palette.common.black, theme.palette.mode === "light" ? 0.08 : 0.2)}`,
           }}
@@ -117,10 +116,10 @@ export default function PhotoThumbStrip({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            bgcolor: (theme) => alpha(BRAND_PRIMARY, theme.palette.mode === "light" ? 0.08 : 0.16),
+            bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.mode === "light" ? 0.08 : 0.16),
             color: "primary.main",
             border: 1,
-            borderColor: (theme) => alpha(BRAND_PRIMARY, 0.2),
+            borderColor: (theme) => alpha(theme.palette.primary.main, 0.2),
           }}
         >
           <Typography variant="caption" fontWeight={800}>

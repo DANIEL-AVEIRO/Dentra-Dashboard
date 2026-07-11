@@ -86,9 +86,15 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password);
+      const loggedIn = await login(email, password);
       toast.success(t("auth.welcomeToast"));
-      navigate("/");
+      navigate(
+        loggedIn?.is_lab_owner
+          ? "/admin"
+          : loggedIn?.laboratory_name
+            ? "/my-laboratory"
+            : "/",
+      );
     } catch (err) {
       toast.error(getErrorMessage(err, t("auth.loginFailed")));
     } finally {
@@ -178,6 +184,7 @@ export default function Login() {
               fullWidth
               label={t("auth.password")}
               type="password"
+              passwordTools={false}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

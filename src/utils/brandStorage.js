@@ -29,3 +29,12 @@ export function setStoredBrand(brand) {
     /* ignore */
   }
 }
+
+export function clearStoredBrand() {
+  try {
+    localStorage.removeItem(BRAND_STORAGE_KEY);
+    localStorage.removeItem("arrow-admin-brand");
+  } catch {
+    /* ignore */
+  }
+}

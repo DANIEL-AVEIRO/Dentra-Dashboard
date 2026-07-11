@@ -1,8 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import client from "@/api/client";
+import { useAuth } from "@/context/AuthContext";
 import { DEFAULT_BRAND, normalizeBrandPayload } from "@/constants/brand";
 import { applyBrandCssVars } from "@/utils/brandPalette";
-import { getStoredBrand, setStoredBrand } from "@/utils/brandStorage";
+import { clearStoredBrand, getStoredBrand, setStoredBrand } from "@/utils/brandStorage";
 import { resolveMediaUrl } from "@/utils/mediaUrl";
 
 const BrandContext = createContext(null);
@@ -15,6 +16,7 @@ function readInitialBrand() {
 }
 
 export function BrandProvider({ children }) {
+  const { user, loading: authLoading } = useAuth();
   const [brand, setBrand] = useState(readInitialBrand);
   const [loading, setLoading] = useState(() => !getStoredBrand());
 
@@ -40,8 +42,12 @@ export function BrandProvider({ children }) {
   }, [applyBrand]);
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      clearStoredBrand();
+    }
     refresh();
-  }, [refresh]);
+  }, [authLoading, user?.id, refresh]);
 
   const logoUrl = useMemo(() => {
     if (brand.logo) return resolveMediaUrl(brand.logo) || brand.logo;

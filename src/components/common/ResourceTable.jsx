@@ -27,6 +27,7 @@ import { TABLE_BORDER_RADIUS, TABLE_MAX_HEIGHT, TABLE_MAX_HEIGHT_MOBILE } from "
 import {
   TABLE_ACTIONS_MIN_WIDTH,
   TABLE_ACTIONS_WIDTH,
+  TABLE_HEAD_FONT_SIZE,
   tableBodyCellSx,
   tableCheckboxCellSx,
   tableRowIndexCellSx,
@@ -35,6 +36,7 @@ import {
   tableHeadCellSx,
   tableHeaderBg,
   tablePaperSx,
+  tableActionCellSx,
   tableRowSx,
 } from "@/constants/tableStyles";
 import TableCheckbox from "@/components/common/TableCheckbox";
@@ -199,10 +201,9 @@ export default function ResourceTable({
       }
     : {};
   const stickyHeadSx = { ...headSx, ...stickyActionSx, bgcolor: headerBg, zIndex: 3 };
-  const stickyBodySx = (selected) => ({
-    ...bodySx,
-    ...stickyActionSx,
-    bgcolor: selected ? undefined : "background.paper",
+  const actionBodySx = tableActionCellSx(theme, {
+    sticky: stickyActionsColumn,
+    compactSx: isCompact ? { py: 0.5, px: 0.75 } : {},
   });
 
   const setDensity = (next) => {
@@ -416,7 +417,19 @@ export default function ResourceTable({
                 </TableCell>
               )}
               {showRowIndex ? (
-                <TableCell align="center" sx={{ ...headSx, ...tableRowIndexCellSx() }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    ...tableRowIndexCellSx({
+                      bgcolor: headerBg,
+                      backgroundImage: "none",
+                      borderBottom: tableHeadBorder(theme),
+                      fontSize: TABLE_HEAD_FONT_SIZE,
+                      fontWeight: 400,
+                      color: "text.primary",
+                    }),
+                  }}
+                >
                   #
                 </TableCell>
               ) : null}
@@ -533,10 +546,11 @@ export default function ResourceTable({
                       <TableCell
                         align="center"
                         sx={{
-                          ...bodySx,
-                          ...tableRowIndexCellSx(),
-                          color: "text.secondary",
-                          fontWeight: 600,
+                          ...tableRowIndexCellSx({
+                            borderColor: "divider",
+                            color: "text.secondary",
+                            fontWeight: 600,
+                          }),
                         }}
                       >
                         {rowNumberOffset + index + 1}
@@ -548,17 +562,7 @@ export default function ResourceTable({
                       </TableCell>
                     ))}
                     {actions && (
-                      <TableCell
-                        align="right"
-                        sx={{
-                          ...stickyBodySx(selected),
-                          py: 0.5,
-                          px: 0.75,
-                          width: TABLE_ACTIONS_WIDTH,
-                          minWidth: TABLE_ACTIONS_MIN_WIDTH,
-                          whiteSpace: "nowrap",
-                        }}
-                      >
+                      <TableCell align="right" sx={actionBodySx}>
                         <Box
                           sx={{
                             display: "inline-flex",
@@ -580,13 +584,15 @@ export default function ResourceTable({
             {summaryFooter && rows.length > 0 ? (
               <TableRow>
                 {hasSelect ? <TableCell sx={tableCheckboxCellSx()} /> : null}
-                {showRowIndex ? <TableCell sx={{ ...bodySx, ...tableRowIndexCellSx() }} /> : null}
+                {showRowIndex ? (
+                  <TableCell sx={tableRowIndexCellSx()} />
+                ) : null}
                 {displayColumns.map((col) => (
                   <TableCell key={`summary-${col.key}`} sx={{ ...bodySx, fontWeight: 700 }}>
                     {summaryFooter[col.key] ?? ""}
                   </TableCell>
                 ))}
-                {actions ? <TableCell sx={stickyBodySx(false)} /> : null}
+                {actions ? <TableCell sx={actionBodySx} /> : null}
               </TableRow>
             ) : null}
             </TableHighlightContext.Provider>

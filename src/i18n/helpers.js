@@ -37,6 +37,9 @@ export function translateFields(fields, t) {
       : f.inactiveLabel
         ? t(`boolean.${f.name}Off`, { defaultValue: f.inactiveLabel })
         : undefined,
+    groupTitle: f.groupTitleKey
+      ? t(f.groupTitleKey)
+      : f.groupTitle || f.uploadGroupTitle,
   }));
 }
 

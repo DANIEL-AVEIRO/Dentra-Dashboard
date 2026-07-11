@@ -21,7 +21,6 @@ import StatusChip from "@/components/common/StatusChip";
 import ResourceId from "@/components/common/ResourceId";
 import ActionButton from "@/components/common/ActionButton";
 import { useTranslation } from "@/context/LanguageContext";
-import { BRAND_PRIMARY, BRAND_SECONDARY } from "@/constants/brand";
 import { glassPanelSx } from "@/constants/glassSurface";
 import { hideScrollbarSx } from "@/constants/tableStyles";
 import { transition, PREVIEW_DRAWER_MS, EASE_SOFT, EASE_SMOOTH, DURATION } from "@/constants/motion";
@@ -105,6 +104,9 @@ function PreviewFieldRow({ label, children }) {
 }
 
 function PreviewSection({ title, Icon, children, theme }) {
+  const primary = theme.palette.primary.main;
+  const secondary = theme.palette.secondary.main;
+
   return (
     <Box
       sx={{
@@ -122,8 +124,8 @@ function PreviewSection({ title, Icon, children, theme }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            bgcolor: alpha(BRAND_PRIMARY, theme.palette.mode === "light" ? 0.08 : 0.18),
-            color: BRAND_PRIMARY,
+            bgcolor: alpha(primary, theme.palette.mode === "light" ? 0.08 : 0.18),
+            color: primary,
           }}
         >
           <Icon sx={{ fontSize: 17 }} />
@@ -147,6 +149,8 @@ function PreviewSection({ title, Icon, children, theme }) {
 
 function PreviewFooterActions({ onClose, onOpenDetail, showOpenDetail = true, t, theme, isLight }) {
   const actionHeight = 48;
+  const primary = theme.palette.primary.main;
+  const secondary = theme.palette.secondary.main;
 
   return (
     <Box
@@ -157,11 +161,11 @@ function PreviewFooterActions({ onClose, onOpenDetail, showOpenDetail = true, t,
         pt: 1.75,
         pb: 2,
         borderTop: 1,
-        borderColor: alpha(BRAND_PRIMARY, isLight ? 0.1 : 0.22),
+        borderColor: alpha(primary, isLight ? 0.1 : 0.22),
         bgcolor: alpha(theme.palette.background.paper, isLight ? 0.94 : 0.78),
         backdropFilter: "blur(12px)",
         boxShadow: isLight
-          ? `0 -8px 28px ${alpha(BRAND_PRIMARY, 0.06)}`
+          ? `0 -8px 28px ${alpha(primary, 0.06)}`
           : `0 -10px 32px ${alpha("#000", 0.28)}`,
         "&::before": {
           content: '""',
@@ -171,7 +175,7 @@ function PreviewFooterActions({ onClose, onOpenDetail, showOpenDetail = true, t,
           right: 16,
           height: 3,
           borderRadius: "0 0 999px 999px",
-          background: `linear-gradient(90deg, ${BRAND_PRIMARY}, ${BRAND_SECONDARY})`,
+          background: `linear-gradient(90deg, ${primary}, ${secondary})`,
           opacity: 0.85,
         },
       }}
@@ -209,14 +213,14 @@ function PreviewFooterActions({ onClose, onOpenDetail, showOpenDetail = true, t,
             textTransform: "none",
             whiteSpace: "nowrap",
             color: "text.primary",
-            borderColor: alpha(BRAND_PRIMARY, isLight ? 0.22 : 0.34),
+            borderColor: alpha(primary, isLight ? 0.22 : 0.34),
             bgcolor: alpha(theme.palette.background.paper, isLight ? 0.7 : 0.35),
             transition: transition("background-color, border-color, box-shadow"),
             "& .MuiButton-startIcon": { mr: 0.75 },
             "&:hover": {
-              borderColor: alpha(BRAND_PRIMARY, isLight ? 0.42 : 0.52),
-              bgcolor: alpha(BRAND_PRIMARY, isLight ? 0.05 : 0.12),
-              boxShadow: `0 4px 14px ${alpha(BRAND_PRIMARY, 0.1)}`,
+              borderColor: alpha(primary, isLight ? 0.42 : 0.52),
+              bgcolor: alpha(primary, isLight ? 0.05 : 0.12),
+              boxShadow: `0 4px 14px ${alpha(primary, 0.1)}`,
             },
           }}
         >
@@ -270,6 +274,8 @@ export default function TableRowPreviewDrawer({
   const navigate = useNavigate();
   const { t } = useTranslation();
   const isLight = theme.palette.mode === "light";
+  const primary = theme.palette.primary.main;
+  const secondary = theme.palette.secondary.main;
   const [contentVisible, setContentVisible] = useState(false);
   const rowToken = row ? String(displayId ?? row[idKey] ?? row.id ?? "") : "";
 
@@ -352,9 +358,9 @@ export default function TableRowPreviewDrawer({
           width: { xs: "100%", sm: 420, md: 440 },
           maxWidth: "100%",
           p: 0,
-          borderLeft: `1px solid ${alpha(BRAND_PRIMARY, isLight ? 0.12 : 0.22)}`,
+          borderLeft: `1px solid ${alpha(primary, isLight ? 0.12 : 0.22)}`,
           boxShadow: isLight
-            ? `-12px 0 48px ${alpha(BRAND_PRIMARY, 0.14)}`
+            ? `-12px 0 48px ${alpha(primary, 0.14)}`
             : `-16px 0 56px ${alpha("#000", 0.55)}`,
           bgcolor: "background.default",
           willChange: "transform",
@@ -381,9 +387,9 @@ export default function TableRowPreviewDrawer({
               pt: 2.25,
               pb: 2,
             background: isLight
-              ? `linear-gradient(145deg, ${alpha(BRAND_PRIMARY, 0.1)} 0%, ${alpha(BRAND_SECONDARY, 0.06)} 48%, ${alpha("#fff", 0.92)} 100%)`
-              : `linear-gradient(145deg, ${alpha(BRAND_PRIMARY, 0.32)} 0%, ${alpha("#1a1520", 0.95)} 62%, ${alpha("#121018", 1)} 100%)`,
-            borderBottom: `1px solid ${alpha(BRAND_PRIMARY, isLight ? 0.12 : 0.24)}`,
+              ? `linear-gradient(145deg, ${alpha(primary, 0.1)} 0%, ${alpha(secondary, 0.06)} 48%, ${alpha("#fff", 0.92)} 100%)`
+              : `linear-gradient(145deg, ${alpha(primary, 0.32)} 0%, ${alpha("#1a1520", 0.95)} 62%, ${alpha("#121018", 1)} 100%)`,
+            borderBottom: `1px solid ${alpha(primary, isLight ? 0.12 : 0.24)}`,
           }}
         >
           <IconButton
@@ -396,11 +402,11 @@ export default function TableRowPreviewDrawer({
               right: 12,
               bgcolor: alpha(theme.palette.background.paper, isLight ? 0.82 : 0.35),
               border: 1,
-              borderColor: alpha(BRAND_PRIMARY, 0.14),
+              borderColor: alpha(primary, 0.14),
               transition: transition("background-color, border-color"),
               "&:hover": {
                 bgcolor: alpha(theme.palette.background.paper, isLight ? 0.95 : 0.5),
-                borderColor: alpha(BRAND_PRIMARY, 0.28),
+                borderColor: alpha(primary, 0.28),
               },
             }}
           >
@@ -414,7 +420,7 @@ export default function TableRowPreviewDrawer({
               pr: 5,
               fontWeight: 800,
               letterSpacing: "0.12em",
-              color: alpha(BRAND_PRIMARY, isLight ? 0.85 : 0.92),
+              color: alpha(primary, isLight ? 0.85 : 0.92),
             }}
           >
             {title}
@@ -436,7 +442,7 @@ export default function TableRowPreviewDrawer({
               width: 52,
               height: 4,
               borderRadius: 999,
-              background: `linear-gradient(90deg, ${BRAND_PRIMARY}, ${BRAND_SECONDARY})`,
+              background: `linear-gradient(90deg, ${primary}, ${secondary})`,
             }}
           />
         </Box>
@@ -484,7 +490,7 @@ export default function TableRowPreviewDrawer({
                   borderRadius: 2,
                   bgcolor: alpha(theme.palette.text.primary, isLight ? 0.03 : 0.06),
                   border: 1,
-                  borderColor: alpha(BRAND_PRIMARY, isLight ? 0.08 : 0.16),
+                  borderColor: alpha(primary, isLight ? 0.08 : 0.16),
                 }}
               >
                 <Typography variant="caption" color="text.secondary" fontWeight={700}>

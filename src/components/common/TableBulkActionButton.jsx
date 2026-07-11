@@ -3,7 +3,7 @@ import ToggleOffOutlinedIcon from "@mui/icons-material/ToggleOffOutlined";
 import ToggleOnOutlinedIcon from "@mui/icons-material/ToggleOnOutlined";
 import LocalPrintshopOutlinedIcon from "@mui/icons-material/LocalPrintshopOutlined";
 import { TABLE_ACTION_VARIANTS } from "@/components/common/TableActionButton";
-import { transition } from "@/constants/motion";
+import { BUTTON_TRANSITION } from "@/constants/motion";
 
 const ACTION_ID_TO_VARIANT = {
   assign: "assign",
@@ -109,13 +109,12 @@ export default function TableBulkActionButton({ action }) {
             whiteSpace: "nowrap",
             cursor: disabled ? "not-allowed" : "pointer",
             opacity: disabled ? 0.48 : 1,
-            transition: transition(
-              "background-color, border-color, box-shadow, transform"
-            ),
+            transition: BUTTON_TRANSITION,
             "&:hover:not(:disabled)": {
               bgcolor: alpha(tint, isDark ? 0.3 : 0.14),
               borderColor: alpha(tint, isDark ? 0.5 : 0.32),
               boxShadow: `0 2px 8px ${alpha(tint, 0.16)}`,
+              transform: "translateY(-1px)",
             },
             "&:active:not(:disabled)": {
               transform: "scale(0.98)",

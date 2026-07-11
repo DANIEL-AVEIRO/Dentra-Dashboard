@@ -50,7 +50,7 @@ export const trashResources = [
       { key: "name", label: "Plan name" },
       { key: "price", label: "Price" },
       { key: "user_limit", label: "User limit" },
-      { key: "storage_limit", label: "Storage limit (GB)" },
+      { key: "storage_limit", label: "Storage limit (MB)" },
       { key: "status", label: "Status" },
     ],
   },
@@ -62,6 +62,33 @@ export const trashResources = [
     columns: [
       { key: "name", label: "Laboratory name" },
       { key: "plan_name", label: "Plan" },
+      { key: "owner_name", label: "Owner name" },
+      { key: "owner_email", label: "Owner email" },
+      { key: "users_usage", label: "Users" },
+    ],
+  },
+  {
+    id: "clinics",
+    endpoint: "clinics",
+    title: "Clinics",
+    labelKey: "clinic_code",
+    columns: [
+      { key: "clinic_code", label: "Clinic code" },
+      { key: "name", label: "Clinic name" },
+      { key: "phone", label: "Phone" },
+      { key: "email", label: "Email" },
+      { key: "region_name", label: "Region" },
+    ],
+  },
+  {
+    id: "dentists",
+    endpoint: "dentists",
+    title: "Dentists",
+    labelKey: "name",
+    columns: [
+      { key: "name", label: "Dentist name" },
+      { key: "phone", label: "Phone" },
+      { key: "email", label: "Email" },
     ],
   },
 ];

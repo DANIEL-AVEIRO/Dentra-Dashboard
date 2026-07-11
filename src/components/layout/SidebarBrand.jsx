@@ -83,9 +83,9 @@ export default function SidebarBrand({ onNavigate }) {
               height: 48,
               borderRadius: 1.5,
               flexShrink: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              position: "relative",
+              overflow: "hidden",
+              boxSizing: "border-box",
               bgcolor: isDark ? alpha("#fff", 0.08) : "#fff",
               border: `1px solid ${alpha(brandPrimary, 0.12)}`,
               boxShadow: `0 4px 14px ${alpha(brandPrimary, 0.18)}`,
@@ -96,9 +96,13 @@ export default function SidebarBrand({ onNavigate }) {
               src={logoUrl}
               alt=""
               sx={{
-                width: 36,
-                height: 36,
-                objectFit: "contain",
+                display: "block",
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center",
               }}
             />
           </Box>

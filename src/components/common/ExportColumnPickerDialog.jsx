@@ -19,6 +19,7 @@ import { useTranslation } from "@/context/LanguageContext";
 import ActionButton from "@/components/common/ActionButton";
 import ToolbarActionButton from "@/components/common/ToolbarActionButton";
 import ResponsiveDialog from "@/components/common/ResponsiveDialog";
+import { formDialogActionsSx } from "@/components/common/statusDialogLayout";
 import { BRAND_PRIMARY } from "@/constants/brand";
 import { getExportableColumns } from "@/utils/exportTable";
 
@@ -294,7 +295,7 @@ export default function ExportColumnPickerDialog({
           </Typography>
         ) : null}
       </DialogContent>
-      <DialogActions sx={{ px: 2.5, py: 1.5, gap: 1 }}>
+      <DialogActions sx={formDialogActionsSx}>
         <ToolbarActionButton variant="cancel" onClick={onClose}>
           {t("common.cancel")}
         </ToolbarActionButton>

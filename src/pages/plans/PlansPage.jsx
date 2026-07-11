@@ -32,10 +32,10 @@ export default function PlansPage() {
         { key: "user_limit", label: "User limit" },
         {
           key: "storage_limit",
-          label: "Storage limit (GB)",
+          label: "Storage limit (MB)",
           render: (row) =>
             row.storage_limit != null && row.storage_limit !== ""
-              ? `${row.storage_limit} GB`
+              ? `${row.storage_limit} MB`
               : "—",
         },
         {
@@ -67,15 +67,15 @@ export default function PlansPage() {
         },
         {
           name: "storage_limit",
-          label: "Storage limit (GB)",
+          label: "Storage limit (MB)",
           type: "number",
           required: true,
-          placeholder: "e.g. 50",
+          placeholder: "e.g. 1024",
         },
         {
           name: "status",
           label: "Status",
-          type: "select",
+          type: "activeStatus",
           required: true,
           default: "active",
           options: PLAN_STATUS_OPTIONS,

@@ -19,6 +19,9 @@ const DOCUMENT_CARD_MAX_HEIGHT = 168;
 const DOCUMENT_CARD_DETAIL_MIN = 200;
 const AVATAR_SIZE = 96;
 const AVATAR_SIZE_LARGE = 120;
+const LOGO_MIN_HEIGHT = 96;
+const LOGO_MAX_HEIGHT = 120;
+const LOGO_ASPECT_RATIO = "5 / 2";
 
 export const UPLOAD_IMAGE_WIDTH = 168;
 export const UPLOAD_DOCUMENT_WIDTH = 260;
@@ -79,6 +82,7 @@ export default function ImageField({
 
   const imageAccept = isImageAccept(accept);
   const isAvatar = variant === "avatar";
+  const isLogo = variant === "logo";
   const isDocumentCard = variant === "documentCard";
   const isDetailDocCard = isDocumentCard && documentCardPreset === "detail";
   const isDetailWideDocCard = isDocumentCard && documentCardPreset === "detailWide";
@@ -86,7 +90,9 @@ export default function ImageField({
 
   const minH = isAvatar
     ? avatarPx
-    : isDetailDocCard
+    : isLogo
+      ? LOGO_MIN_HEIGHT
+      : isDetailDocCard
       ? DOCUMENT_CARD_DETAIL_MIN
       : isDocumentCard
         ? DOCUMENT_CARD_MIN_HEIGHT
@@ -95,7 +101,9 @@ export default function ImageField({
           : PREVIEW_MIN_HEIGHT;
   const maxH = isAvatar
     ? avatarPx
-    : isDetailDocCard || isDetailWideDocCard
+    : isLogo
+      ? LOGO_MAX_HEIGHT
+      : isDetailDocCard || isDetailWideDocCard
       ? undefined
       : isDocumentCard
         ? DOCUMENT_CARD_MAX_HEIGHT
@@ -103,8 +111,13 @@ export default function ImageField({
           ? COMPACT_MAX_HEIGHT
           : PREVIEW_MAX_HEIGHT;
 
-  const docAspectRatio =
-    isDetailDocCard ? "1 / 1" : isDetailWideDocCard ? "4 / 3" : null;
+  const docAspectRatio = isLogo
+    ? LOGO_ASPECT_RATIO
+    : isDetailDocCard
+      ? "1 / 1"
+      : isDetailWideDocCard
+        ? "4 / 3"
+        : null;
 
   const resolvedPreview = previewUrl ? resolveMediaUrl(previewUrl) : null;
 
@@ -285,8 +298,10 @@ export default function ImageField({
                     inset: 0,
                     width: "100%",
                     height: "100%",
-                    objectFit: "cover",
+                    objectFit: isLogo ? "contain" : "cover",
                     objectPosition: "center",
+                    p: isLogo ? 2 : 0,
+                    boxSizing: "border-box",
                   }
                 : {
                     width: isAvatar ? avatarPx : "100%",
@@ -294,9 +309,11 @@ export default function ImageField({
                     height: isAvatar || fullWidth ? minH : "auto",
                     minHeight: isAvatar ? avatarPx : minH,
                     maxHeight: maxH,
-                    objectFit: isAvatar || fullWidth || isDocumentCard ? "cover" : "contain",
+                    objectFit: isLogo || (!isAvatar && !fullWidth && !isDocumentCard)
+                      ? "contain"
+                      : "cover",
                     objectPosition: isAvatar ? "top center" : "center",
-                    p: isAvatar || fullWidth || isDocumentCard ? 0 : 1.5,
+                    p: isLogo ? 2 : isAvatar || fullWidth || isDocumentCard ? 0 : 1.5,
                     boxSizing: "border-box",
                   }),
               borderRadius: isAvatar ? "50%" : 0,

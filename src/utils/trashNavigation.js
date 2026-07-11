@@ -6,6 +6,11 @@ const ROUTE_TO_TRASH_RESOURCE = {
   roles: "roles",
   plans: "plans",
   laboratories: "laboratories",
+  "my-laboratory": "laboratories",
+  "lab-users": "users",
+  cases: "cases",
+  clinics: "clinics",
+  dentists: "dentists",
 };
 
 const TRASH_RESOURCE_IDS = new Set(trashResources.map((r) => r.id));

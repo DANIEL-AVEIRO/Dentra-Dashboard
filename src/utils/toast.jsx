@@ -100,9 +100,19 @@ export const toast = {
 export function getErrorMessage(
   err,
   fallback = "Something went wrong",
-  labelForField
+  labelForFieldOrFields
 ) {
   const data = err?.response?.data;
+  let labelForField = (k) => k.replace(/_/g, " ");
+  if (Array.isArray(labelForFieldOrFields)) {
+    const map = Object.fromEntries(
+      labelForFieldOrFields.map((f) => [f.name, f.label || f.name]),
+    );
+    labelForField = (k) => map[k] || k.replace(/_/g, " ");
+  } else if (typeof labelForFieldOrFields === "function") {
+    labelForField = labelForFieldOrFields;
+  }
+
   const formatted = formatApiErrorMessage(data, labelForField);
   if (formatted) return formatted;
   return fallback;

@@ -1,10 +1,5 @@
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from "@mui/material";
+import { DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
+import ResponsiveDialog from "@/components/common/ResponsiveDialog";
 import FormDialogActions from "@/components/common/FormDialogActions";
 import { resolveButtonIntent } from "@/constants/buttonIntents";
 import { formDialogActionsSx } from "@/components/common/statusDialogLayout";
@@ -24,7 +19,7 @@ export default function ConfirmDialog({
   loading = false,
 }) {
   return (
-    <Dialog
+    <ResponsiveDialog
       open={open}
       onClose={loading ? undefined : onCancel}
       maxWidth="xs"
@@ -54,6 +49,6 @@ export default function ConfirmDialog({
           autoFocusConfirm
         />
       </DialogActions>
-    </Dialog>
+    </ResponsiveDialog>
   );
 }

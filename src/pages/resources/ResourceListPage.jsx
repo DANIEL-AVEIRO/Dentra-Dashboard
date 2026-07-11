@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -8,14 +9,12 @@ import {
   Divider,
   IconButton,
   Stack,
-  Tooltip,
   Typography,
   alpha,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import RestoreOutlinedIcon from "@mui/icons-material/RestoreOutlined";
@@ -45,14 +44,20 @@ import SearchableSelect, {
   normalizeOptions,
 } from "@/components/common/SearchableSelect";
 import SmoothDatePicker from "@/components/common/SmoothDatePicker";
+import DateFieldWithPresets from "@/components/common/DateFieldWithPresets";
+import OptionButtonGroup from "@/components/common/OptionButtonGroup";
+import InlineCreateSelect from "@/components/common/InlineCreateSelect";
 import SmoothTimePicker from "@/components/common/SmoothTimePicker";
 import SmoothDateTimePicker from "@/components/common/SmoothDateTimePicker";
 import {
   multilineTextFieldProps,
   normalizeFieldConfig,
   compactFieldSx,
+  isActiveStatusFormField,
+  activeStatusFieldMode,
 } from "@/utils/fieldTypes";
 import BooleanField from "@/components/common/BooleanField";
+import ActiveStatusField from "@/components/common/ActiveStatusField";
 import StarRatingField from "@/components/common/StarRatingField";
 import { usePaginatedList } from "@/hooks/usePaginatedList";
 import { resolveDateFilterFields } from "@/utils/dateFilterFields";
@@ -72,6 +77,7 @@ import TableFilterSelectGrid from "@/components/common/TableFilterSelectGrid";
 import TableFilterField from "@/components/common/TableFilterField";
 import TablePanel from "@/components/common/TablePanel";
 import client from "@/api/client";
+import { apiFieldErrorsForForm } from "@/utils/apiErrors";
 import { toast, getErrorMessage } from "@/utils/toast";
 import { serializeFormPayload, toBoolean } from "@/utils/boolean";
 import { buildFormData, hasFilePayload } from "@/utils/formData";
@@ -86,6 +92,7 @@ import {
   DialogFormLayout,
   resolveFormDialogMaxWidth,
   dialogFormContentSx,
+  formDialogTitleSx,
   roleDialogActionsSx,
   roleDialogFormContentSx,
 } from "@/components/common/form";
@@ -113,6 +120,13 @@ function resolveFieldPreviewUrl(field, row) {
   return null;
 }
 
+function mergeInlineOption(list, option) {
+  if (!option?.value && option?.value !== 0) return list;
+  const id = String(option.value);
+  if (list.some((o) => String(o.value) === id)) return list;
+  return [option, ...list];
+}
+
 function getDefaultValue(field) {
   if (field.type === "file") {
     return field.default ?? null;
@@ -137,6 +151,7 @@ export default function ResourceListPage({
   columns,
   fields,
   canCreate = true,
+  canEdit = true,
   canDelete = true,
   trashMode = false,
   listParams: extraListParams = {},
@@ -157,8 +172,11 @@ export default function ResourceListPage({
   renderCard,
   /** Partial override for table row offcanvas preview (e.g. imageUrls) */
   rowPreview: rowPreviewProp = null,
+  /** When set, create/edit navigate to full-page form routes instead of modal */
+  formPath,
 }) {
   usePersistedListSearch();
+  const navigate = useNavigate();
   const [page, setPage] = useListPageParam();
   const { pageSize, setPageSize, pageSizeOptions } = useListPageSize();
   const theme = useTheme();
@@ -225,7 +243,10 @@ export default function ResourceListPage({
     [resolvedColumns, t, locale],
   );
 
-  const columnVisibility = useResourceTableColumnVisibility(translatedColumns, endpoint);
+  const columnVisibility = useResourceTableColumnVisibility(
+    translatedColumns,
+    endpoint,
+  );
   const tableDensity = useTableDensity();
   const [autoRefreshInterval, setAutoRefreshInterval] = useState(0);
 
@@ -268,19 +289,17 @@ export default function ResourceListPage({
   const copyableKeys = useMemo(
     () =>
       translatedColumns
-        .filter((col) => col.copyable || ["email", "phone", "username", "code"].includes(col.key))
+        .filter(
+          (col) =>
+            col.copyable ||
+            ["email", "phone", "username", "code"].includes(col.key),
+        )
         .map((col) => col.key),
     [translatedColumns],
   );
   const pageSelectState = selection.pageSelectionState(rows);
   const showSelectAllMatching =
     pageSelectState.checked && !selection.allMatching && count > rows.length;
-
-  const tableSummaryFooter = useMemo(() => {
-    const firstKey = columnVisibility.displayColumns[0]?.key;
-    if (!firstKey || !count) return null;
-    return { [firstKey]: t("table.totalRows", { count }) };
-  }, [columnVisibility.displayColumns, count, t]);
 
   const handleFilterChipRemove = useCallback(
     (key) => {
@@ -297,7 +316,9 @@ export default function ResourceListPage({
         toast.success(t("toast.updated"));
         refresh();
       } catch (err) {
-        toast.error(getErrorMessage(err, t("toast.saveFailed")));
+        toast.error(
+          getErrorMessage(err, t("toast.saveFailed"), translatedFields),
+        );
       }
     },
     [endpoint, refresh, t],
@@ -327,6 +348,41 @@ export default function ResourceListPage({
         }));
       });
   }, [endpoint, translatedFields]);
+
+  useEffect(() => {
+    if (!editing) return;
+    setForm((prev) => {
+      let changed = false;
+      const next = { ...prev };
+      translatedFields.forEach((f) => {
+        if (
+          f.type !== "select" &&
+          f.type !== "buttonSelect" &&
+          f.type !== "multiSelect"
+        )
+          return;
+        if (!f.optionsFrom && !f.options) return;
+        const opts = f.options ?? extraOptions[f.name] ?? [];
+        if (!opts.length) return;
+        const resolved = resolveSelectValue(editing, f, opts);
+        const current = prev[f.name];
+        const empty =
+          current == null ||
+          current === "" ||
+          (Array.isArray(current) && current.length === 0);
+        if (
+          empty &&
+          resolved != null &&
+          resolved !== "" &&
+          resolved !== current
+        ) {
+          next[f.name] = resolved;
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  }, [editing, extraOptions, translatedFields]);
 
   const dependentParents = useMemo(
     () => [
@@ -386,6 +442,10 @@ export default function ResourceListPage({
   };
 
   const openCreate = () => {
+    if (formPath) {
+      navigate(`${formPath}/new`);
+      return;
+    }
     setEditing(null);
     setForm(emptyForm());
     setFormErrors({});
@@ -397,6 +457,10 @@ export default function ResourceListPage({
   };
 
   const openEdit = (row) => {
+    if (formPath) {
+      navigate(`${formPath}/${row.id}/edit`);
+      return;
+    }
     setPreviewRow(null);
     setEditing(row);
     setForm(
@@ -404,7 +468,7 @@ export default function ResourceListPage({
         let val = row[f.name];
         if (f.type === "boolean") {
           val = toBoolean(val);
-        } else if (f.type === "select") {
+        } else if (f.type === "select" || f.type === "buttonSelect") {
           if (val && typeof val === "object") val = val.id ?? val;
           else val = resolveSelectValue(row, f, extraOptions[f.name] || []);
         } else if (f.type === "multiSelect") {
@@ -441,7 +505,7 @@ export default function ResourceListPage({
         let val = row[f.name];
         if (f.type === "boolean") {
           val = toBoolean(val);
-        } else if (f.type === "select") {
+        } else if (f.type === "select" || f.type === "buttonSelect") {
           if (val && typeof val === "object") val = val.id ?? val;
           else val = resolveSelectValue(row, f, extraOptions[f.name] || []);
         } else if (f.type === "multiSelect") {
@@ -491,10 +555,19 @@ export default function ResourceListPage({
           t,
         }),
       statusList: statusFieldOptions,
-      onOpenDetail: (row) => openEdit(row),
+      onOpenDetail: (row) => (canEdit ? openEdit(row) : openDetail(row)),
       ...rowPreviewProp,
     }),
-    [displayTitle, translatedColumns, translatedFields, statusFieldOptions, t, extraOptions, rowPreviewProp],
+    [
+      displayTitle,
+      translatedColumns,
+      translatedFields,
+      statusFieldOptions,
+      t,
+      extraOptions,
+      rowPreviewProp,
+      canEdit,
+    ],
   );
 
   useTableKeyboardNav({
@@ -545,7 +618,18 @@ export default function ResourceListPage({
       setOpen(false);
       refresh();
     } catch (err) {
-      toast.error(getErrorMessage(err, t("toast.saveFailed")));
+      const apiErrors = apiFieldErrorsForForm(
+        err?.response?.data,
+        translatedFields,
+      );
+      if (Object.keys(apiErrors).length > 0) {
+        setFormErrors(apiErrors);
+        toast.error(t("validation.fixErrors"));
+      } else {
+        toast.error(
+          getErrorMessage(err, t("toast.saveFailed"), translatedFields),
+        );
+      }
     } finally {
       setSaveBusy(false);
     }
@@ -772,23 +856,90 @@ export default function ResourceListPage({
         return value(...args);
       };
 
+    if (isActiveStatusFormField(f)) {
+      const mode = activeStatusFieldMode(f);
+      return wrapFormField(
+        f,
+        <ActiveStatusField
+          value={form[f.name]}
+          onChange={patch((next) => setForm({ ...form, [f.name]: next }))}
+          activeLabel={f.activeLabel}
+          inactiveLabel={f.inactiveLabel}
+          mode={mode}
+          disabled={f.disabled}
+          aria-label={f.label}
+        />,
+        { description: undefined },
+      );
+    }
+
     if (f.type === "boolean") {
-      return (
+      return wrapFormField(
+        f,
         <BooleanField
-          key={f.name}
           label={f.label}
           description={f.description}
           value={form[f.name]}
           onChange={patch((checked) => setForm({ ...form, [f.name]: checked }))}
           activeLabel={f.activeLabel}
           inactiveLabel={f.inactiveLabel}
-        />
+          showLabel={false}
+        />,
+        { description: undefined },
+      );
+    }
+
+    if (f.type === "buttonSelect") {
+      const options = f.options ?? extraOptions[f.name] ?? [];
+      const parentMissing = f.dependsOn && !form[f.dependsOn];
+      return wrapFormField(
+        f,
+        <OptionButtonGroup
+          value={form[f.name]}
+          onChange={patch((v) => applyFieldChange(f, v))}
+          options={options}
+          disabled={f.disabled || parentMissing}
+          valueKey={f.optionValueKey || "id"}
+          labelKey={f.optionLabelKey || "name"}
+        />,
       );
     }
 
     if (f.type === "select") {
       const options = f.options ?? extraOptions[f.name] ?? [];
       const parentMissing = f.dependsOn && !form[f.dependsOn];
+      const selectPlaceholder = parentMissing
+        ? t(f.dependsOnPlaceholderKey || "filters.selectRegionFirst", {
+            defaultValue: "Select parent first",
+          })
+        : f.placeholderKey
+          ? t(f.placeholderKey)
+          : f.placeholder;
+
+      if (f.inlineCreate) {
+        return wrapFormField(
+          f,
+          <InlineCreateSelect
+            value={form[f.name]}
+            onChange={patch((v) => applyFieldChange(f, v))}
+            options={options}
+            inlineCreate={f.inlineCreate}
+            parentForm={form}
+            placeholder={selectPlaceholder}
+            required={isRequired}
+            disabled={f.disabled}
+            parentMissing={parentMissing}
+            error={Boolean(fieldError)}
+            onCreated={(item, created) => {
+              setExtraOptions((prev) => ({
+                ...prev,
+                [f.name]: mergeInlineOption(prev[f.name] || [], created),
+              }));
+            }}
+          />,
+        );
+      }
+
       return wrapFormField(
         f,
         <SearchableSelect
@@ -797,13 +948,7 @@ export default function ResourceListPage({
           value={form[f.name]}
           onChange={patch((v) => applyFieldChange(f, v))}
           options={normalizeOptions(options)}
-          placeholder={
-            parentMissing
-              ? t("filters.selectRegionFirst", {
-                  defaultValue: "Select region first",
-                })
-              : f.placeholder
-          }
+          placeholder={selectPlaceholder}
           openOnFocus
           searchable
           required={isRequired}
@@ -914,8 +1059,17 @@ export default function ResourceListPage({
     }
 
     if (f.type === "date") {
-      return wrapFormField(
-        f,
+      const dateControl = f.datePresets ? (
+        <DateFieldWithPresets
+          placeholder={f.placeholder}
+          value={form[f.name] ?? ""}
+          onChange={patch((v) => applyFieldChange(f, v))}
+          disabled={f.disabled}
+          minDate={f.minDate}
+          maxDate={f.maxDate}
+          error={Boolean(fieldError)}
+        />
+      ) : (
         <SmoothDatePicker
           hideLabel
           fullWidth
@@ -926,8 +1080,9 @@ export default function ResourceListPage({
           minDate={f.minDate}
           maxDate={f.maxDate}
           error={Boolean(fieldError)}
-        />,
+        />
       );
+      return wrapFormField(f, dateControl);
     }
 
     if (f.type === "time") {
@@ -987,7 +1142,10 @@ export default function ResourceListPage({
     <TableActions>
       {trashMode ? (
         <>
-          <TableActionButton variant="restore" onClick={() => handleRestore(row)} />
+          <TableActionButton
+            variant="restore"
+            onClick={() => handleRestore(row)}
+          />
           <TableActionButton
             variant="deletePermanent"
             onClick={() => handlePermanentDelete(row)}
@@ -996,19 +1154,21 @@ export default function ResourceListPage({
       ) : (
         <>
           <TableActionButton variant="view" onClick={() => openDetail(row)} />
-          <TableActionButton variant="edit" onClick={() => openEdit(row)} />
+          {canEdit ? (
+            <TableActionButton variant="edit" onClick={() => openEdit(row)} />
+          ) : null}
           {canCreate ? (
-            <Tooltip title={t("table.duplicateRow")}>
-              <span>
-                <IconButton size="small" onClick={() => openDuplicate(row)}>
-                  <ContentCopyIcon sx={{ fontSize: 18 }} />
-                </IconButton>
-              </span>
-            </Tooltip>
+            <TableActionButton
+              variant="duplicate"
+              onClick={() => openDuplicate(row)}
+            />
           ) : null}
           {extraRowActions?.(row)}
           {canDelete ? (
-            <TableActionButton variant="delete" onClick={() => handleDelete(row)} />
+            <TableActionButton
+              variant="delete"
+              onClick={() => handleDelete(row)}
+            />
           ) : null}
         </>
       )}
@@ -1051,7 +1211,10 @@ export default function ResourceListPage({
               filterExtra ? (
                 <TableFilterSelectGrid>
                   {typeof filterExtra === "function"
-                    ? filterExtra({ filters, onFilterChange: handleFilterChange })
+                    ? filterExtra({
+                        filters,
+                        onFilterChange: handleFilterChange,
+                      })
                     : filterExtra}
                 </TableFilterSelectGrid>
               ) : null
@@ -1137,10 +1300,18 @@ export default function ResourceListPage({
                           variant="view"
                           onClick={() => openDetail(row)}
                         />
-                        <TableActionButton
-                          variant="edit"
-                          onClick={() => openEdit(row)}
-                        />
+                        {canEdit ? (
+                          <TableActionButton
+                            variant="edit"
+                            onClick={() => openEdit(row)}
+                          />
+                        ) : null}
+                        {canCreate ? (
+                          <TableActionButton
+                            variant="duplicate"
+                            onClick={() => openDuplicate(row)}
+                          />
+                        ) : null}
                         {extraRowActions?.(row)}
                         {canDelete && (
                           <TableActionButton
@@ -1210,7 +1381,6 @@ export default function ResourceListPage({
             onInlinePatch={handleInlinePatch}
             inlinePatchKeys={inlinePatchKeys}
             copyableKeys={copyableKeys}
-            summaryFooter={tableSummaryFooter}
             previewRow={previewRow}
             onPreviewRowChange={setPreviewRow}
             rowPreview={resourceRowPreview}
@@ -1219,7 +1389,7 @@ export default function ResourceListPage({
         )}
       </TablePanel>
 
-      {!trashMode && (
+      {!trashMode && !formPath && (
         <ResponsiveDialog
           open={open}
           onClose={() => setOpen(false)}
@@ -1244,12 +1414,7 @@ export default function ResourceListPage({
         >
           <DialogTitle
             sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 1,
-              py: 2,
-              px: { xs: 2, sm: 3 },
+              ...formDialogTitleSx,
               borderBottom: isRoleDialog ? 1 : 0,
               borderColor: "divider",
             }}

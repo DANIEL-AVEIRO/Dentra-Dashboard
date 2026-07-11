@@ -1,6 +1,7 @@
 import { alpha } from "@mui/material/styles";
 import { BRAND_PRIMARY } from "@/theme";
 import { DURATION, EASE_SOFT, transition } from "@/constants/motion";
+import { FORM_DIALOG_PX } from "@/components/common/form/formLayout";
 
 export function statusDialogPaperSx(theme) {
   const isLight = theme.palette.mode === "light";
@@ -20,7 +21,7 @@ export const statusDialogTitleSx = {
   justifyContent: "space-between",
   gap: 1,
   py: 1.25,
-  px: { xs: 1.5, sm: 2 },
+  px: FORM_DIALOG_PX,
   borderBottom: 1,
   borderColor: "divider",
 };
@@ -41,21 +42,32 @@ export const statusDialogContentSx = {
   display: "flex",
   flexDirection: "column",
   gap: 0,
-  px: { xs: 1.5, sm: 2 },
+  px: FORM_DIALOG_PX,
   py: { xs: 1.25, sm: 1.5 },
 };
 
+export const mobileStackedDialogActionsSx = {
+  flexDirection: { xs: "column-reverse", sm: "row" },
+  alignItems: { xs: "stretch", sm: "center" },
+  "& > .MuiButton-root": {
+    width: { xs: "100%", sm: "auto" },
+    m: 0,
+  },
+};
+
 export const statusDialogActionsSx = {
-  px: { xs: 1.5, sm: 2 },
+  px: FORM_DIALOG_PX,
   py: 1.25,
+  pb: { xs: "calc(12px + env(safe-area-inset-bottom, 0px))", sm: 1.25 },
   gap: 1,
   borderTop: 1,
   borderColor: "divider",
   bgcolor: (theme) =>
     alpha(theme.palette.background.default, theme.palette.mode === "light" ? 0.4 : 0.22),
   flexWrap: "wrap",
-  justifyContent: "flex-end",
+  justifyContent: { xs: "stretch", sm: "flex-end" },
   alignItems: "center",
+  ...mobileStackedDialogActionsSx,
 };
 
 /** Shared footer bar for create/edit dialogs */

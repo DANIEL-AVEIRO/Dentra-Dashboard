@@ -1,8 +1,8 @@
 const FALLBACK_BRAND = {
-  primary: "#EC0D13",
-  secondary: "#FF3535",
-  dark: "#B8090E",
-  darker: "#7A0508",
+  primary: "#011A47",
+  secondary: "#1BAAC0",
+  dark: "#001235",
+  darker: "#000A1F",
   white: "#ffffff",
 };
 
@@ -121,16 +121,30 @@ export function buildBrandPalette(sourceHex, fallback = FALLBACK_BRAND) {
 }
 
 export function normalizeBrandPalette(input = {}, fallback = FALLBACK_BRAND) {
-  const source =
-    input.primary || input.secondary || fallback.primary;
+  const hasCustomColors = Boolean(
+    input.primary || input.secondary || input.dark || input.darker
+  );
+
+  if (!hasCustomColors) {
+    return {
+      logo: input.logo ?? null,
+      primary: fallback.primary,
+      secondary: fallback.secondary,
+      dark: fallback.dark,
+      darker: fallback.darker,
+      white: fallback.white,
+    };
+  }
+
+  const source = input.primary || input.secondary || fallback.primary;
   const palette = buildBrandPalette(source, fallback);
 
   return {
     logo: input.logo ?? null,
-    primary: palette.primary,
-    secondary: palette.secondary,
-    dark: palette.dark,
-    darker: palette.darker,
+    primary: input.primary || palette.primary,
+    secondary: input.secondary || palette.secondary,
+    dark: input.dark || palette.dark,
+    darker: input.darker || palette.darker,
     white: fallback.white,
   };
 }

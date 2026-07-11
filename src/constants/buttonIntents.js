@@ -9,7 +9,7 @@ import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { BUTTON_PILL_RADIUS } from "@/constants/shape";
-import { transition } from "@/constants/motion";
+import { BUTTON_TRANSITION } from "@/constants/motion";
 
 function brandFromTheme(theme) {
   const primary = theme.palette.primary.main;
@@ -146,7 +146,7 @@ export function getButtonIntentSx(intentKey, theme, { size = "medium" } = {}) {
     background: intent.gradient,
     backgroundColor: "transparent",
     boxShadow: `0 4px 14px ${alpha(intent.tint, intent.shadow)}, 0 1px 3px ${alpha(intent.tint, intent.shadow * 0.5)}`,
-    transition: transition("transform, box-shadow, background, border-color, opacity"),
+    transition: BUTTON_TRANSITION,
     "& .MuiButton-startIcon": {
       marginRight: chip.mr,
       marginLeft: 0,
@@ -222,6 +222,7 @@ export function getDefaultContainedButtonSx(theme) {
     color: "#fff",
     border: `1px solid ${alpha("#fff", isDark ? 0.1 : 0.16)}`,
     boxShadow: `0 4px 14px ${alpha(primary, 0.22)}`,
+    transition: BUTTON_TRANSITION,
     "&:hover": {
       background: intents.confirm.hoverGradient,
       backgroundColor: "transparent",

@@ -3,7 +3,7 @@ import { Button, CircularProgress, alpha, useTheme } from "@mui/material";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { TABLE_ACTION_VARIANTS } from "@/components/common/TableActionButton";
 import { BUTTON_PILL_RADIUS } from "@/constants/shape";
-import { transition } from "@/constants/motion";
+import { BUTTON_TRANSITION } from "@/constants/motion";
 
 const EXTRA_VARIANTS = {
   cancel: {
@@ -52,7 +52,7 @@ export function getToolbarActionSx(theme, tint, { size = "small", active = false
       : isLight
         ? `0 1px 4px ${alpha(tint, 0.08)}`
         : `0 2px 8px ${alpha("#000", 0.18)}`,
-    transition: transition("transform, box-shadow, border-color, background-color, color"),
+    transition: BUTTON_TRANSITION,
     "& .MuiButton-startIcon": {
       marginRight: 0.75,
       marginLeft: 0,
