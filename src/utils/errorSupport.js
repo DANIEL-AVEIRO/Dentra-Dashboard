@@ -1,6 +1,6 @@
 import { APP_TITLE } from "@/constants/brand";
 
-/** Optional — set via project.frame.env + sync */
+/** Optional support contact overrides */
 export const SUPPORT_VIBER_NUMBER = "";
 export const SUPPORT_CONTACT_LABEL = "";
 

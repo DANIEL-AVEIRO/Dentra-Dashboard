@@ -1,6 +1,6 @@
 import { normalizeBrandPalette } from "@/utils/brandPalette";
 
-/** Brand — values synced from project.frame.env */
+/** Brand constants */
 export const BRAND_LOGO = "/logo.png";
 export const BRAND_PRIMARY = "#011A47";
 export const BRAND_SECONDARY = "#1BAAC0";

@@ -8,14 +8,10 @@ if [[ "$(id -u)" -ne 0 ]]; then
 fi
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-WS_ROOT="$(cd "$ROOT/.." && pwd)"
 DIST="$ROOT/dist"
 CONF_SRC="$ROOT/deploy/nginx/admin.conf"
-
-# shellcheck source=../../scripts/lib/deploy-env.sh
-source "$WS_ROOT/scripts/lib/deploy-env.sh"
-load_deploy_env "$WS_ROOT"
-
+NGINX_ADMIN_SITE="${NGINX_ADMIN_SITE:-dentra-admin}"
+ADMIN_DOMAIN="${ADMIN_DOMAIN:-admin.dentramm.com}"
 CONF_DST="/etc/nginx/sites-available/${NGINX_ADMIN_SITE}"
 
 [[ -f "$CONF_SRC" ]] || { echo "Missing $CONF_SRC"; exit 1; }
