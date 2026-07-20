@@ -1,14 +1,16 @@
 /** Secret admin sign-in URL (obscurity + 404 everywhere else). */
+const DEFAULT_LOGIN_PATH = "/ikjnbhg";
+
 function normalizeLoginPath(raw) {
-  const value = (raw || "/sfkicv").trim();
-  if (!value || value === "/") return "/sfkicv";
+  const value = (raw || DEFAULT_LOGIN_PATH).trim();
+  if (!value || value === "/") return DEFAULT_LOGIN_PATH;
   return value.startsWith("/") ? value : `/${value}`;
 }
 
 export const LOGIN_PATH = normalizeLoginPath(import.meta.env.VITE_LOGIN_PATH);
 
 /** React Router `path` segment (no leading slash). */
-export const LOGIN_ROUTE = LOGIN_PATH.replace(/^\//, "");
+export const LOGIN_ROUTE = LOGIN_PATH.replace(/^\//, "") || "ikjnbhg";
 
 export function isLoginPath(pathname) {
   if (!pathname) return false;

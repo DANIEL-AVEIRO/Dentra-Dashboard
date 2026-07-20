@@ -33,6 +33,15 @@ if [[ ! -f .env.production ]]; then
   exit 1
 fi
 
+LOGIN_PATH_VAL="$(grep -E '^VITE_LOGIN_PATH=' .env.production | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'")"
+LOGIN_PATH_VAL="${LOGIN_PATH_VAL:-/ikjnbhg}"
+LOGIN_SEGMENT="${LOGIN_PATH_VAL#/}"
+if [[ -z "$LOGIN_SEGMENT" ]]; then
+  echo "ERROR: VITE_LOGIN_PATH is empty in .env.production"
+  exit 1
+fi
+echo ">> Building with VITE_LOGIN_PATH=${LOGIN_PATH_VAL}"
+
 oom_hint() {
   echo "ERROR: npm was Killed (low memory). Run: sudo ./scripts/setup-swap.sh"
 }
@@ -49,6 +58,11 @@ npm run build
 trap - EXIT
 
 [[ -f dist/index.html ]] || { echo "ERROR: dist/index.html missing"; exit 1; }
+if ! grep -Rqs -- "$LOGIN_SEGMENT" dist/assets/*.js; then
+  echo "ERROR: built JS missing login path '${LOGIN_SEGMENT}' — check .env.production VITE_LOGIN_PATH"
+  exit 1
+fi
+echo ">> Verified login path '${LOGIN_SEGMENT}' is in the production bundle"
 
 if [[ "$(id -u)" -eq 0 ]]; then
   chown -R www-data:www-data "$ROOT/dist"

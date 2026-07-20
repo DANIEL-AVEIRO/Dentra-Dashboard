@@ -48,7 +48,7 @@ import TrashPage from "@/pages/system/TrashPage";
 import SettingsPage from "@/pages/system/SettingsPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import LoginRoute from "@/pages/LoginRoute";
-import { LOGIN_ROUTE } from "@/config/authPaths";
+import { LOGIN_PATH, LOGIN_ROUTE } from "@/config/authPaths";
 import PermissionRoute from "@/components/common/PermissionRoute";
 
 function PrivateRoute({ children }) {
@@ -65,6 +65,8 @@ function PrivateRoute({ children }) {
 function AppRoutes() {
   return (
     <Routes>
+      {/* Absolute + relative so /ikjnbhg always matches (env or default). */}
+      <Route path={LOGIN_PATH} element={<LoginRoute />} />
       <Route path={LOGIN_ROUTE} element={<LoginRoute />} />
       <Route path="login" element={<NotFoundPage />} />
       <Route
