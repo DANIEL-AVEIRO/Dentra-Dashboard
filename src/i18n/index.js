@@ -5,6 +5,7 @@ export const LOCALES = {
 };
 
 export const DEFAULT_LOCALE = "en";
+/** Kept for cacheClear preserve list; locale is English-only. */
 export const STORAGE_KEY = "arrow-admin-locale";
 
 function getNested(obj, path) {
@@ -20,8 +21,8 @@ export function interpolate(str, vars = {}) {
   );
 }
 
-export function createTranslator(locale) {
-  const dict = LOCALES[locale]?.dict ?? LOCALES.en.dict;
+export function createTranslator(_locale) {
+  const dict = LOCALES.en.dict;
 
   return function t(key, options = {}) {
     const { defaultValue, ...vars } = options;
@@ -36,14 +37,7 @@ export function createTranslator(locale) {
   };
 }
 
+/** English only — ignores any stored locale. */
 export function getStoredLocale() {
-  try {
-    const stored =
-      localStorage.getItem(STORAGE_KEY) ||
-      localStorage.getItem("arrow-dashboard-locale");
-    if (stored && LOCALES[stored]) return stored;
-  } catch {
-    /* ignore */
-  }
   return DEFAULT_LOCALE;
 }

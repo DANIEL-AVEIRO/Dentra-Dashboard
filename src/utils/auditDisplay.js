@@ -104,9 +104,13 @@ export function formatAuditFieldValue(field, value, t, locale) {
 
 /**
  * Normalized change rows for UI: { field, fieldKey, old, new, kind: 'change'|'added'|'removed'|'info' }
+ * @param {{ maxSnapshotFields?: number | null }} [options]
+ *   maxSnapshotFields: cap for create snapshots (default 16). Pass null for no limit.
  */
-export function parseAuditChanges(changes, t, locale) {
+export function parseAuditChanges(changes, t, locale, options = {}) {
   if (!changes || typeof changes !== "object") return [];
+  const maxSnapshotFields =
+    options.maxSnapshotFields === undefined ? 16 : options.maxSnapshotFields;
 
   if (changes.snapshot && typeof changes.snapshot === "object") {
     const entries = Object.entries(changes.snapshot).filter(
@@ -122,7 +126,9 @@ export function parseAuditChanges(changes, t, locale) {
       }
       return a.localeCompare(b);
     });
-    return entries.slice(0, 16).map(([fieldKey, value]) => ({
+    const limited =
+      maxSnapshotFields == null ? entries : entries.slice(0, maxSnapshotFields);
+    return limited.map(([fieldKey, value]) => ({
         fieldKey,
         field: humanizeFieldKey(fieldKey, t),
         old: null,

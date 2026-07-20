@@ -1,16 +1,89 @@
-import { Box } from "@mui/material";
-import PageHeader from "@/components/common/PageHeader";
+import { useCallback } from "react";
+import ResourceListPage from "@/pages/resources/ResourceListPage";
+import { TableActionButton } from "@/components/common/TableActions";
+import client from "@/api/client";
+import { toast, getErrorMessage } from "@/utils/toast";
 import { useTranslation } from "@/context/LanguageContext";
+import {
+  FABRICATION_ADVANCE_NEXT,
+  FABRICATION_COLUMNS,
+} from "@/pages/operations/caseFormConfig";
+
+const ADVANCE_LABELS = {
+  received: "Start fabrication",
+  in_fabrication: "Send to QC",
+  qc: "Mark ready",
+};
 
 export default function FabricationPage() {
   const { t } = useTranslation();
 
+  const handleAdvance = useCallback(
+    async (row, refresh) => {
+      const next = FABRICATION_ADVANCE_NEXT[row.status];
+      if (!next) {
+        toast.error(
+          t("pages.fabrication.cannotAdvance", {
+            defaultValue: "This case cannot be advanced further.",
+          }),
+        );
+        return;
+      }
+      try {
+        await client.post(`/cases/${row.id}/advance/`, { to: next });
+        toast.success(
+          t("pages.fabrication.advanced", {
+            defaultValue: "Case advanced",
+          }),
+        );
+        refresh?.();
+      } catch (err) {
+        toast.error(getErrorMessage(err, t("toast.saveFailed")));
+      }
+    },
+    [t],
+  );
+
   return (
-    <Box className="page-enter">
-      <PageHeader
-        title={t("pages.fabrication.title")}
-        subtitle={t("pages.fabrication.subtitle")}
-      />
-    </Box>
+    <ResourceListPage
+      endpoint="cases"
+      pageKey="fabrication"
+      columns={FABRICATION_COLUMNS}
+      fields={[]}
+      canCreate={false}
+      canEdit={false}
+      canDelete={false}
+      listParams={{ pipeline: "fabrication" }}
+      trashResourceId="cases"
+      extraRowActions={(row, { refresh } = {}) => {
+        if (row.status === "ready") {
+          return (
+            <TableActionButton
+              variant="view"
+              title={t("pages.fabrication.readyForDelivery", {
+                defaultValue: "Ready for delivery",
+              })}
+              onClick={() => {
+                toast.success(
+                  t("pages.fabrication.goDeliveries", {
+                    defaultValue: "Create a delivery from the Deliveries page.",
+                  }),
+                );
+              }}
+            />
+          );
+        }
+        if (!FABRICATION_ADVANCE_NEXT[row.status]) return null;
+        return (
+          <TableActionButton
+            variant="status"
+            title={t(`pages.fabrication.advance.${row.status}`, {
+              defaultValue: ADVANCE_LABELS[row.status] || "Advance stage",
+            })}
+            onClick={() => handleAdvance(row, refresh)}
+          />
+        );
+      }}
+    />
   );
 }

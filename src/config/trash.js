@@ -91,6 +91,28 @@ export const trashResources = [
       { key: "email", label: "Email" },
     ],
   },
+  {
+    id: "cases",
+    endpoint: "cases",
+    title: "Cases",
+    labelKey: "case_id",
+    columns: [
+      { key: "case_id", label: "Case ID" },
+      { key: "status", label: "Status" },
+      { key: "clinic_name", label: "Clinic" },
+    ],
+  },
+  {
+    id: "deliveries",
+    endpoint: "deliveries",
+    title: "Deliveries",
+    labelKey: "case_id_display",
+    columns: [
+      { key: "case_id_display", label: "Case ID" },
+      { key: "status", label: "Status" },
+      { key: "clinic_name", label: "Clinic" },
+    ],
+  },
 ];
 
 export const deletedAtColumn = {

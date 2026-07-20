@@ -8,11 +8,13 @@ export function formatCaseMoney(value) {
   });
 }
 
+/** line_total = max(0, unit_price * quantity - discount) */
 export function caseLineTotal(row) {
   const qty = Number(row?.quantity) || 0;
   const price = Number(row?.unit_price);
   if (!qty || !Number.isFinite(price)) return null;
-  return qty * price;
+  const discount = Number(row?.discount) || 0;
+  return Math.max(0, qty * price - discount);
 }
 
 export function computeWorkItemsTotal(lineItems = []) {

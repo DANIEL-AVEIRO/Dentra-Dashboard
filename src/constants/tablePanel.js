@@ -1,3 +1,4 @@
+import { alpha } from "@mui/material/styles";
 import { transition } from "@/constants/motion";
 import { TABLE_BORDER_RADIUS } from "@/constants/layout";
 
@@ -31,10 +32,10 @@ export const tablePanelBulkSx = (theme) => {
     py: { xs: 1.25, sm: 1.5 },
     borderBottom: 1,
     borderColor: "divider",
-    bgcolor: isDark ? "rgba(139, 79, 168, 0.08)" : "grey.50",
+    bgcolor: isDark ? alpha(accent, 0.1) : "grey.50",
     display: "flex",
     alignItems: "center",
     gap: 1.5,
-    boxShadow: `inset 3px 0 0 ${isDark ? "rgba(139, 79, 168, 0.75)" : accent}`,
+    boxShadow: `inset 3px 0 0 ${accent}`,
   };
 };

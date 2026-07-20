@@ -2,6 +2,8 @@ export const MATERIAL_COLUMNS = [
   { key: "name", labelKey: "fields.name" },
   { key: "code", labelKey: "fields.code" },
   { key: "category_name", labelKey: "fields.category" },
+  { key: "stock_qty", labelKey: "fields.stock_qty" },
+  { key: "reorder_level", labelKey: "fields.reorder_level" },
   {
     key: "is_active",
     labelKey: "fields.status",
@@ -20,6 +22,18 @@ export const MATERIAL_FIELDS = [
     type: "select",
     optionsFrom: "material-categories",
     required: true,
+  },
+  {
+    name: "stock_qty",
+    labelKey: "fields.stock_qty",
+    type: "number",
+    compact: true,
+  },
+  {
+    name: "reorder_level",
+    labelKey: "fields.reorder_level",
+    type: "number",
+    compact: true,
   },
   {
     name: "description",

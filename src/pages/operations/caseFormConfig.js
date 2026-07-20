@@ -49,15 +49,104 @@ export const CASE_PRIORITY_COLUMN = {
   translationNs: "casePriorities",
 };
 
+export const CASE_STATUS_OPTIONS = [
+  { id: "draft", name: "Draft" },
+  { id: "received", name: "Received" },
+  { id: "in_fabrication", name: "In fabrication" },
+  { id: "qc", name: "QC" },
+  { id: "ready", name: "Ready" },
+  { id: "shipped", name: "Shipped" },
+  { id: "delivered", name: "Delivered" },
+  { id: "cancelled", name: "Cancelled" },
+];
+
+export const CASE_STATUS_COLUMN = {
+  statusList: [
+    { value: "draft", color: "default" },
+    { value: "received", color: "info" },
+    { value: "in_fabrication", color: "primary" },
+    { value: "qc", color: "warning" },
+    { value: "ready", color: "success" },
+    { value: "shipped", color: "secondary" },
+    { value: "delivered", color: "success" },
+    { value: "cancelled", color: "error" },
+  ],
+  translationNs: "caseStatuses",
+};
+
+export const FABRICATION_ADVANCE_NEXT = {
+  received: "in_fabrication",
+  in_fabrication: "qc",
+  qc: "ready",
+};
+
 export const CASE_COLUMNS = [
   { key: "case_id", labelKey: "fields.case_id" },
+  { key: "laboratory_name", labelKey: "fields.laboratory_name" },
+  { key: "status", labelKey: "fields.status", ...CASE_STATUS_COLUMN },
+  { key: "patient_name", labelKey: "fields.patient_name" },
   { key: "case_type", labelKey: "fields.case_type", ...CASE_TYPE_COLUMN },
   { key: "case_source", labelKey: "fields.case_source", ...CASE_SOURCE_COLUMN },
   { key: "clinic_name", labelKey: "fields.clinic_name" },
   { key: "dentist_name", labelKey: "fields.dentist_name" },
+  { key: "assigned_to_name", labelKey: "fields.assigned_to_name" },
   { key: "due_date", labelKey: "fields.due_date" },
   { key: "priority", labelKey: "fields.priority", ...CASE_PRIORITY_COLUMN },
+  { key: "amount", labelKey: "fields.amount" },
   { key: "line_items_count", labelKey: "fields.line_items_count" },
+];
+
+export const FABRICATION_COLUMNS = [
+  { key: "case_id", labelKey: "fields.case_id" },
+  { key: "status", labelKey: "fields.status", ...CASE_STATUS_COLUMN },
+  { key: "patient_name", labelKey: "fields.patient_name" },
+  { key: "clinic_name", labelKey: "fields.clinic_name" },
+  { key: "assigned_to_name", labelKey: "fields.assigned_to_name" },
+  { key: "due_date", labelKey: "fields.due_date" },
+  { key: "priority", labelKey: "fields.priority", ...CASE_PRIORITY_COLUMN },
+  { key: "amount", labelKey: "fields.amount" },
+];
+
+export const DELIVERY_STATUS_COLUMN = {
+  statusList: [
+    { value: "pending", color: "warning" },
+    { value: "in_transit", color: "info" },
+    { value: "delivered", color: "success" },
+    { value: "failed", color: "error" },
+  ],
+  translationNs: "deliveryStatuses",
+};
+
+export const DELIVERY_COLUMNS = [
+  { key: "case_id_display", labelKey: "fields.case_id" },
+  { key: "clinic_name", labelKey: "fields.clinic_name" },
+  { key: "status", labelKey: "fields.status", ...DELIVERY_STATUS_COLUMN },
+  { key: "scheduled_date", labelKey: "fields.scheduled_date" },
+  { key: "delivered_at", labelKey: "fields.delivered_at" },
+  { key: "notes", labelKey: "fields.notes" },
+];
+
+export const DELIVERY_FIELDS = [
+  {
+    name: "case",
+    labelKey: "fields.case_id",
+    type: "select",
+    optionsFrom: "cases",
+    optionsQuery: { status: "ready" },
+    optionLabelKey: "case_id",
+    required: true,
+  },
+  {
+    name: "scheduled_date",
+    labelKey: "fields.scheduled_date",
+    type: "date",
+  },
+  {
+    name: "notes",
+    labelKey: "fields.notes",
+    multiline: true,
+    rows: 3,
+  },
 ];
 
 export const CASE_FIELDS = [
@@ -122,11 +211,37 @@ export const CASE_FIELDS = [
     },
   },
   {
+    name: "patient_name",
+    labelKey: "fields.patient_name",
+    required: false,
+  },
+  {
+    name: "patient",
+    labelKey: "fields.patient",
+    type: "select",
+    optionsFrom: "patients",
+    dependsOn: "clinic",
+    optionsQueryParam: "clinic",
+    dependsOnPlaceholderKey: "inlineCreate.selectClinicFirst",
+  },
+  {
+    name: "assigned_to",
+    labelKey: "fields.assigned_to",
+    type: "select",
+    optionsFrom: "users",
+  },
+  {
     name: "due_date",
     labelKey: "fields.due_date",
     type: "date",
-    required: true,
+    required: false,
     datePresets: true,
+  },
+  {
+    name: "sla_due_at",
+    labelKey: "fields.sla_due_at",
+    type: "datetime",
+    required: false,
   },
   {
     name: "priority",
@@ -150,7 +265,8 @@ export const CASE_FIELDS = [
   {
     name: "clinic_note",
     labelKey: "fields.clinic_note",
-    multiline: true,
+    type: "caseNotes",
+    historyField: "clinic_notes",
     fullWidth: true,
     rows: 3,
     groupTitleKey: "pages.cases.sections.notes",
@@ -158,7 +274,8 @@ export const CASE_FIELDS = [
   {
     name: "internal_note",
     labelKey: "fields.internal_note",
-    multiline: true,
+    type: "caseNotes",
+    historyField: "internal_notes",
     fullWidth: true,
     rows: 3,
   },

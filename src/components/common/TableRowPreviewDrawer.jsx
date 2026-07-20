@@ -28,6 +28,8 @@ import { formatPreviewFieldValue } from "@/utils/displayValue";
 import { formatDateTime } from "@/utils/format";
 import PhotoThumbStrip from "@/components/common/PhotoThumbStrip";
 import { resolveMediaUrl } from "@/utils/mediaUrl";
+import PreviewActivityLog from "@/components/audit/PreviewActivityLog";
+import { resolveActivityLogTarget } from "@/utils/endpointAuditModel";
 
 const SECTION_META = {
   contact: {
@@ -269,6 +271,8 @@ export default function TableRowPreviewDrawer({
   showOpenDetail = true,
   imageKey = null,
   imageUrls = [],
+  activityLog = null,
+  activityLogRowIdKey = "id",
 }) {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -299,6 +303,7 @@ export default function TableRowPreviewDrawer({
   const imageSrc =
     imageKey != null && imageKey !== "" ? resolveMediaUrl(row[imageKey]) : null;
   const galleryUrls = Array.isArray(imageUrls) ? imageUrls : [];
+  const activityTarget = resolveActivityLogTarget(row, activityLog, activityLogRowIdKey);
 
   const resolvedFields = fields
     .map((field) => {
@@ -388,7 +393,7 @@ export default function TableRowPreviewDrawer({
               pb: 2,
             background: isLight
               ? `linear-gradient(145deg, ${alpha(primary, 0.1)} 0%, ${alpha(secondary, 0.06)} 48%, ${alpha("#fff", 0.92)} 100%)`
-              : `linear-gradient(145deg, ${alpha(primary, 0.32)} 0%, ${alpha("#1a1520", 0.95)} 62%, ${alpha("#121018", 1)} 100%)`,
+              : `linear-gradient(145deg, ${alpha(primary, 0.28)} 0%, ${alpha(theme.palette.background.paper, 0.95)} 62%, ${alpha(theme.palette.background.default, 1)} 100%)`,
             borderBottom: `1px solid ${alpha(primary, isLight ? 0.12 : 0.24)}`,
           }}
         >
@@ -500,6 +505,13 @@ export default function TableRowPreviewDrawer({
                   {formatDateTime(row.updated_at)}
                 </Typography>
               </Box>
+            ) : null}
+
+            {activityTarget ? (
+              <PreviewActivityLog
+                modelName={activityTarget.modelName}
+                objectId={activityTarget.objectId}
+              />
             ) : null}
           </Stack>
         </Box>

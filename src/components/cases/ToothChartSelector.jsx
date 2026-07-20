@@ -273,11 +273,15 @@ export default function ToothChartSelector({
         <Box
           component="span"
           sx={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
             width: "100%",
             textAlign: "left",
+            whiteSpace: "normal",
+            wordBreak: "break-word",
+            lineHeight: 1.35,
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
           {summary || t("toothChart.select")}

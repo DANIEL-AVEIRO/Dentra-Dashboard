@@ -14,6 +14,12 @@ export function isLabOwner(user) {
   return Boolean(user?.is_lab_owner);
 }
 
+export function isClinicUser(user) {
+  if (user?.is_clinic_user) return true;
+  if (user?.laboratory_name || user?.is_lab_owner) return false;
+  return Boolean(user?.clinic_id || user?.clinic_name);
+}
+
 export function can(user, permission) {
   if (!user) return false;
   if (!permission) return true;
@@ -34,11 +40,19 @@ export function canAny(user, permissions) {
 }
 
 function sectionVisible(section, user) {
+  if (section.clinicOnly) return isClinicUser(user);
   if (section.platformOnly && section.labOwnerOnly) {
+    if (isClinicUser(user)) return false;
     return isPlatformStaff(user) || isLabOwner(user);
   }
-  if (section.platformOnly) return isPlatformStaff(user);
-  if (section.labOnly) return isLabUser(user);
+  if (section.platformOnly) {
+    if (isClinicUser(user)) return false;
+    return isPlatformStaff(user);
+  }
+  if (section.labOnly) {
+    if (isClinicUser(user)) return false;
+    return isLabUser(user);
+  }
   if (section.labOwnerOnly) return isLabOwner(user);
   return true;
 }
@@ -52,8 +66,9 @@ export function filterNavSections(sections, user) {
 
       const items = section.items.filter((item) => {
         if (item.permission && !can(user, item.permission)) return false;
+        if (item.clinicOnly && !isClinicUser(user)) return false;
         if (item.platformOnly && !isPlatformStaff(user)) return false;
-        if (item.labOnly && !isLabUser(user)) return false;
+        if (item.labOnly && (isClinicUser(user) || !isLabUser(user))) return false;
         if (item.labOwnerOnly && !isLabOwner(user)) return false;
         return true;
       });

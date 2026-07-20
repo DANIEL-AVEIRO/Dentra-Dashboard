@@ -43,6 +43,7 @@ import { translateColumns } from "@/i18n/helpers";
 import { TABLE_FILTER_SELECT_SX } from "@/constants/layout";
 import client from "@/api/client";
 import { toast, getErrorMessage } from "@/utils/toast";
+import { endpointToAuditModelName } from "@/utils/endpointAuditModel";
 
 export default function TrashPage() {
   usePersistedListSearch();
@@ -287,6 +288,8 @@ export default function TrashPage() {
     () => ({
       title: t("pages.trash.title"),
       showOpenDetail: false,
+      auditModel: (row) =>
+        endpointToAuditModelName(row.endpoint || row.resource_id),
     }),
     [t]
   );

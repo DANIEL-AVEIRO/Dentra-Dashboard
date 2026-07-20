@@ -13,16 +13,29 @@ import PrecisionManufacturingOutlinedIcon from "@mui/icons-material/PrecisionMan
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import MedicalServicesOutlinedIcon from "@mui/icons-material/MedicalServicesOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
+import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import RequestQuoteOutlinedIcon from "@mui/icons-material/RequestQuoteOutlined";
+import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import LayersOutlinedIcon from "@mui/icons-material/LayersOutlined";
 import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
+import ViewKanbanOutlinedIcon from "@mui/icons-material/ViewKanbanOutlined";
+import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
+import PercentOutlinedIcon from "@mui/icons-material/PercentOutlined";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import EventOutlinedIcon from "@mui/icons-material/EventOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 
 /**
  * Sidebar navigation grouped by module.
- * Platform: overview → laboratories → access → system
- * Lab: overview → operations → partners → catalog → pricing → myLab
+ * Platform: overview → subscription → laboratories → access → configuration → compliance
+ * Lab: cases → production → logistics → partners → restorations → materials → pricing → myLab
+ * Clinic: overview → cases → patients → appointments → rx → billing → deliveries
  */
 export const navSections = [
   {
@@ -33,11 +46,24 @@ export const navSections = [
     items: [{ path: "/admin", labelKey: "nav.admin", icon: HomeOutlinedIcon }],
   },
   {
+    id: "clinicOverview",
+    titleKey: "nav.sections.overview",
+    clinicOnly: true,
+    items: [{ path: "/admin", labelKey: "nav.admin", icon: HomeOutlinedIcon }],
+  },
+  {
+    id: "subscription",
+    titleKey: "nav.sections.subscription",
+    platformOnly: true,
+    items: [
+      { path: "/plans", labelKey: "nav.plans", icon: CardMembershipOutlinedIcon },
+    ],
+  },
+  {
     id: "laboratories",
     titleKey: "nav.sections.laboratories",
     platformOnly: true,
     items: [
-      { path: "/plans", labelKey: "nav.plans", icon: CardMembershipOutlinedIcon },
       {
         path: "/laboratories",
         labelKey: "nav.laboratories",
@@ -51,20 +77,118 @@ export const navSections = [
     ],
   },
   {
-    id: "operations",
-    titleKey: "nav.sections.operations",
+    id: "cases",
+    titleKey: "nav.sections.cases",
     labOnly: true,
     items: [
       { path: "/cases", labelKey: "nav.cases", icon: AssignmentOutlinedIcon },
+    ],
+  },
+  {
+    id: "clinicCases",
+    titleKey: "nav.sections.cases",
+    clinicOnly: true,
+    items: [
+      { path: "/cases", labelKey: "nav.cases", icon: AssignmentOutlinedIcon },
+    ],
+  },
+  {
+    id: "production",
+    titleKey: "nav.sections.production",
+    labOnly: true,
+    items: [
       {
         path: "/fabrication",
         labelKey: "nav.fabrication",
         icon: PrecisionManufacturingOutlinedIcon,
       },
       {
+        path: "/workboard",
+        labelKey: "nav.workboard",
+        icon: ViewKanbanOutlinedIcon,
+      },
+      {
+        path: "/qc",
+        labelKey: "nav.qc",
+        icon: VerifiedOutlinedIcon,
+      },
+    ],
+  },
+  {
+    id: "logistics",
+    titleKey: "nav.sections.logistics",
+    labOnly: true,
+    items: [
+      {
         path: "/deliveries",
         labelKey: "nav.deliveries",
         icon: LocalShippingOutlinedIcon,
+      },
+    ],
+  },
+  {
+    id: "clinicLogistics",
+    titleKey: "nav.sections.logistics",
+    clinicOnly: true,
+    items: [
+      {
+        path: "/deliveries",
+        labelKey: "nav.deliveries",
+        icon: LocalShippingOutlinedIcon,
+      },
+    ],
+  },
+  {
+    id: "finance",
+    titleKey: "nav.sections.finance",
+    labOnly: true,
+    items: [
+      {
+        path: "/billing",
+        labelKey: "nav.billing",
+        icon: ReceiptLongOutlinedIcon,
+      },
+      {
+        path: "/collections",
+        labelKey: "nav.collections",
+        icon: PaymentsOutlinedIcon,
+      },
+      {
+        path: "/clinic-statements",
+        labelKey: "nav.clinicStatements",
+        icon: AccountBalanceOutlinedIcon,
+      },
+      {
+        path: "/commissions",
+        labelKey: "nav.commissions",
+        icon: PercentOutlinedIcon,
+      },
+      {
+        path: "/commission-rules",
+        labelKey: "nav.commissionRules",
+        icon: PercentOutlinedIcon,
+      },
+      {
+        path: "/expenses",
+        labelKey: "nav.expenses",
+        icon: RequestQuoteOutlinedIcon,
+      },
+      {
+        path: "/reports",
+        labelKey: "nav.reports",
+        icon: AssessmentOutlinedIcon,
+      },
+    ],
+  },
+  {
+    id: "clinicFinance",
+    titleKey: "nav.sections.finance",
+    clinicOnly: true,
+    items: [
+      {
+        path: "/billing",
+        labelKey: "nav.billing",
+        icon: ReceiptLongOutlinedIcon,
       },
     ],
   },
@@ -83,11 +207,49 @@ export const navSections = [
         labelKey: "nav.dentists",
         icon: MedicalServicesOutlinedIcon,
       },
+      {
+        path: "/patients",
+        labelKey: "nav.patients",
+        icon: PersonOutlineIcon,
+      },
+      {
+        path: "/appointments",
+        labelKey: "nav.appointments",
+        icon: EventOutlinedIcon,
+      },
+      {
+        path: "/clinic-users",
+        labelKey: "nav.clinicUsers",
+        icon: PeopleOutlineIcon,
+        labOwnerOnly: true,
+      },
     ],
   },
   {
-    id: "catalog",
-    titleKey: "nav.sections.catalog",
+    id: "clinicCare",
+    titleKey: "nav.sections.clinicCare",
+    clinicOnly: true,
+    items: [
+      {
+        path: "/patients",
+        labelKey: "nav.patients",
+        icon: PersonOutlineIcon,
+      },
+      {
+        path: "/appointments",
+        labelKey: "nav.appointments",
+        icon: EventOutlinedIcon,
+      },
+      {
+        path: "/rx-templates",
+        labelKey: "nav.rxTemplates",
+        icon: DescriptionOutlinedIcon,
+      },
+    ],
+  },
+  {
+    id: "restorations",
+    titleKey: "nav.sections.restorations",
     labOnly: true,
     items: [
       {
@@ -100,6 +262,13 @@ export const navSections = [
         labelKey: "nav.restorations",
         icon: BuildOutlinedIcon,
       },
+    ],
+  },
+  {
+    id: "materials",
+    titleKey: "nav.sections.materials",
+    labOnly: true,
+    items: [
       {
         path: "/material-categories",
         labelKey: "nav.materialCategories",
@@ -145,6 +314,12 @@ export const navSections = [
         labelKey: "nav.storageAnalysis",
         icon: StorageOutlinedIcon,
       },
+      {
+        path: "/audit-logs",
+        labelKey: "nav.auditLogs",
+        icon: FactCheckIcon,
+        labOwnerOnly: true,
+      },
     ],
   },
   {
@@ -157,11 +332,18 @@ export const navSections = [
     ],
   },
   {
-    id: "system",
-    titleKey: "nav.sections.system",
+    id: "configuration",
+    titleKey: "nav.sections.configuration",
     platformOnly: true,
     items: [
       { path: "/settings", labelKey: "nav.settings", icon: SettingsIcon },
+    ],
+  },
+  {
+    id: "compliance",
+    titleKey: "nav.sections.compliance",
+    platformOnly: true,
+    items: [
       { path: "/audit-logs", labelKey: "nav.auditLogs", icon: FactCheckIcon },
       { path: "/trash", labelKey: "nav.trash", icon: DeleteOutlineIcon },
     ],

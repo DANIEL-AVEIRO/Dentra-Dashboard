@@ -7,7 +7,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { toBoolean } from "@/utils/boolean";
-import { BRAND_PRIMARY } from "@/theme";
 import { FIELD_MIN_HEIGHT, FIELD_RADIUS } from "@/components/common/form/fieldStyles";
 
 /**
@@ -26,6 +25,7 @@ export default function BooleanField({
 }) {
   const theme = useTheme();
   const checked = toBoolean(value);
+  const primary = theme.palette.primary.main;
 
   const surfaceSx = {
     width: "100%",
@@ -40,11 +40,11 @@ export default function BooleanField({
     borderColor: "divider",
     bgcolor:
       theme.palette.mode === "light"
-        ? alpha(BRAND_PRIMARY, checked ? 0.04 : 0.02)
-        : alpha(BRAND_PRIMARY, checked ? 0.12 : 0.06),
+        ? alpha(primary, checked ? 0.04 : 0.02)
+        : alpha(primary, checked ? 0.12 : 0.06),
     transition: "background-color 0.2s, border-color 0.2s",
     "&:hover": {
-      borderColor: alpha(BRAND_PRIMARY, 0.35),
+      borderColor: alpha(primary, 0.35),
     },
   };
 

@@ -7,7 +7,7 @@ const CRUD_PATTERNS = {
   delete: /^delete_(.+)$/,
 };
 
-const HIDDEN_APPS = new Set(["admin", "auth", "contenttypes", "sessions"]);
+const HIDDEN_APPS = new Set(["admin", "auth", "contenttypes", "sessions", "sites"]);
 
 export function labelFromPermissionName(name) {
   const match = /^Can (?:add|change|delete|view) (.+)$/i.exec(String(name || "").trim());

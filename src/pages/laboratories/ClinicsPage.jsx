@@ -1,6 +1,12 @@
 import ResourceListPage from "@/pages/resources/ResourceListPage";
+import { TableActionButton } from "@/components/common/TableActions";
+import client from "@/api/client";
+import { toast, getErrorMessage } from "@/utils/toast";
+import { useTranslation } from "@/context/LanguageContext";
 
 export default function ClinicsPage() {
+  const { t } = useTranslation();
+
   return (
     <ResourceListPage
       endpoint="clinics"
@@ -11,6 +17,8 @@ export default function ClinicsPage() {
         { key: "email", labelKey: "fields.email" },
         { key: "address", labelKey: "fields.address" },
         { key: "region_name", labelKey: "fields.region_name" },
+        { key: "credit_limit", labelKey: "fields.credit_limit" },
+        { key: "credit_warning_pct", labelKey: "fields.credit_warning_pct" },
         {
           key: "is_active",
           labelKey: "fields.status",
@@ -31,6 +39,18 @@ export default function ClinicsPage() {
           optionsFrom: "regions",
         },
         {
+          name: "credit_limit",
+          labelKey: "fields.credit_limit",
+          type: "number",
+          compact: true,
+        },
+        {
+          name: "credit_warning_pct",
+          labelKey: "fields.credit_warning_pct",
+          type: "number",
+          compact: true,
+        },
+        {
           name: "is_active",
           labelKey: "fields.status",
           type: "boolean",
@@ -39,6 +59,26 @@ export default function ClinicsPage() {
           inactiveLabelKey: "common.inactive",
         },
       ]}
+      extraRowActions={(row) => (
+        <TableActionButton
+          variant="status"
+          title={t("pages.clinics.sendReminder", {
+            defaultValue: "Send payment reminder",
+          })}
+          onClick={async () => {
+            try {
+              await client.post(`/clinics/${row.id}/send-reminder/`);
+              toast.success(
+                t("pages.clinics.reminderSent", {
+                  defaultValue: "Reminder sent",
+                }),
+              );
+            } catch (err) {
+              toast.error(getErrorMessage(err, t("toast.saveFailed")));
+            }
+          }}
+        />
+      )}
     />
   );
 }

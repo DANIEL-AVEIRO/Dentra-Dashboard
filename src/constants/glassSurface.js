@@ -11,13 +11,15 @@ function paletteBrand(theme) {
 export const glassCardSx = (theme) => {
   const isLight = theme.palette.mode === "light";
   const { primary, secondary } = paletteBrand(theme);
+  const paper = theme.palette.background.paper;
+  const surface = theme.palette.background.default;
 
   return {
     backdropFilter: "blur(12px)",
     WebkitBackdropFilter: "blur(12px)",
     background: isLight
       ? `linear-gradient(145deg, ${alpha("#ffffff", 0.94)} 0%, ${alpha(primary, 0.04)} 55%, ${alpha(secondary, 0.03)} 100%)`
-      : `linear-gradient(145deg, ${alpha("#252030", 0.88)} 0%, ${alpha(primary, 0.14)} 55%, ${alpha("#1a1520", 0.75)} 100%)`,
+      : `linear-gradient(145deg, ${alpha(paper, 0.94)} 0%, ${alpha(primary, 0.14)} 55%, ${alpha(surface, 0.88)} 100%)`,
     border: `1px solid ${alpha(primary, isLight ? 0.1 : 0.22)}`,
     boxShadow: isLight
       ? `0 4px 24px ${alpha(primary, 0.08)}, inset 0 1px 0 ${alpha("#fff", 0.85)}`

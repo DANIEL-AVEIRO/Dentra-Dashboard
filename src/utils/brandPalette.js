@@ -157,6 +157,54 @@ export function brandFromTheme(theme) {
   };
 }
 
+/** Relative luminance 0–1 (sRGB). */
+export function getRelativeLuminance(hex) {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return 0;
+  const toLinear = (c) => {
+    const n = c / 255;
+    return n <= 0.03928 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * toLinear(rgb.r) + 0.7152 * toLinear(rgb.g) + 0.0722 * toLinear(rgb.b);
+}
+
+/**
+ * Lift a brand color so it stays visible on dark surfaces.
+ * Keeps hue; raises lightness when the color would otherwise disappear.
+ */
+export function ensureReadableOnDark(hex, { minLightness = 0.56, minLuminance = 0.18 } = {}) {
+  const hsl = hexToHsl(hex);
+  if (!hsl) return hex;
+  if (getRelativeLuminance(hex) >= minLuminance && hsl.l >= minLightness - 0.08) {
+    return hex;
+  }
+  const targetL = Math.max(hsl.l, minLightness);
+  const sat = clamp(hsl.s, 0.32, 0.72);
+  return hslToHex(hsl.h, sat, targetL);
+}
+
+/** Brand colors for MUI palette — lifts dark navy primaries in dark mode. */
+export function resolveUiBrandColors(brand, mode) {
+  if (mode !== "dark") {
+    return {
+      primary: brand.primary,
+      secondary: brand.secondary,
+      dark: brand.dark,
+      darker: brand.darker,
+      white: brand.white,
+      raw: brand,
+    };
+  }
+  return {
+    primary: ensureReadableOnDark(brand.primary, { minLightness: 0.58 }),
+    secondary: ensureReadableOnDark(brand.secondary, { minLightness: 0.55 }),
+    dark: ensureReadableOnDark(brand.dark, { minLightness: 0.42 }),
+    darker: ensureReadableOnDark(brand.darker, { minLightness: 0.34 }),
+    white: brand.white,
+    raw: brand,
+  };
+}
+
 export function applyBrandCssVars(colors = FALLBACK_BRAND) {
   const root = document.documentElement;
   const entries = {

@@ -4,6 +4,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { useNavigate, useParams } from "react-router-dom";
 import PageHeader from "@/components/common/PageHeader";
 import FormDialogActions from "@/components/common/FormDialogActions";
+import ActionButton from "@/components/common/ActionButton";
 import ToolbarActionButton from "@/components/common/ToolbarActionButton";
 import { FormCardSkeleton } from "@/components/common/skeletons";
 import { FormField, ProTextField, DialogFormLayout } from "@/components/common/form";
@@ -41,6 +42,7 @@ import CaseLineItemsEditor, {
   mapCaseLineItemsFromApi,
 } from "@/components/cases/CaseLineItemsEditor";
 import CaseFinancialSummary from "@/components/cases/CaseFinancialSummary";
+import CaseNotesField from "@/components/cases/CaseNotesField";
 import { resolveSelectValue } from "@/utils/displayValue";
 import { pageShellSx, pageSectionPaperSx } from "@/constants/pageLayout";
 
@@ -68,7 +70,7 @@ function getDefaultValue(field) {
   if (field.type === "file") {
     return field.default ?? null;
   }
-  if (field.type === "boolean") {
+  if (field.tmdype === "boolean") {
     return toBoolean(field.default, false);
   }
   if (
@@ -83,6 +85,9 @@ function getDefaultValue(field) {
   }
   if (field.type === "caseFinancialSummary") {
     return null;
+  }
+  if (field.type === "caseNotes") {
+    return field.default ?? "";
   }
   return field.default ?? "";
 }
@@ -103,6 +108,11 @@ function buildFormFromRow(row, translatedFields, extraOptions = {}) {
         : [];
     } else if (f.type === "caseFinancialSummary") {
       val = null;
+    } else if (f.type === "caseNotes") {
+      acc[f.historyField] = Array.isArray(row[f.historyField])
+        ? row[f.historyField]
+        : [];
+      val = "";
     } else if (
       f.type === "permissionCheckboxes" ||
       f.type === "permissionMatrix"
@@ -119,7 +129,13 @@ function buildFormFromRow(row, translatedFields, extraOptions = {}) {
   }, {});
 }
 
-export default function ResourceFormPanel({ endpoint, fields, listPath }) {
+export default function ResourceFormPanel({
+  endpoint,
+  fields,
+  listPath,
+  /** When set, show dual create actions that POST with different status values */
+  createStatusActions = null,
+}) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t, locale } = useTranslation();
@@ -140,10 +156,13 @@ export default function ResourceFormPanel({ endpoint, fields, listPath }) {
 
   const emptyForm = useCallback(
     () =>
-      translatedFields.reduce(
-        (acc, f) => ({ ...acc, [f.name]: getDefaultValue(f) }),
-        {},
-      ),
+      translatedFields.reduce((acc, f) => {
+        const next = { ...acc, [f.name]: getDefaultValue(f) };
+        if (f.type === "caseNotes" && f.historyField) {
+          next[f.historyField] = [];
+        }
+        return next;
+      }, {}),
     [translatedFields],
   );
 
@@ -207,6 +226,7 @@ export default function ResourceFormPanel({ endpoint, fields, listPath }) {
               item.key ||
               String(item.id),
             app_label: item.app_label,
+            model: item.model,
             permission_name: item.permission_name,
             codename: item.codename,
           })),
@@ -357,6 +377,21 @@ export default function ResourceFormPanel({ endpoint, fields, listPath }) {
             value={form[f.name] ?? []}
             onChange={patch((rows) => setForm({ ...form, [f.name]: rows }))}
             error={fieldError}
+          />
+        </Box>
+      );
+    }
+
+    if (f.type === "caseNotes") {
+      return (
+        <Box key={f.name} sx={{ width: "100%" }}>
+          <CaseNotesField
+            label={f.label}
+            history={form[f.historyField] ?? []}
+            value={form[f.name] ?? ""}
+            onChange={patch((text) => setForm({ ...form, [f.name]: text }))}
+            error={fieldError}
+            rows={f.rows ?? 3}
           />
         </Box>
       );
@@ -650,17 +685,34 @@ export default function ResourceFormPanel({ endpoint, fields, listPath }) {
     );
   };
 
-  const handleSave = async () => {
+  const handleSave = async (options = {}) => {
     if (saveBusy) return;
+    const { status: nextStatus, submitDraft = false } = options;
+    const isDraftSave = nextStatus === "draft";
+    const fieldsForValidation = translatedFields.map((f) =>
+      f.name === "due_date" ? { ...f, required: !isDraftSave } : f,
+    );
+
     const { valid, errors } = validateResourceForm(
-      translatedFields,
+      fieldsForValidation,
       form,
       editing,
       t,
     );
-    setFormErrors(errors);
-    if (!valid) {
-      toast.error(t("validation.fixErrors"));
+    const nextErrors = { ...errors };
+    if (!isDraftSave && form.case_source === "clinic" && !form.clinic) {
+      nextErrors.clinic = t("validation.required", {
+        field: t("fields.clinic_name"),
+      });
+    }
+    if (!isDraftSave && !(form.patient_name || "").trim()) {
+      nextErrors.patient_name = t("validation.required", {
+        field: t("fields.patient_name"),
+      });
+    }
+    setFormErrors(nextErrors);
+    if (!valid || Object.keys(nextErrors).length > Object.keys(errors).length) {
+      toast.error(t("validation.formErrors"));
       return;
     }
 
@@ -673,6 +725,13 @@ export default function ResourceFormPanel({ endpoint, fields, listPath }) {
       for (const field of translatedFields) {
         if (field.type === "caseFinancialSummary") {
           delete payload[field.name];
+          continue;
+        }
+        if (field.type === "caseNotes") {
+          if (field.historyField) delete payload[field.historyField];
+          const note = (payload[field.name] || "").trim();
+          if (note) payload[field.name] = note;
+          else delete payload[field.name];
           continue;
         }
         if (field.type !== "caseLineItems") continue;
@@ -691,20 +750,32 @@ export default function ResourceFormPanel({ endpoint, fields, listPath }) {
             if (row.unit_price !== "" && row.unit_price != null) {
               item.unit_price = Number(row.unit_price);
             }
+            if (row.discount !== "" && row.discount != null) {
+              item.discount = Number(row.discount) || 0;
+            }
             if (row.id) item.id = row.id;
             return item;
           });
       }
       if (!useMultipart && editing && !payload.password) delete payload.password;
+      if (nextStatus) payload.status = nextStatus;
       const config = useMultipart
         ? { headers: { "Content-Type": "multipart/form-data" } }
         : {};
       if (editing) {
         await client.patch(`/${endpoint}/${editing.id}/`, payload, config);
-        toast.success(t("toast.updated"));
+        toast.success(
+          submitDraft
+            ? t("pages.cases.caseCreated", { defaultValue: "Case created" })
+            : t("toast.updated"),
+        );
       } else {
         await client.post(`/${endpoint}/`, payload, config);
-        toast.success(t("toast.created"));
+        toast.success(
+          nextStatus === "draft"
+            ? t("pages.cases.draftSaved", { defaultValue: "Draft saved" })
+            : t("toast.created"),
+        );
       }
       navigate(listPath);
     } catch (err) {
@@ -714,7 +785,7 @@ export default function ResourceFormPanel({ endpoint, fields, listPath }) {
       );
       if (Object.keys(apiErrors).length > 0) {
         setFormErrors(apiErrors);
-        toast.error(t("validation.fixErrors"));
+        toast.error(t("validation.formErrors"));
       } else {
         toast.error(
           getErrorMessage(err, t("toast.saveFailed"), translatedFields),
@@ -724,6 +795,11 @@ export default function ResourceFormPanel({ endpoint, fields, listPath }) {
       setSaveBusy(false);
     }
   };
+
+  const showStatusActions =
+    Array.isArray(createStatusActions) &&
+    createStatusActions.length > 0 &&
+    (!editing || editing.status === "draft");
 
   const pageTitle = editing
     ? t("dialog.edit", { resource: displayTitle })
@@ -753,7 +829,11 @@ export default function ResourceFormPanel({ endpoint, fields, listPath }) {
             noValidate
             onSubmit={(e) => {
               e.preventDefault();
-              handleSave();
+              if (showStatusActions) {
+                handleSave({ status: "received", submitDraft: Boolean(editing) });
+              } else {
+                handleSave();
+              }
             }}
             sx={{ p: { xs: 2, sm: 2.5 } }}
           >
@@ -773,19 +853,54 @@ export default function ResourceFormPanel({ endpoint, fields, listPath }) {
                 pt: 2,
                 borderTop: 1,
                 borderColor: "divider",
+                flexWrap: "wrap",
               }}
             >
-              <FormDialogActions
-                onCancel={handleCancel}
-                cancelLabel={t("common.cancel")}
-                confirmLabel={
-                  saveBusy
-                    ? t("common.saving", { defaultValue: "Saving..." })
-                    : t("common.save")
-                }
-                confirmType="submit"
-                busy={saveBusy}
-              />
+              {showStatusActions ? (
+                <>
+                  <ToolbarActionButton
+                    variant="cancel"
+                    size="small"
+                    onClick={handleCancel}
+                    disabled={saveBusy}
+                  >
+                    {t("common.cancel")}
+                  </ToolbarActionButton>
+                  {createStatusActions.map((action) => (
+                    <ActionButton
+                      key={action.status}
+                      type="button"
+                      size="small"
+                      intent={action.intent || (action.status === "draft" ? "save" : "create")}
+                      disabled={saveBusy}
+                      loading={saveBusy}
+                      onClick={() =>
+                        handleSave({
+                          status: action.status,
+                          submitDraft:
+                            Boolean(editing) && action.status === "received",
+                        })
+                      }
+                    >
+                      {t(action.labelKey, {
+                        defaultValue: action.defaultLabel || action.status,
+                      })}
+                    </ActionButton>
+                  ))}
+                </>
+              ) : (
+                <FormDialogActions
+                  onCancel={handleCancel}
+                  cancelLabel={t("common.cancel")}
+                  confirmLabel={
+                    saveBusy
+                      ? t("common.saving", { defaultValue: "Saving..." })
+                      : t("common.save")
+                  }
+                  confirmType="submit"
+                  busy={saveBusy}
+                />
+              )}
             </Box>
           </Box>
         </Paper>

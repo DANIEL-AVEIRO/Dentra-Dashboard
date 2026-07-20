@@ -20,9 +20,11 @@ export const FILTER_RADIUS = 8;
 function fieldSurfaceBg(theme) {
   const { primary, secondary } = brandFromTheme(theme);
   const isLight = theme.palette.mode === "light";
+  const paper = theme.palette.background.paper;
+  const surface = theme.palette.background.default;
   return isLight
     ? `linear-gradient(165deg, ${alpha("#ffffff", 0.98)} 0%, ${alpha(primary, 0.045)} 48%, ${alpha(secondary, 0.035)} 100%)`
-    : `linear-gradient(165deg, ${alpha("#2a2438", 0.96)} 0%, ${alpha(primary, 0.1)} 52%, ${alpha("#1a1520", 0.88)} 100%)`;
+    : `linear-gradient(165deg, ${alpha(paper, 0.96)} 0%, ${alpha(primary, 0.1)} 52%, ${alpha(surface, 0.88)} 100%)`;
 }
 
 function fieldSurfaceShadow(theme, focused = false) {
@@ -51,7 +53,7 @@ export function outlinedInputRootSx(theme) {
     "&:hover": {
       background: isLight
         ? `linear-gradient(165deg, ${alpha("#ffffff", 1)} 0%, ${alpha(primary, 0.06)} 100%)`
-        : `linear-gradient(165deg, ${alpha("#322a42", 0.98)} 0%, ${alpha(primary, 0.14)} 100%)`,
+        : `linear-gradient(165deg, ${alpha(theme.palette.background.paper, 1)} 0%, ${alpha(primary, 0.14)} 100%)`,
       boxShadow: isLight
         ? `inset 0 1px 0 ${alpha("#fff", 0.95)}, 0 2px 8px ${alpha(primary, 0.08)}`
         : `inset 0 1px 0 ${alpha("#fff", 0.08)}, 0 4px 12px ${alpha("#000", 0.28)}`,

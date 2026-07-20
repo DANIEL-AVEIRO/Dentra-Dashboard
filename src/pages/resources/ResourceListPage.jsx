@@ -88,6 +88,7 @@ import PermissionMatrixField from "@/components/common/PermissionMatrixField";
 import { useTranslation } from "@/context/LanguageContext";
 import { translateColumns, translateFields } from "@/i18n/helpers";
 import { endpointToPageKey } from "@/utils/pageKeys";
+import { endpointToAuditModelName } from "@/utils/endpointAuditModel";
 import {
   DialogFormLayout,
   resolveFormDialogMaxWidth,
@@ -174,6 +175,8 @@ export default function ResourceListPage({
   rowPreview: rowPreviewProp = null,
   /** When set, create/edit navigate to full-page form routes instead of modal */
   formPath,
+  /** Override pages.* i18n key (defaults to endpoint) */
+  pageKey: pageKeyProp,
 }) {
   usePersistedListSearch();
   const navigate = useNavigate();
@@ -183,7 +186,7 @@ export default function ResourceListPage({
   const isMobileList = useMediaQuery(theme.breakpoints.down("md"));
   const { t, locale } = useTranslation();
   const { confirm, ConfirmDialog } = useConfirmDialog();
-  const pageKey = endpointToPageKey(endpoint);
+  const pageKey = pageKeyProp || endpointToPageKey(endpoint);
   const trashTo = trashUrlFromContext({ endpoint, trashResourceId });
   const displayTitle = t(`pages.${pageKey}.title`, { defaultValue: title });
   const displaySubtitle = trashMode
@@ -328,7 +331,9 @@ export default function ResourceListPage({
     translatedFields
       .filter((f) => f.optionsFrom && !f.dependsOn)
       .forEach(async (f) => {
-        const { data } = await client.get(`/${f.optionsFrom}/`);
+        const { data } = await client.get(`/${f.optionsFrom}/`, {
+          params: f.optionsQuery || undefined,
+        });
         const list = data.results ?? data;
         const labelKey = f.optionLabelKey || "name";
         setExtraOptions((prev) => ({
@@ -342,6 +347,7 @@ export default function ResourceListPage({
               item.key ||
               String(item.id),
             app_label: item.app_label,
+            model: item.model,
             permission_name: item.permission_name,
             codename: item.codename,
           })),
@@ -555,11 +561,13 @@ export default function ResourceListPage({
           t,
         }),
       statusList: statusFieldOptions,
+      auditModel: endpointToAuditModelName(endpoint),
       onOpenDetail: (row) => (canEdit ? openEdit(row) : openDetail(row)),
       ...rowPreviewProp,
     }),
     [
       displayTitle,
+      endpoint,
       translatedColumns,
       translatedFields,
       statusFieldOptions,
@@ -1163,7 +1171,7 @@ export default function ResourceListPage({
               onClick={() => openDuplicate(row)}
             />
           ) : null}
-          {extraRowActions?.(row)}
+          {extraRowActions?.(row, { refresh })}
           {canDelete ? (
             <TableActionButton
               variant="delete"

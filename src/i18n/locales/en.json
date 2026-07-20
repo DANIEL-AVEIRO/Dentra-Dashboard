@@ -66,15 +66,25 @@
       "leave": "Leave",
       "attendance": "Attendance & payroll",
       "access": "Users & roles",
+      "subscription": "Subscription",
       "laboratories": "Laboratories",
       "myLab": "My laboratory",
+      "cases": "Cases",
+      "production": "Production",
+      "logistics": "Logistics",
+      "finance": "Finance",
       "operations": "Operations",
       "partners": "Partners",
+      "restorations": "Restorations",
+      "materials": "Materials",
       "catalog": "Product catalog",
       "pricing": "Pricing",
       "content": "Content",
       "communications": "Communications",
-      "system": "System"
+      "configuration": "Configuration",
+      "compliance": "Compliance",
+      "system": "System",
+      "clinicCare": "Clinic care"
     },
     "admin": "Admin",
     "pickups": "Pickups",
@@ -93,6 +103,14 @@
     "cases": "Cases",
     "clinics": "Clinics",
     "dentists": "Dentists",
+    "patients": "Patients",
+    "appointments": "Appointments",
+    "rxTemplates": "Rx templates",
+    "clinicUsers": "Clinic users",
+    "workboard": "Workboard",
+    "qc": "QC",
+    "commissions": "Commissions",
+    "commissionRules": "Commission rules",
     "materials": "Materials",
     "materialCategories": "Material categories",
     "restorations": "Restorations",
@@ -100,6 +118,10 @@
     "priceList": "Price list",
     "regions": "Regions",
     "fabrication": "Fabrication",
+    "billing": "Billing",
+    "collections": "Collections",
+    "clinicStatements": "Clinic statements",
+    "expenses": "Expenses",
     "liveMap": "Live map",
     "analytics": "Analytics",
     "reports": "Reports",
@@ -198,7 +220,10 @@
     "darkMode": "Dark mode",
     "lightMode": "Light mode",
     "accountMenu": "Account menu",
-    "clearCache": "Clear cache"
+    "clearCache": "Clear cache",
+    "notifications": "Notifications",
+    "markAllRead": "Mark all read",
+    "noNotifications": "No notifications"
   },
   "filters": {
     "search": "Search…",
@@ -307,7 +332,19 @@
     "duplicateRow": "Duplicate",
     "totalRows": "{{count}} total",
     "expandRow": "Expand row",
-    "copyCell": "Copy"
+    "copyCell": "Copy",
+    "closePreview": "Close preview",
+    "preview": {
+      "contact": "Contact",
+      "location": "Location",
+      "schedule": "Schedule",
+      "related": "Related",
+      "details": "Details",
+      "activityLog": "Activity log",
+      "activityLogLoadFailed": "Could not load activity log",
+      "footerHint": "Need more fields, timeline, or actions?",
+      "footerHintClose": "Close this preview to return to the list."
+    }
   },
   "journey": {
     "title": "Journey"
@@ -1118,6 +1155,11 @@
       "title": "Cases",
       "subtitle": "Manage dental lab cases",
       "search": "Search cases…",
+      "saveDraft": "Save Draft",
+      "createCase": "Create Case",
+      "draftSaved": "Draft saved",
+      "caseCreated": "Case created",
+      "printTicket": "Print work ticket",
       "sections": {
         "notes": "Notes",
         "workItems": "Work items",
@@ -1126,6 +1168,7 @@
       "lineItems": {
         "help": "Add each restoration with its material, tooth, and shade. Unit price loads from the price list when both restoration and material are selected.",
         "add": "Add item",
+        "itemLabel": "Item {{index}}",
         "empty": "No work items yet. Add a restoration and material to describe what to fabricate.",
         "selectRestoration": "Select restoration…",
         "selectMaterial": "Select material…",
@@ -1135,6 +1178,11 @@
         "workItemsSubtotal": "Work items subtotal",
         "totalAmount": "Total amount",
         "itemCount": "{{count}} priced line(s)"
+      },
+      "notes": {
+        "historyTitle": "Note history",
+        "empty": "No notes yet.",
+        "addPlaceholder": "Add a note…"
       }
     },
     "materials": {
@@ -1165,7 +1213,9 @@
     "clinics": {
       "title": "Clinics",
       "subtitle": "Manage partner clinics for your laboratory",
-      "search": "Search clinics…"
+      "search": "Search clinics…",
+      "sendReminder": "Send payment reminder",
+      "reminderSent": "Reminder sent"
     },
     "regions": {
       "title": "Regions",
@@ -1179,11 +1229,116 @@
     },
     "fabrication": {
       "title": "Fabrication",
-      "subtitle": "Track production and fabrication workflows"
+      "subtitle": "Track production and fabrication workflows",
+      "search": "Search fabrication cases…",
+      "advance": "Advance stage",
+      "advanced": "Case advanced",
+      "cannotAdvance": "This case cannot be advanced further.",
+      "readyForDelivery": "Ready for delivery",
+      "goDeliveries": "Create a delivery from the Deliveries page."
+    },
+    "workboard": {
+      "title": "Workboard",
+      "subtitle": "Assign and track fabrication cases",
+      "search": "Search workboard…",
+      "assign": "Assign",
+      "assignTitle": "Assign case",
+      "assigned": "Case assigned",
+      "selectUser": "Select technician…",
+      "printTicket": "Print work ticket"
+    },
+    "qc": {
+      "title": "Quality control",
+      "subtitle": "Review cases in QC and submit checklist results",
+      "search": "Search QC cases…",
+      "open": "QC checklist",
+      "dialogTitle": "Quality check",
+      "submit": "Submit QC",
+      "submitted": "QC submitted"
+    },
+    "commissions": {
+      "title": "Commissions",
+      "subtitle": "Technician commission report by assigned cases",
+      "percent": "%",
+      "cases": "Cases",
+      "amount": "Amount",
+      "commission": "Commission",
+      "grandTotal": "Grand total"
+    },
+    "patients": {
+      "title": "Patients",
+      "subtitle": "Manage clinic patients",
+      "search": "Search patients…"
+    },
+    "appointments": {
+      "title": "Appointments",
+      "subtitle": "Schedule and manage appointments",
+      "search": "Search appointments…"
+    },
+    "rxTemplates": {
+      "title": "Rx templates",
+      "subtitle": "Reusable prescription / case line presets",
+      "search": "Search Rx templates…"
+    },
+    "clinicUsers": {
+      "title": "Clinic users",
+      "subtitle": "Create clinic portal users and link them to a clinic",
+      "search": "Search clinic users…"
     },
     "deliveries": {
       "title": "Deliveries",
-      "subtitle": "Manage case deliveries to clinics"
+      "subtitle": "Manage case deliveries to clinics",
+      "search": "Search deliveries…",
+      "confirm": "Confirm delivered",
+      "confirmed": "Delivery confirmed",
+      "printNote": "Print delivery note"
+    },
+    "billing": {
+      "title": "Billing",
+      "subtitle": "Bill delivered cases and manage invoices",
+      "unbilled": "Unbilled cases",
+      "invoices": "Invoices",
+      "selectCases": "Select at least one unbilled case.",
+      "sameClinic": "Selected cases must belong to the same clinic.",
+      "generateInvoice": "Generate invoice",
+      "unbilledCount": "{{count}} delivered cases ready to bill",
+      "noUnbilled": "No unbilled delivered cases.",
+      "wizardTitle": "New invoice",
+      "saveDraft": "Save draft",
+      "saveIssue": "Save & issue",
+      "draftSaved": "Invoice draft saved",
+      "issued": "Invoice issued",
+      "issue": "Issue",
+      "printInvoice": "Print invoice"
+    },
+    "collections": {
+      "title": "Collections",
+      "subtitle": "Record payments against issued invoices",
+      "search": "Search payments…"
+    },
+    "clinicStatements": {
+      "title": "Clinic statements",
+      "subtitle": "Clinic AR ledger, aging, and period activity",
+      "selectClinic": "Select a clinic",
+      "load": "Load statement"
+    },
+    "expenses": {
+      "title": "Expenses",
+      "subtitle": "Record and approve laboratory operating expenses",
+      "search": "Search expenses…",
+      "approve": "Approve",
+      "approved": "Expense approved"
+    },
+    "reports": {
+      "title": "Reports",
+      "subtitle": "Lab finance overview",
+      "revenue": "Revenue",
+      "cash": "Cash collected",
+      "outstanding": "Outstanding AR",
+      "unbilled": "Unbilled delivered cases",
+      "expenses": "Approved expenses",
+      "profit": "Est. operating profit",
+      "disclaimer": "Estimated operating profit = revenue minus approved expenses. Not audited final profit."
     },
     "storageAnalysis": {
       "title": "Storage analysis",
@@ -1250,6 +1405,7 @@
         "desc": "Upload a logo and apply theme colors from the image",
         "hint": "Staff only. Upload your brand logo (PNG/SVG). Theme colors are detected from the logo and applied across the admin panel.",
         "logoLabel": "Logo",
+        "previewTitle": "Page theme preview",
         "colorsTitle": "Theme colors",
         "colorsHint": "These colors are extracted from the logo and used for buttons, sidebar, and accents.",
         "primary": "Primary",
@@ -1386,9 +1542,43 @@
     "region_name": "Region",
     "case_type": "Case type",
     "case_source": "Case source",
+    "status": "Status",
+    "patient_name": "Patient name",
+    "patient": "Patient",
+    "assigned_to": "Assignee",
+    "assigned_to_name": "Assignee",
+    "sla_due_at": "SLA due",
+    "credit_limit": "Credit limit",
+    "credit_warning_pct": "Credit warning %",
+    "stock_qty": "Stock qty",
+    "reorder_level": "Reorder level",
+    "max_cases_per_month": "Max cases / month",
+    "percent": "Commission %",
+    "dob": "Date of birth",
+    "starts_at": "Starts at",
+    "ends_at": "Ends at",
+    "chair_label": "Chair",
+    "line_preset": "Line preset",
+    "laboratory_name": "Laboratory",
     "due_date": "Due date",
     "priority": "Priority",
     "reference_po": "Reference PO",
+    "scheduled_date": "Scheduled date",
+    "delivered_at": "Delivered at",
+    "notes": "Notes",
+    "discount": "Discount",
+    "tax": "Tax",
+    "amount": "Amount",
+    "line_total": "Line total",
+    "invoice_number": "Invoice no.",
+    "invoice_date": "Invoice date",
+    "grand_total": "Grand total",
+    "balance_due": "Balance due",
+    "payment_method": "Payment method",
+    "paid_at": "Paid date",
+    "reference": "Reference",
+    "expense_date": "Expense date",
+    "expense_category": "Category",
     "clinic_note": "Clinic note",
     "internal_note": "Internal note",
     "code": "Code",
@@ -1669,6 +1859,34 @@
     "normal": "Normal",
     "urgent": "Urgent",
     "vip": "VIP"
+  },
+  "caseStatuses": {
+    "draft": "Draft",
+    "received": "Received",
+    "in_fabrication": "In fabrication",
+    "qc": "QC",
+    "ready": "Ready",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "invoiceStatuses": {
+    "draft": "Draft",
+    "issued": "Issued",
+    "partially_paid": "Partially paid",
+    "paid": "Paid",
+    "overdue": "Overdue",
+    "cancelled": "Cancelled"
+  },
+  "expenseStatuses": {
+    "draft": "Draft",
+    "approved": "Approved"
+  },
+  "deliveryStatuses": {
+    "pending": "Pending",
+    "in_transit": "In transit",
+    "delivered": "Delivered",
+    "failed": "Failed"
   },
   "materialCategories": {
     "metal": "Metal",
@@ -1957,26 +2175,41 @@
     "admin": {
       "title": "Admin panel",
       "welcome": "Welcome, {{name}}",
-      "subtitle": "Company overview, attendance, finance, and quick access",
+      "subtitle": "All laboratories — cases, deliveries, finance, and usage at a glance",
       "loading": "Loading admin overview…",
       "loadFailed": "Failed to load admin panel",
-      "employees": "Active employees",
-      "projects": "Active projects",
-      "users": "Active users",
-      "departments": "Departments",
-      "openLeads": "Open sale leads",
-      "notCheckedIn": "Not checked in",
-      "todayAttendance": "Today's attendance",
-      "present": "Present",
-      "late": "Late",
-      "absent": "Absent",
-      "leave": "On leave",
-      "financeMonth": "Finance — {{month}}/{{year}}",
-      "income": "Income",
-      "expense": "Expenses",
-      "netProfit": "Net profit",
-      "financeHint": "Based on income and expense records this month",
-      "quickLinks": "Quick links"
+      "byLabTitle": "By laboratory",
+      "noLabs": "No laboratories yet.",
+      "quickLinksTitle": "Quick links",
+      "cards": {
+        "labs": "Laboratories",
+        "cases": "Cases (all labs)",
+        "casesHint": "{{fab}} in fabrication · {{delivered}} delivered · {{dueToday}} due today",
+        "deliveries": "Active deliveries",
+        "deliveriesHint": "Pending / in transit",
+        "users": "Active users",
+        "revenue": "Revenue",
+        "cash": "Cash collected",
+        "outstanding": "Outstanding AR",
+        "outstandingHint": "{{unbilled}} unbilled · {{open}} open invoices",
+        "storage": "Storage used"
+      },
+      "table": {
+        "cases": "Cases",
+        "fab": "Fabrication",
+        "delivered": "Delivered",
+        "revenue": "Revenue",
+        "cash": "Cash",
+        "ar": "AR",
+        "users": "Users",
+        "health": "Health"
+      },
+      "quickLinks": {
+        "laboratories": "Manage customer laboratories and plans",
+        "plans": "Subscription plans and limits",
+        "users": "Platform users and roles",
+        "storage": "Allocated vs used storage across labs"
+      }
     },
     "lab": {
       "welcome": "Welcome, {{name}}",
@@ -2000,6 +2233,18 @@
         "myLaboratory": "Update lab details and branding",
         "labUsers": "Create and manage team accounts",
         "storage": "Check storage usage against your plan"
+      }
+    },
+    "clinic": {
+      "welcome": "Welcome, {{name}}",
+      "subtitle": "{{clinic}} — cases, patients, and billing",
+      "clinicFallback": "your clinic",
+      "quickLinksTitle": "Quick links",
+      "quickLinks": {
+        "cases": "View and track your lab cases",
+        "patients": "Manage patients",
+        "appointments": "Schedule appointments",
+        "billing": "Review invoices and balances"
       }
     }
   },

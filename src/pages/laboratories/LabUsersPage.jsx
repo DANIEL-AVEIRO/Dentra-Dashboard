@@ -62,6 +62,8 @@ export default function LabUsersPage() {
   return (
     <ResourceListPage
       endpoint="users"
+      pageKey="labUsers"
+      listParams={{ lab_users: "1" }}
       title="Lab Users"
       subtitle="Create and manage user accounts for your laboratory"
       searchPlaceholder="Search lab users…"

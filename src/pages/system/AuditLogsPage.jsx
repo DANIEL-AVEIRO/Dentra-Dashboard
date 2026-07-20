@@ -230,6 +230,10 @@ export default function AuditLogsPage() {
       title: t("pages.auditLogs.title"),
       idKey: (row) => getAuditRecordLabel(row),
       showOpenDetail: false,
+      activityLog: {
+        auditModel: (row) => row.model_name,
+        objectIdKey: "object_id",
+      },
     }),
     [t]
   );

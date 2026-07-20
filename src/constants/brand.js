@@ -7,7 +7,7 @@ export const BRAND_SECONDARY = "#1BAAC0";
 export const BRAND_DARK = "#001235";
 export const BRAND_DARKER = "#000A1F";
 export const BRAND_WHITE = "#ffffff";
-export const APP_TITLE = "dentra";
+export const APP_TITLE = "Dentra";
 
 export const DEFAULT_BRAND = {
   logo: null,

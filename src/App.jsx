@@ -29,7 +29,20 @@ import PriceListPage from "@/pages/operations/PriceListPage";
 import CasesPage from "@/pages/operations/CasesPage";
 import CaseFormPage from "@/pages/operations/CaseFormPage";
 import FabricationPage from "@/pages/operations/FabricationPage";
+import WorkboardPage from "@/pages/operations/WorkboardPage";
+import QcPage from "@/pages/operations/QcPage";
+import CommissionsPage from "@/pages/operations/CommissionsPage";
+import CommissionRulesPage from "@/pages/operations/CommissionRulesPage";
 import DeliveriesPage from "@/pages/operations/DeliveriesPage";
+import BillingPage from "@/pages/operations/BillingPage";
+import CollectionsPage from "@/pages/operations/CollectionsPage";
+import ClinicStatementsPage from "@/pages/operations/ClinicStatementsPage";
+import ExpensesPage from "@/pages/operations/ExpensesPage";
+import ReportsPage from "@/pages/operations/ReportsPage";
+import PatientsPage from "@/pages/clinic/PatientsPage";
+import AppointmentsPage from "@/pages/clinic/AppointmentsPage";
+import RxTemplatesPage from "@/pages/clinic/RxTemplatesPage";
+import ClinicUsersPage from "@/pages/clinic/ClinicUsersPage";
 import AuditLogsPage from "@/pages/system/AuditLogsPage";
 import TrashPage from "@/pages/system/TrashPage";
 import SettingsPage from "@/pages/system/SettingsPage";
@@ -78,8 +91,19 @@ function AppRoutes() {
             </PermissionRoute>
           }
         />
+        <Route
+          path="clinic-users"
+          element={
+            <PermissionRoute labOwnerOnly>
+              <ClinicUsersPage />
+            </PermissionRoute>
+          }
+        />
         <Route path="clinics" element={<ClinicsPage />} />
         <Route path="dentists" element={<DentistsPage />} />
+        <Route path="patients" element={<PatientsPage />} />
+        <Route path="appointments" element={<AppointmentsPage />} />
+        <Route path="rx-templates" element={<RxTemplatesPage />} />
         <Route path="material-categories" element={<MaterialCategoriesPage />} />
         <Route path="materials" element={<MaterialsPage />} />
         <Route path="restoration-categories" element={<RestorationCategoriesPage />} />
@@ -89,7 +113,16 @@ function AppRoutes() {
         <Route path="cases/:id/edit" element={<CaseFormPage />} />
         <Route path="cases" element={<CasesPage />} />
         <Route path="fabrication" element={<FabricationPage />} />
+        <Route path="workboard" element={<WorkboardPage />} />
+        <Route path="qc" element={<QcPage />} />
         <Route path="deliveries" element={<DeliveriesPage />} />
+        <Route path="billing" element={<BillingPage />} />
+        <Route path="collections" element={<CollectionsPage />} />
+        <Route path="clinic-statements" element={<ClinicStatementsPage />} />
+        <Route path="commissions" element={<CommissionsPage />} />
+        <Route path="commission-rules" element={<CommissionRulesPage />} />
+        <Route path="expenses" element={<ExpensesPage />} />
+        <Route path="reports" element={<ReportsPage />} />
         <Route
           path="settings"
           element={
@@ -103,7 +136,7 @@ function AppRoutes() {
         <Route
           path="audit-logs"
           element={
-            <PermissionRoute permission="is_staff">
+            <PermissionRoute staffOrLabOwner>
               <AuditLogsPage />
             </PermissionRoute>
           }

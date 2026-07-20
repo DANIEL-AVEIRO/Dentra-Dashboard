@@ -1,19 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import ActionButton from "@/components/common/ActionButton";
 import TableActionButton from "@/components/common/TableActionButton";
 import SearchableSelect from "@/components/common/SearchableSelect";
 import ToothChartSelector from "@/components/cases/ToothChartSelector";
-import { ProTextField } from "@/components/common/form";
+import { FormField, ProTextField } from "@/components/common/form";
 import client from "@/api/client";
 import { useTranslation } from "@/context/LanguageContext";
 import { formatCaseMoney, caseLineTotal } from "@/utils/caseLineItemMoney";
@@ -25,6 +16,7 @@ const EMPTY_ROW = () => ({
   shade: "",
   quantity: 1,
   unit_price: "",
+  discount: "",
   notes: "",
 });
 
@@ -37,6 +29,7 @@ function mapApiRow(item) {
     shade: item.shade ?? "",
     quantity: item.quantity ?? 1,
     unit_price: item.unit_price ?? "",
+    discount: item.discount ?? "",
     notes: item.notes ?? "",
   };
 }
@@ -48,6 +41,161 @@ async function lookupUnitPrice(restoration, material) {
   });
   if (data?.found && data.unit_price != null) return data.unit_price;
   return null;
+}
+
+function LineItemCard({
+  row,
+  index,
+  restorationOptions,
+  materialOptions,
+  onPatch,
+  onUpdate,
+  onRemove,
+  t,
+}) {
+  const total = caseLineTotal(row);
+
+  return (
+    <Box
+      sx={{
+        border: 1,
+        borderColor: "divider",
+        borderRadius: 2,
+        bgcolor: "background.paper",
+        overflow: "hidden",
+      }}
+    >
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        alignItems={{ xs: "flex-start", sm: "center" }}
+        justifyContent="space-between"
+        spacing={1}
+        sx={{
+          px: 2,
+          py: 1.25,
+          bgcolor: "action.hover",
+          borderBottom: 1,
+          borderColor: "divider",
+        }}
+      >
+        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+          {t("pages.cases.lineItems.itemLabel", { index: index + 1 })}
+        </Typography>
+        <Stack direction="row" alignItems="center" spacing={1.5}>
+          <Typography variant="body2" color="text.secondary">
+            {t("fields.line_total")}:{" "}
+            <Box component="span" sx={{ fontWeight: 700, color: "text.primary" }}>
+              {formatCaseMoney(total)}
+            </Box>
+          </Typography>
+          <TableActionButton
+            variant="delete"
+            title={t("common.delete")}
+            onClick={onRemove}
+          />
+        </Stack>
+      </Stack>
+
+      <Box sx={{ p: 2 }}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+            gap: 2,
+            mb: 2,
+          }}
+        >
+          <FormField id={`restoration-${index}`} label={t("fields.restoration")} required>
+            <SearchableSelect
+              placeholder={t("pages.cases.lineItems.selectRestoration")}
+              value={row.restoration}
+              options={restorationOptions}
+              onChange={(next) => onPatch({ restoration: next })}
+            />
+          </FormField>
+          <FormField id={`material-${index}`} label={t("fields.material")} required>
+            <SearchableSelect
+              placeholder={t("pages.cases.lineItems.selectMaterial")}
+              value={row.material}
+              options={materialOptions}
+              onChange={(next) => onPatch({ material: next })}
+            />
+          </FormField>
+        </Box>
+
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "minmax(0, 1.4fr) repeat(4, minmax(0, 1fr))",
+            },
+            gap: 2,
+            mb: 2,
+          }}
+        >
+          <FormField id={`tooth-${index}`} label={t("fields.tooth_number")}>
+            <ToothChartSelector
+              value={row.tooth_number}
+              onChange={(next) => onUpdate({ tooth_number: next })}
+            />
+          </FormField>
+          <FormField id={`shade-${index}`} label={t("fields.shade")}>
+            <ProTextField
+              labelPlacement="outlined"
+              fullWidth
+              value={row.shade}
+              onChange={(e) => onUpdate({ shade: e.target.value })}
+              placeholder="A2"
+            />
+          </FormField>
+          <FormField id={`quantity-${index}`} label={t("fields.quantity")}>
+            <ProTextField
+              labelPlacement="outlined"
+              fullWidth
+              type="number"
+              inputProps={{ min: 1 }}
+              value={row.quantity}
+              onChange={(e) => onUpdate({ quantity: e.target.value })}
+            />
+          </FormField>
+          <FormField id={`unit-price-${index}`} label={t("fields.unit_price")}>
+            <ProTextField
+              labelPlacement="outlined"
+              fullWidth
+              type="number"
+              inputProps={{ min: 0, step: "0.01" }}
+              value={row.unit_price}
+              onChange={(e) => onUpdate({ unit_price: e.target.value })}
+              placeholder="0"
+            />
+          </FormField>
+          <FormField id={`discount-${index}`} label={t("fields.discount")}>
+            <ProTextField
+              labelPlacement="outlined"
+              fullWidth
+              type="number"
+              inputProps={{ min: 0, step: "0.01" }}
+              value={row.discount}
+              onChange={(e) => onUpdate({ discount: e.target.value })}
+              placeholder="0"
+            />
+          </FormField>
+        </Box>
+
+        <FormField id={`notes-${index}`} label={t("fields.notes")}>
+          <ProTextField
+            labelPlacement="outlined"
+            fullWidth
+            multiline
+            minRows={2}
+            value={row.notes}
+            onChange={(e) => onUpdate({ notes: e.target.value })}
+          />
+        </FormField>
+      </Box>
+    </Box>
+  );
 }
 
 export default function CaseLineItemsEditor({ value = [], onChange, error }) {
@@ -171,107 +319,31 @@ export default function CaseLineItemsEditor({ value = [], onChange, error }) {
           </Stack>
         </Box>
       ) : (
-        <Box
+        <Stack
+          spacing={2}
+          divider={<Divider flexItem />}
           sx={{
-            overflowX: "auto",
+            p: 0.5,
             border: 1,
             borderColor: error ? "error.main" : "divider",
-            borderRadius: 1.5,
+            borderRadius: 2,
+            bgcolor: "action.hover",
           }}
         >
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>{t("fields.restoration")}</TableCell>
-                <TableCell>{t("fields.material")}</TableCell>
-                <TableCell sx={{ width: 120, minWidth: 120, maxWidth: 120 }}>{t("fields.tooth_number")}</TableCell>
-                <TableCell sx={{ minWidth: 90 }}>{t("fields.shade")}</TableCell>
-                <TableCell sx={{ width: 80 }}>{t("fields.quantity")}</TableCell>
-                <TableCell sx={{ minWidth: 110 }}>{t("fields.unit_price")}</TableCell>
-                <TableCell sx={{ minWidth: 100 }}>{t("fields.line_total")}</TableCell>
-                <TableCell sx={{ minWidth: 140 }}>{t("fields.notes")}</TableCell>
-                <TableCell align="center" sx={{ width: 52, px: 0.5 }} />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row, index) => {
-                const total = caseLineTotal(row);
-                return (
-                  <TableRow key={row.id || `row-${index}`}>
-                    <TableCell sx={{ minWidth: 180 }}>
-                      <SearchableSelect
-                        placeholder={t("pages.cases.lineItems.selectRestoration")}
-                        value={row.restoration}
-                        options={restorationOptions}
-                        onChange={(next) => applyRowPatch(index, { restoration: next })}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ minWidth: 180 }}>
-                      <SearchableSelect
-                        placeholder={t("pages.cases.lineItems.selectMaterial")}
-                        value={row.material}
-                        options={materialOptions}
-                        onChange={(next) => applyRowPatch(index, { material: next })}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ width: 120, minWidth: 120, maxWidth: 120 }}>
-                      <ToothChartSelector
-                        value={row.tooth_number}
-                        onChange={(next) => updateRow(index, { tooth_number: next })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <ProTextField
-                        labelPlacement="outlined"
-                        value={row.shade}
-                        onChange={(e) => updateRow(index, { shade: e.target.value })}
-                        placeholder="A2"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <ProTextField
-                        labelPlacement="outlined"
-                        type="number"
-                        inputProps={{ min: 1 }}
-                        value={row.quantity}
-                        onChange={(e) => updateRow(index, { quantity: e.target.value })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <ProTextField
-                        labelPlacement="outlined"
-                        type="number"
-                        inputProps={{ min: 0, step: "0.01" }}
-                        value={row.unit_price}
-                        onChange={(e) => updateRow(index, { unit_price: e.target.value })}
-                        placeholder="0"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" fontWeight={600} sx={{ py: 1 }}>
-                        {formatCaseMoney(total)}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <ProTextField
-                        labelPlacement="outlined"
-                        value={row.notes}
-                        onChange={(e) => updateRow(index, { notes: e.target.value })}
-                      />
-                    </TableCell>
-                    <TableCell align="center" sx={{ verticalAlign: "middle", width: 52, px: 0.5 }}>
-                      <TableActionButton
-                        variant="delete"
-                        title={t("common.delete")}
-                        onClick={() => removeRow(index)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </Box>
+          {rows.map((row, index) => (
+            <LineItemCard
+              key={row.id || `row-${index}`}
+              row={row}
+              index={index}
+              restorationOptions={restorationOptions}
+              materialOptions={materialOptions}
+              onPatch={(patch) => applyRowPatch(index, patch)}
+              onUpdate={(patch) => updateRow(index, patch)}
+              onRemove={() => removeRow(index)}
+              t={t}
+            />
+          ))}
+        </Stack>
       )}
 
       {error ? (

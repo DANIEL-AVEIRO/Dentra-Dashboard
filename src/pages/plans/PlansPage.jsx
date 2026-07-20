@@ -39,6 +39,14 @@ export default function PlansPage() {
               : "—",
         },
         {
+          key: "max_cases_per_month",
+          label: "Max cases / month",
+          render: (row) =>
+            row.max_cases_per_month != null && row.max_cases_per_month !== ""
+              ? String(row.max_cases_per_month)
+              : "—",
+        },
+        {
           key: "status",
           label: "Status",
           ...PLAN_STATUS_COLUMN,
@@ -71,6 +79,12 @@ export default function PlansPage() {
           type: "number",
           required: true,
           placeholder: "e.g. 1024",
+        },
+        {
+          name: "max_cases_per_month",
+          label: "Max cases / month",
+          type: "number",
+          placeholder: "e.g. 500",
         },
         {
           name: "status",

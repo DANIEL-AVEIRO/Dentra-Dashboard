@@ -29,7 +29,7 @@ if [[ "$DO_PULL" -eq 1 ]]; then
 fi
 
 if [[ ! -f .env.production ]]; then
-  echo "Missing .env.production — run ../../scripts/sync-project-frame.sh"
+  echo "Missing .env.production — copy from .env.example and set VITE_* values"
   exit 1
 fi
 

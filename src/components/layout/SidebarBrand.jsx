@@ -54,7 +54,7 @@ export default function SidebarBrand({ onNavigate }) {
           overflow: "hidden",
           border: `1px solid ${alpha(brandPrimary, isDark ? 0.28 : 0.14)}`,
           background: isDark
-            ? `linear-gradient(145deg, ${alpha(brandPrimary, 0.22)} 0%, ${alpha("#1a1520", 0.6)} 55%, ${alpha(brandSecondary, 0.12)} 100%)`
+            ? `linear-gradient(145deg, ${alpha(brandPrimary, 0.22)} 0%, ${alpha(theme.palette.background.paper, 0.72)} 55%, ${alpha(brandSecondary, 0.12)} 100%)`
             : `linear-gradient(145deg, ${alpha(brandPrimary, 0.1)} 0%, ${alpha("#fff", 0.95)} 50%, ${alpha(brandSecondary, 0.06)} 100%)`,
           boxShadow: isDark
             ? `inset 0 1px 0 ${alpha("#fff", 0.06)}`
@@ -101,8 +101,9 @@ export default function SidebarBrand({ onNavigate }) {
                 inset: 0,
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
+                objectFit: "contain",
                 objectPosition: "center",
+                p: 0.5,
               }}
             />
           </Box>

@@ -28,6 +28,7 @@ import { useFullscreen } from "@/hooks/useFullscreen";
 import { APP_BAR_HEIGHT } from "@/constants/layout";
 import HeaderIconButton from "@/components/layout/HeaderIconButton";
 import HeaderUserMenu from "@/components/layout/HeaderUserMenu";
+import NotificationBell from "@/components/layout/NotificationBell";
 import { useLockScreen } from "@/context/LockScreenContext";
 
 function HeaderDivider() {
@@ -170,6 +171,7 @@ export default function AdminAppBar({
         >
           {isCompactHeader ? (
             <>
+              <NotificationBell />
               <HeaderIconButton
                 title={t("header.moreActions", { defaultValue: "More actions" })}
                 onClick={(e) => setMoreAnchor(e.currentTarget)}
@@ -247,6 +249,8 @@ export default function AdminAppBar({
             </>
           ) : (
             <>
+              <NotificationBell />
+              <HeaderDivider />
               {secondaryControls}
               <HeaderDivider />
               <HeaderUserMenu user={user} onLogout={onLogout} showLockInMenu={false} />

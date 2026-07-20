@@ -4,6 +4,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { TABLE_ACTION_VARIANTS } from "@/components/common/TableActionButton";
 import { BUTTON_PILL_RADIUS } from "@/constants/shape";
 import { BUTTON_TRANSITION } from "@/constants/motion";
+import { ensureReadableOnDark } from "@/utils/brandPalette";
 
 const EXTRA_VARIANTS = {
   cancel: {
@@ -35,6 +36,7 @@ export function getToolbarActionSx(theme, tint, { size = "small", active = false
   const isDark = theme.palette.mode === "dark";
   const isLight = !isDark;
   const chip = iconChipSize(size);
+  const accent = isDark ? ensureReadableOnDark(tint) : tint;
 
   return {
     textTransform: "none",
@@ -44,13 +46,13 @@ export function getToolbarActionSx(theme, tint, { size = "small", active = false
     px: size === "small" ? 1.25 : 1.5,
     py: size === "small" ? 0.625 : 0.75,
     minHeight: size === "small" ? 36 : 40,
-    color: tint,
-    bgcolor: alpha(tint, active ? (isDark ? 0.28 : 0.14) : isDark ? 0.18 : 0.07),
-    border: `1px solid ${alpha(tint, active ? (isDark ? 0.52 : 0.36) : isDark ? 0.38 : 0.22)}`,
+    color: accent,
+    bgcolor: alpha(accent, active ? (isDark ? 0.28 : 0.14) : isDark ? 0.18 : 0.07),
+    border: `1px solid ${alpha(accent, active ? (isDark ? 0.52 : 0.36) : isDark ? 0.38 : 0.22)}`,
     boxShadow: active
-      ? `0 4px 14px ${alpha(tint, 0.16)}, inset 0 1px 0 ${alpha("#fff", isLight ? 0.45 : 0.08)}`
+      ? `0 4px 14px ${alpha(accent, 0.16)}, inset 0 1px 0 ${alpha("#fff", isLight ? 0.45 : 0.08)}`
       : isLight
-        ? `0 1px 4px ${alpha(tint, 0.08)}`
+        ? `0 1px 4px ${alpha(accent, 0.08)}`
         : `0 2px 8px ${alpha("#000", 0.18)}`,
     transition: BUTTON_TRANSITION,
     "& .MuiButton-startIcon": {
@@ -62,7 +64,7 @@ export function getToolbarActionSx(theme, tint, { size = "small", active = false
       width: chip,
       height: chip,
       borderRadius: "50%",
-      bgcolor: alpha(tint, active ? (isDark ? 0.4 : 0.22) : isDark ? 0.28 : 0.14),
+      bgcolor: alpha(accent, active ? (isDark ? 0.4 : 0.22) : isDark ? 0.28 : 0.14),
       boxShadow: `inset 0 1px 0 ${alpha("#fff", isLight ? 0.35 : 0.08)}`,
       "& .MuiSvgIcon-root, & svg": {
         fontSize: iconSize(size),
@@ -72,27 +74,27 @@ export function getToolbarActionSx(theme, tint, { size = "small", active = false
       },
     },
     "&:hover": {
-      bgcolor: alpha(tint, isDark ? 0.28 : 0.12),
-      borderColor: alpha(tint, isDark ? 0.52 : 0.34),
-      color: tint,
-      boxShadow: `0 4px 14px ${alpha(tint, 0.18)}`,
+      bgcolor: alpha(accent, isDark ? 0.28 : 0.12),
+      borderColor: alpha(accent, isDark ? 0.52 : 0.34),
+      color: accent,
+      boxShadow: `0 4px 14px ${alpha(accent, 0.18)}`,
       transform: "translateY(-1px)",
       "& .MuiButton-startIcon": {
-        bgcolor: alpha(tint, isDark ? 0.36 : 0.2),
+        bgcolor: alpha(accent, isDark ? 0.36 : 0.2),
       },
     },
     "&:active": {
       transform: "translateY(0) scale(0.985)",
     },
     "&.Mui-disabled": {
-      color: alpha(tint, 0.55),
-      borderColor: alpha(tint, isDark ? 0.2 : 0.12),
-      bgcolor: alpha(tint, isDark ? 0.08 : 0.04),
+      color: alpha(accent, 0.55),
+      borderColor: alpha(accent, isDark ? 0.2 : 0.12),
+      bgcolor: alpha(accent, isDark ? 0.08 : 0.04),
       boxShadow: "none",
       transform: "none",
     },
     "&:focus-visible": {
-      outline: `2px solid ${alpha(tint, 0.45)}`,
+      outline: `2px solid ${alpha(accent, 0.45)}`,
       outlineOffset: 2,
     },
   };

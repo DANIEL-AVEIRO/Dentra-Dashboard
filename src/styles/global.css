@@ -105,13 +105,13 @@ html[data-theme="dark"] mark.arrow-search-highlight {
 /* react-toastify — solid surfaces; follows html[data-theme] from ThemeContext */
 html[data-theme="light"] {
   --toastify-color-light: #ffffff;
-  --toastify-color-dark: #1e1a24;
-  --toastify-text-color-light: #1a1520;
-  --toastify-text-color-dark: #f5f2f8;
+  --toastify-color-dark: #111d2e;
+  --toastify-text-color-light: #1a2332;
+  --toastify-text-color-dark: #e8eef8;
   --arrow-toast-bg: #ffffff;
   --arrow-toast-border: color-mix(in srgb, var(--brand-primary) 20%, transparent);
-  --arrow-toast-text: #1a1520;
-  --arrow-toast-muted: #5c5366;
+  --arrow-toast-text: #1a2332;
+  --arrow-toast-muted: #5c6b7e;
   --arrow-success: #0d7a5f;
   --arrow-success-bg: #e6f7ee;
   --arrow-success-border: #b8e6d0;
@@ -131,13 +131,13 @@ html[data-theme="light"] {
 
 html[data-theme="dark"] {
   --toastify-color-light: #ffffff;
-  --toastify-color-dark: #1e1a24;
-  --toastify-text-color-light: #1a1520;
-  --toastify-text-color-dark: #f5f2f8;
-  --arrow-toast-bg: #1e1a24;
-  --arrow-toast-border: rgba(255, 107, 107, 0.28);
-  --arrow-toast-text: #f5f2f8;
-  --arrow-toast-muted: #a89bb0;
+  --toastify-color-dark: #111d2e;
+  --toastify-text-color-light: #1a2332;
+  --toastify-text-color-dark: #e8eef8;
+  --arrow-toast-bg: #111d2e;
+  --arrow-toast-border: color-mix(in srgb, var(--brand-primary) 28%, transparent);
+  --arrow-toast-text: #e8eef8;
+  --arrow-toast-muted: #9aabbf;
   --arrow-success: #5fd9a8;
   --arrow-success-bg: rgba(13, 122, 95, 0.35);
   --arrow-success-border: #2d6b52;
@@ -147,12 +147,12 @@ html[data-theme="dark"] {
   --arrow-warning: #ffc857;
   --arrow-warning-bg: #3d3218;
   --arrow-warning-border: #7a6530;
-  --arrow-info: #ff6b6b;
-  --arrow-info-bg: #2a1414;
-  --arrow-info-border: #8c0609;
-  --arrow-loading: #ff6b6b;
-  --arrow-loading-bg: #2a1414;
-  --arrow-loading-border: #8c0609;
+  --arrow-info: var(--brand-primary);
+  --arrow-info-bg: color-mix(in srgb, var(--brand-primary) 18%, #0a1220);
+  --arrow-info-border: color-mix(in srgb, var(--brand-primary) 45%, transparent);
+  --arrow-loading: var(--brand-primary);
+  --arrow-loading-bg: color-mix(in srgb, var(--brand-primary) 18%, #0a1220);
+  --arrow-loading-border: color-mix(in srgb, var(--brand-primary) 45%, transparent);
 }
 
 /* react-toastify v11 — placement via CSS variables (see AppToaster mobile top-center) */
@@ -588,15 +588,15 @@ html[data-theme="dark"] .Toastify__toast.arrow-toast .Toastify__close-button {
 }
 
 [data-theme="dark"] .sidebar-scroll {
-  scrollbar-color: rgba(255, 53, 53, 0.4) transparent;
+  scrollbar-color: rgba(var(--brand-primary-rgb), 0.45) transparent;
 }
 
 [data-theme="dark"] .sidebar-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 53, 53, 0.35);
+  background: rgba(var(--brand-primary-rgb), 0.4);
 }
 
 [data-theme="dark"] .sidebar-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 53, 53, 0.55);
+  background: rgba(var(--brand-primary-rgb), 0.6);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -699,7 +699,11 @@ html[data-theme="dark"] .Toastify__toast.arrow-toast .Toastify__close-button {
   white-space: nowrap;
   font-size: 13px;
   font-weight: 700;
-  color: #1a1520;
+  color: #1a2332;
+}
+
+html[data-theme="dark"] .rider-map-pin__name {
+  color: #e8eef8;
 }
 
 .rider-map-pin__phone {

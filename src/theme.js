@@ -17,6 +17,7 @@ import {
   BRAND_WHITE as DEFAULT_BRAND_WHITE,
   DEFAULT_BRAND,
 } from "@/constants/brand";
+import { resolveUiBrandColors } from "@/utils/brandPalette";
 import { getDefaultContainedButtonSx } from "@/constants/buttonIntents";
 import { BUTTON_PILL_RADIUS } from "@/constants/shape";
 
@@ -53,13 +54,15 @@ const interactiveTransition = BUTTON_TRANSITION;
 
 export const getTheme = (mode, brandInput = {}) => {
   const brand = resolveBrand(brandInput);
+  const ui = resolveUiBrandColors(brand, mode);
   const {
     primary: BRAND_PRIMARY,
     secondary: BRAND_SECONDARY,
     dark: BRAND_DARK,
     darker: BRAND_DARKER,
     white: BRAND_WHITE,
-  } = brand;
+    raw: RAW_BRAND,
+  } = ui;
 
   return createTheme({
     palette: {
@@ -78,19 +81,37 @@ export const getTheme = (mode, brandInput = {}) => {
         default: mode === "light" ? "#f4f7fb" : "#0a1220",
         paper: mode === "light" ? BRAND_WHITE : "#111d2e",
       },
+      text:
+        mode === "light"
+          ? {
+              primary: "#1a2332",
+              secondary: alpha("#1a2332", 0.68),
+              disabled: alpha("#1a2332", 0.38),
+            }
+          : {
+              primary: "#e8eef8",
+              secondary: alpha("#e8eef8", 0.72),
+              disabled: alpha("#e8eef8", 0.4),
+            },
       divider:
         mode === "light"
           ? alpha(BRAND_PRIMARY, 0.1)
-          : alpha(BRAND_WHITE, 0.08),
+          : alpha(BRAND_WHITE, 0.1),
       action: {
         hover:
           mode === "light"
             ? alpha(BRAND_PRIMARY, 0.06)
-            : alpha(BRAND_SECONDARY, 0.12),
+            : alpha(BRAND_WHITE, 0.06),
         selected:
           mode === "light"
             ? alpha(BRAND_PRIMARY, 0.1)
-            : alpha(BRAND_SECONDARY, 0.18),
+            : alpha(BRAND_PRIMARY, 0.22),
+        ...(mode === "dark"
+          ? {
+              disabled: alpha(BRAND_WHITE, 0.3),
+              disabledBackground: alpha(BRAND_WHITE, 0.08),
+            }
+          : {}),
       },
     },
     typography: {
@@ -167,6 +188,14 @@ export const getTheme = (mode, brandInput = {}) => {
           "*:focus-visible": {
             outlineOffset: 2,
           },
+          ...(mode === "dark"
+            ? {
+                "input::placeholder, textarea::placeholder": {
+                  color: alpha(BRAND_WHITE, 0.45),
+                  opacity: 1,
+                },
+              }
+            : {}),
         },
       },
       MuiButton: {
@@ -256,7 +285,7 @@ export const getTheme = (mode, brandInput = {}) => {
       MuiAppBar: {
         styleOverrides: {
           root: {
-            backgroundImage: `linear-gradient(135deg, ${BRAND_PRIMARY} 0%, ${BRAND_DARK} 55%, ${BRAND_DARKER} 100%)`,
+            backgroundImage: `linear-gradient(135deg, ${RAW_BRAND.primary} 0%, ${RAW_BRAND.dark} 55%, ${RAW_BRAND.darker} 100%)`,
             backdropFilter: "blur(8px)",
             transition: transition("box-shadow", DURATION.slow),
           },
@@ -309,7 +338,7 @@ export const getTheme = (mode, brandInput = {}) => {
         styleOverrides: {
           root: {
             ...tableCell,
-            borderColor: alpha(BRAND_PRIMARY, 0.08),
+            borderColor: alpha(BRAND_PRIMARY, mode === "light" ? 0.08 : 0.16),
             fontSize: "0.9375rem",
             lineHeight: 1.5,
             whiteSpace: "nowrap",
@@ -607,9 +636,27 @@ export const getTheme = (mode, brandInput = {}) => {
         styleOverrides: {
           switchBase: {
             transition: transition("transform, color", DURATION.normal),
+            color:
+              mode === "dark" ? alpha(BRAND_WHITE, 0.72) : undefined,
+            "&.Mui-checked": {
+              color: BRAND_PRIMARY,
+              "& + .MuiSwitch-track": {
+                backgroundColor: BRAND_PRIMARY,
+                opacity: mode === "dark" ? 0.55 : 0.5,
+              },
+            },
           },
           track: {
             transition: transition("background-color, opacity", DURATION.normal),
+            backgroundColor:
+              mode === "dark" ? alpha(BRAND_WHITE, 0.28) : undefined,
+            opacity: mode === "dark" ? 1 : undefined,
+          },
+          thumb: {
+            boxShadow:
+              mode === "dark"
+                ? `0 1px 3px ${alpha("#000", 0.45)}`
+                : undefined,
           },
         },
       },

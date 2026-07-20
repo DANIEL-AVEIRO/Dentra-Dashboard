@@ -301,6 +301,10 @@ export default function ResourceTable({
       imageKey: rowPreview.imageKey,
       imageUrls: Array.isArray(imageUrls) ? imageUrls : [],
       onOpenDetail: rowPreview.onOpenDetail,
+      activityLog:
+        rowPreview.activityLog ??
+        (rowPreview.auditModel ? { auditModel: rowPreview.auditModel } : null),
+      activityLogRowIdKey: rowPreview.rowIdKey || rowIdKey,
     };
   }, [rowPreview, previewRow, displayColumns, rowIdKey]);
 
@@ -667,6 +671,8 @@ export default function ResourceTable({
           imageKey={resolvedRowPreview.imageKey ?? null}
           imageUrls={resolvedRowPreview.imageUrls ?? []}
           onOpenDetail={resolvedRowPreview.onOpenDetail}
+          activityLog={resolvedRowPreview.activityLog}
+          activityLogRowIdKey={resolvedRowPreview.activityLogRowIdKey}
         />
       ) : null}
     </Shell>
