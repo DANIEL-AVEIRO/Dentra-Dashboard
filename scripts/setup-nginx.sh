@@ -25,11 +25,10 @@ nginx -t
 systemctl reload nginx
 
 if command -v certbot >/dev/null 2>&1; then
-  if ! grep -q "ssl_certificate" "$CONF_DST" 2>/dev/null; then
-    certbot --nginx -d "$ADMIN_DOMAIN"
-  fi
+  echo ">> SSL via certbot"
+  certbot --nginx -d "$ADMIN_DOMAIN"
 else
-  echo "Tip: certbot --nginx -d $ADMIN_DOMAIN"
+  echo "Tip: sudo certbot --nginx -d $ADMIN_DOMAIN"
 fi
 
 chown -R www-data:www-data "$DIST" 2>/dev/null || true
