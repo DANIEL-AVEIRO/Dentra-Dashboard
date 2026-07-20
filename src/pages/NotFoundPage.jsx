@@ -1,8 +1,6 @@
 import { Box, Button, Chip, Paper, Stack, Typography, alpha, useTheme } from "@mui/material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import ActionButton from "@/components/common/ActionButton";
 import { glassAccentBarSx, glassPanelSx } from "@/constants/glassSurface";
 import { transition } from "@/constants/motion";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
@@ -163,12 +161,6 @@ export default function NotFoundPage() {
   const inLayout = Boolean(user);
   const isLight = theme.palette.mode === "light";
 
-  const homeTo = user?.is_lab_owner
-    ? "/admin"
-    : user?.laboratory_name
-      ? "/my-laboratory"
-      : "/";
-
   useDocumentTitle(t("errors.notFoundTitle"));
 
   const pathLabel =
@@ -179,9 +171,7 @@ export default function NotFoundPage() {
   const handleGoBack = () => {
     if (window.history.length > 1) {
       navigate(-1);
-      return;
     }
-    navigate(homeTo);
   };
 
   return (
@@ -369,18 +359,6 @@ export default function NotFoundPage() {
             >
               {t("errors.goBack")}
             </Button>
-            <ActionButton
-              component={Link}
-              to={homeTo}
-              intent="confirm"
-              startIcon={<HomeOutlinedIcon />}
-            >
-              {user?.is_lab_owner
-                ? t("nav.admin")
-                : user?.laboratory_name
-                  ? t("nav.myLaboratory")
-                  : t("nav.admin")}
-            </ActionButton>
           </Stack>
         ) : null}
       </Paper>

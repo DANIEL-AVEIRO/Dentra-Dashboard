@@ -35,7 +35,7 @@ function ErrorFallbackView({ error, errorInfo, onReset, onReload }) {
   const supportMessage = buildErrorSupportMessage(error, { componentStack });
 
   const handleGoHome = () => {
-    window.location.assign("/");
+    window.location.reload();
   };
 
   const handleContactViber = async () => {
@@ -292,7 +292,7 @@ function ErrorFallbackView({ error, errorInfo, onReset, onReload }) {
             },
           }}
         >
-          {t("errorBoundary.goHome", { defaultValue: "Go to admin" })}
+          {t("errorBoundary.goHome", { defaultValue: "Reload page" })}
         </Button>
       </Paper>
     </Box>
