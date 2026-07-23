@@ -83,7 +83,7 @@ export default function LabUsersPage() {
       fields={[
         { name: "username", label: "Name", required: true },
         { name: "email", label: "Email", type: "email", required: true },
-        { name: "phone", label: "Phone", required: true },
+        { name: "phone", label: "Phone" },
         {
           name: "password",
           label: "Password",

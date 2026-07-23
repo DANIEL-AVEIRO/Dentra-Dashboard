@@ -22,7 +22,7 @@ export default function ClinicUsersPage() {
       fields={[
         { name: "username", labelKey: "fields.username", required: true },
         { name: "email", labelKey: "fields.email", type: "email", required: true },
-        { name: "phone", labelKey: "fields.phone", required: true },
+        { name: "phone", labelKey: "fields.phone" },
         {
           name: "password",
           labelKey: "fields.password",
