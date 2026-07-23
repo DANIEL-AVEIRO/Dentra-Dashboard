@@ -19,6 +19,39 @@ export const CASE_PRIORITY_OPTIONS = [
   { id: "vip", name: "VIP", color: "error" },
 ];
 
+/** VITA Classical + common bleach shades */
+export const SHADE_OPTIONS = [
+  "A1",
+  "A2",
+  "A3",
+  "A3.5",
+  "A4",
+  "B1",
+  "B2",
+  "B3",
+  "B4",
+  "C1",
+  "C2",
+  "C3",
+  "C4",
+  "D2",
+  "D3",
+  "D4",
+  "OM1",
+  "OM2",
+  "OM3",
+  "BL1",
+  "BL2",
+  "BL3",
+  "BL4",
+].map((id) => ({ id, name: id }));
+
+/** Zirconia / disc thickness sizes */
+export const MATERIAL_SIZE_OPTIONS = Array.from({ length: 17 }, (_, i) => {
+  const id = `${10 + i}T`;
+  return { id, name: id };
+});
+
 export const CASE_TYPE_COLUMN = {
   statusList: [
     { value: "new_case", color: "primary" },
@@ -74,34 +107,35 @@ export const CASE_STATUS_COLUMN = {
   translationNs: "caseStatuses",
 };
 
+/** Fabrication Finished → QC */
 export const FABRICATION_ADVANCE_NEXT = {
-  received: "in_fabrication",
+  received: "qc",
   in_fabrication: "qc",
-  qc: "ready",
 };
 
 export const CASE_COLUMNS = [
   { key: "case_id", labelKey: "fields.case_id" },
-  { key: "laboratory_name", labelKey: "fields.laboratory_name" },
-  { key: "status", labelKey: "fields.status", ...CASE_STATUS_COLUMN },
+  { key: "clinic_name", labelKey: "fields.clinic_name" },
   { key: "patient_name", labelKey: "fields.patient_name" },
   { key: "case_type", labelKey: "fields.case_type", ...CASE_TYPE_COLUMN },
-  { key: "case_source", labelKey: "fields.case_source", ...CASE_SOURCE_COLUMN },
-  { key: "clinic_name", labelKey: "fields.clinic_name" },
   { key: "dentist_name", labelKey: "fields.dentist_name" },
-  { key: "assigned_to_name", labelKey: "fields.assigned_to_name" },
+  { key: "technicians_names", labelKey: "fields.technicians" },
+  { key: "materials_summary", labelKey: "fields.materials_summary" },
+  { key: "restorations_summary", labelKey: "fields.restorations_summary" },
+  { key: "teeth_summary", labelKey: "fields.teeth_summary" },
   { key: "due_date", labelKey: "fields.due_date" },
   { key: "priority", labelKey: "fields.priority", ...CASE_PRIORITY_COLUMN },
   { key: "amount", labelKey: "fields.amount" },
-  { key: "line_items_count", labelKey: "fields.line_items_count" },
 ];
 
 export const FABRICATION_COLUMNS = [
   { key: "case_id", labelKey: "fields.case_id" },
-  { key: "status", labelKey: "fields.status", ...CASE_STATUS_COLUMN },
   { key: "patient_name", labelKey: "fields.patient_name" },
   { key: "clinic_name", labelKey: "fields.clinic_name" },
-  { key: "assigned_to_name", labelKey: "fields.assigned_to_name" },
+  { key: "technicians_names", labelKey: "fields.technicians" },
+  { key: "materials_summary", labelKey: "fields.materials_summary" },
+  { key: "restorations_summary", labelKey: "fields.restorations_summary" },
+  { key: "teeth_summary", labelKey: "fields.teeth_summary" },
   { key: "due_date", labelKey: "fields.due_date" },
   { key: "priority", labelKey: "fields.priority", ...CASE_PRIORITY_COLUMN },
   { key: "amount", labelKey: "fields.amount" },
@@ -151,20 +185,18 @@ export const DELIVERY_FIELDS = [
 
 export const CASE_FIELDS = [
   {
+    name: "case_id",
+    labelKey: "fields.case_id",
+    required: false,
+    helperTextKey: "pages.cases.caseIdHelper",
+  },
+  {
     name: "case_type",
     labelKey: "fields.case_type",
     type: "select",
     options: CASE_TYPE_OPTIONS,
     required: true,
     default: "new_case",
-  },
-  {
-    name: "case_source",
-    labelKey: "fields.case_source",
-    type: "select",
-    options: CASE_SOURCE_OPTIONS,
-    required: true,
-    default: "clinic",
   },
   {
     name: "clinic",
@@ -216,18 +248,9 @@ export const CASE_FIELDS = [
     required: false,
   },
   {
-    name: "patient",
-    labelKey: "fields.patient",
-    type: "select",
-    optionsFrom: "patients",
-    dependsOn: "clinic",
-    optionsQueryParam: "clinic",
-    dependsOnPlaceholderKey: "inlineCreate.selectClinicFirst",
-  },
-  {
-    name: "assigned_to",
-    labelKey: "fields.assigned_to",
-    type: "select",
+    name: "technicians",
+    labelKey: "fields.technicians",
+    type: "multiSelect",
     optionsFrom: "users",
   },
   {
@@ -238,22 +261,12 @@ export const CASE_FIELDS = [
     datePresets: true,
   },
   {
-    name: "sla_due_at",
-    labelKey: "fields.sla_due_at",
-    type: "datetime",
-    required: false,
-  },
-  {
     name: "priority",
     labelKey: "fields.priority",
     type: "buttonSelect",
     options: CASE_PRIORITY_OPTIONS,
     required: true,
     default: "normal",
-  },
-  {
-    name: "reference_po",
-    labelKey: "fields.reference_po",
   },
   {
     name: "line_items",

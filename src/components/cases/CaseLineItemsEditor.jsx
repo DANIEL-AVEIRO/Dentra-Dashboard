@@ -8,16 +8,21 @@ import { FormField, ProTextField } from "@/components/common/form";
 import client from "@/api/client";
 import { useTranslation } from "@/context/LanguageContext";
 import { formatCaseMoney, caseLineTotal } from "@/utils/caseLineItemMoney";
+import { parseToothSelection } from "@/components/cases/toothChartData";
+import {
+  MATERIAL_SIZE_OPTIONS,
+  SHADE_OPTIONS,
+} from "@/pages/operations/caseFormConfig";
 
 const EMPTY_ROW = () => ({
   restoration: "",
   material: "",
+  material_size: "",
   tooth_number: "",
   shade: "",
   quantity: 1,
   unit_price: "",
   discount: "",
-  notes: "",
 });
 
 function mapApiRow(item) {
@@ -25,12 +30,12 @@ function mapApiRow(item) {
     id: item.id,
     restoration: item.restoration ?? "",
     material: item.material ?? "",
+    material_size: item.material_size ?? "",
     tooth_number: item.tooth_number ?? "",
     shade: item.shade ?? "",
     quantity: item.quantity ?? 1,
     unit_price: item.unit_price ?? "",
     discount: item.discount ?? "",
-    notes: item.notes ?? "",
   };
 }
 
@@ -42,6 +47,16 @@ async function lookupUnitPrice(restoration, material) {
   if (data?.found && data.unit_price != null) return data.unit_price;
   return null;
 }
+
+const shadeSelectOptions = SHADE_OPTIONS.map((o) => ({
+  value: o.id,
+  label: o.name,
+}));
+
+const sizeSelectOptions = MATERIAL_SIZE_OPTIONS.map((o) => ({
+  value: o.id,
+  label: o.name,
+}));
 
 function LineItemCard({
   row,
@@ -100,7 +115,7 @@ function LineItemCard({
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" },
             gap: 2,
             mb: 2,
           }}
@@ -121,32 +136,48 @@ function LineItemCard({
               onChange={(next) => onPatch({ material: next })}
             />
           </FormField>
+          <FormField id={`material-size-${index}`} label={t("fields.material_size")}>
+            <SearchableSelect
+              placeholder={t("pages.cases.lineItems.selectSize")}
+              value={row.material_size}
+              options={sizeSelectOptions}
+              onChange={(next) => onUpdate({ material_size: next })}
+            />
+          </FormField>
+        </Box>
+
+        <Box sx={{ mb: 2 }}>
+          <FormField id={`tooth-${index}`} label={t("fields.tooth_number")}>
+            <ToothChartSelector
+              value={row.tooth_number}
+              onChange={(next) => {
+                const count = parseToothSelection(next).size;
+                onUpdate({
+                  tooth_number: next,
+                  quantity: count > 0 ? count : 1,
+                });
+              }}
+            />
+          </FormField>
         </Box>
 
         <Box
           sx={{
             display: "grid",
             gridTemplateColumns: {
-              xs: "1fr",
-              sm: "minmax(0, 1.4fr) repeat(4, minmax(0, 1fr))",
+              xs: "1fr 1fr",
+              sm: "repeat(4, minmax(0, 1fr))",
             },
             gap: 2,
-            mb: 2,
+            alignItems: "start",
           }}
         >
-          <FormField id={`tooth-${index}`} label={t("fields.tooth_number")}>
-            <ToothChartSelector
-              value={row.tooth_number}
-              onChange={(next) => onUpdate({ tooth_number: next })}
-            />
-          </FormField>
           <FormField id={`shade-${index}`} label={t("fields.shade")}>
-            <ProTextField
-              labelPlacement="outlined"
-              fullWidth
+            <SearchableSelect
+              placeholder={t("pages.cases.lineItems.selectShade")}
               value={row.shade}
-              onChange={(e) => onUpdate({ shade: e.target.value })}
-              placeholder="A2"
+              options={shadeSelectOptions}
+              onChange={(next) => onUpdate({ shade: next })}
             />
           </FormField>
           <FormField id={`quantity-${index}`} label={t("fields.quantity")}>
@@ -182,17 +213,6 @@ function LineItemCard({
             />
           </FormField>
         </Box>
-
-        <FormField id={`notes-${index}`} label={t("fields.notes")}>
-          <ProTextField
-            labelPlacement="outlined"
-            fullWidth
-            multiline
-            minRows={2}
-            value={row.notes}
-            onChange={(e) => onUpdate({ notes: e.target.value })}
-          />
-        </FormField>
       </Box>
     </Box>
   );

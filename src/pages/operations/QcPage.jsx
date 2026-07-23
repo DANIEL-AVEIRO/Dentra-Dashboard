@@ -79,6 +79,7 @@ export default function QcPage() {
     setBusy(true);
     try {
       await client.post(`/cases/${caseRow.id}/qc/`, {
+        finish: true,
         items: items.map((item) => ({
           item_id: item.item_id,
           label: item.label,
@@ -86,7 +87,11 @@ export default function QcPage() {
           notes: item.notes,
         })),
       });
-      toast.success(t("pages.qc.submitted", { defaultValue: "QC submitted" }));
+      toast.success(
+        t("pages.qc.finished", {
+          defaultValue: "QC finished — moved to Deliveries",
+        }),
+      );
       setOpen(false);
       setRefreshKey((k) => k + 1);
     } catch (err) {
@@ -109,10 +114,11 @@ export default function QcPage() {
         canDelete={false}
         listParams={{ status: "qc" }}
         trashResourceId="cases"
+        showRowNumbers={false}
         extraRowActions={(row) => (
           <TableActionButton
             variant="status"
-            title={t("pages.qc.open", { defaultValue: "QC checklist" })}
+            title={t("pages.qc.finished", { defaultValue: "Finished" })}
             onClick={() => openQc(row)}
           />
         )}
@@ -171,7 +177,7 @@ export default function QcPage() {
           <FormDialogActions
             onCancel={() => setOpen(false)}
             cancelLabel={t("common.cancel")}
-            confirmLabel={t("pages.qc.submit", { defaultValue: "Submit QC" })}
+            confirmLabel={t("pages.qc.finished", { defaultValue: "Finished" })}
             onConfirm={submitQc}
             busy={busy || loading}
           />

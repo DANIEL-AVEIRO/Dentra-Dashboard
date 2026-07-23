@@ -20,7 +20,7 @@ export default function DeliveriesPage() {
         await client.post(`/deliveries/${row.id}/confirm/`);
         toast.success(
           t("pages.deliveries.confirmed", {
-            defaultValue: "Delivery confirmed",
+            defaultValue: "Delivered — moved to Unbilled Cases",
           }),
         );
         refresh?.();
@@ -38,6 +38,8 @@ export default function DeliveriesPage() {
       columns={DELIVERY_COLUMNS}
       fields={DELIVERY_FIELDS}
       canEdit={false}
+      showRowNumbers={false}
+      listParams={{ status: "pending,in_transit" }}
       extraRowActions={(row, { refresh } = {}) => (
         <>
           <TableActionButton
@@ -50,8 +52,8 @@ export default function DeliveriesPage() {
           {row.status !== "delivered" && row.status !== "failed" ? (
             <TableActionButton
               variant="status"
-              title={t("pages.deliveries.confirm", {
-                defaultValue: "Confirm delivered",
+              title={t("pages.deliveries.delivered", {
+                defaultValue: "Delivered",
               })}
               onClick={() => handleConfirm(row, refresh)}
             />

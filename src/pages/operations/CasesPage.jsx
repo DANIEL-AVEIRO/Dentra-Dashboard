@@ -8,6 +8,7 @@ export default function CasesPage() {
       columns={CASE_COLUMNS}
       fields={CASE_FIELDS}
       formPath="/cases"
+      showRowNumbers={false}
     />
   );
 }

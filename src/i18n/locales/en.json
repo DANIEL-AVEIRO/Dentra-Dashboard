@@ -1127,6 +1127,8 @@
       "emptyHint": "Contact platform support if this looks wrong",
       "fields": {
         "name": "Laboratory name",
+        "cityCode": "City code",
+        "labCode": "Lab code",
         "plan": "Plan",
         "users": "Users",
         "owner": "Owner",
@@ -1160,18 +1162,21 @@
       "draftSaved": "Draft saved",
       "caseCreated": "Case created",
       "printTicket": "Print work ticket",
+      "caseIdHelper": "Leave blank to auto-generate (e.g. YGN/PWA/2026/000001.0), or enter a custom ID.",
       "sections": {
         "notes": "Notes",
         "workItems": "Work items",
         "financial": "Financial"
       },
       "lineItems": {
-        "help": "Add each restoration with its material, tooth, and shade. Unit price loads from the price list when both restoration and material are selected.",
+        "help": "Add each restoration with its material, size, tooth, and shade. Unit price loads from the price list when both restoration and material are selected. Quantity follows selected teeth.",
         "add": "Add item",
         "itemLabel": "Item {{index}}",
         "empty": "No work items yet. Add a restoration and material to describe what to fabricate.",
         "selectRestoration": "Select restoration…",
         "selectMaterial": "Select material…",
+        "selectSize": "Select size (10T–26T)…",
+        "selectShade": "Select shade…",
         "grandTotal": "Work items total"
       },
       "financial": {
@@ -1229,10 +1234,11 @@
     },
     "fabrication": {
       "title": "Fabrication",
-      "subtitle": "Track production and fabrication workflows",
+      "subtitle": "Cases in production — Finished moves them to QC",
       "search": "Search fabrication cases…",
       "advance": "Advance stage",
-      "advanced": "Case advanced",
+      "finished": "Finished",
+      "advanced": "Case finished — moved to QC",
       "cannotAdvance": "This case cannot be advanced further.",
       "readyForDelivery": "Ready for delivery",
       "goDeliveries": "Create a delivery from the Deliveries page."
@@ -1249,11 +1255,12 @@
     },
     "qc": {
       "title": "Quality control",
-      "subtitle": "Review cases in QC and submit checklist results",
+      "subtitle": "Review cases in QC — Finished moves them to Deliveries",
       "search": "Search QC cases…",
       "open": "QC checklist",
       "dialogTitle": "Quality check",
       "submit": "Submit QC",
+      "finished": "Finished",
       "submitted": "QC submitted"
     },
     "commissions": {
@@ -1287,10 +1294,11 @@
     },
     "deliveries": {
       "title": "Deliveries",
-      "subtitle": "Manage case deliveries to clinics",
+      "subtitle": "Ready and in-transit cases — Delivered moves them to Unbilled",
       "search": "Search deliveries…",
       "confirm": "Confirm delivered",
-      "confirmed": "Delivery confirmed",
+      "delivered": "Delivered",
+      "confirmed": "Delivered — moved to Unbilled Cases",
       "printNote": "Print delivery note"
     },
     "billing": {
@@ -1545,8 +1553,14 @@
     "status": "Status",
     "patient_name": "Patient name",
     "patient": "Patient",
-    "assigned_to": "Assignee",
-    "assigned_to_name": "Assignee",
+    "assigned_to": "Technician",
+    "assigned_to_name": "Technician",
+    "technicians": "Technicians",
+    "technicians_names": "Technicians",
+    "materials_summary": "Material",
+    "restorations_summary": "Restoration",
+    "teeth_summary": "Teeth",
+    "material_size": "Material size",
     "sla_due_at": "SLA due",
     "credit_limit": "Credit limit",
     "credit_warning_pct": "Credit warning %",

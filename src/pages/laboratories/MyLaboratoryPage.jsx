@@ -83,6 +83,8 @@ export default function MyLaboratoryPage() {
   const [lab, setLab] = useState(null);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
+  const [cityCode, setCityCode] = useState("");
+  const [labCode, setLabCode] = useState("");
   const [saving, setSaving] = useState(false);
 
   const fetchLab = useCallback(async (silent = false) => {
@@ -93,6 +95,8 @@ export default function MyLaboratoryPage() {
       const row = data.results?.[0] ?? data?.[0] ?? null;
       setLab(row);
       setName(row?.name || "");
+      setCityCode(row?.city_code || "");
+      setLabCode(row?.lab_code || "");
     } catch (error) {
       toast.error(getErrorMessage(error, t("pages.myLaboratory.loadFailed")));
     } finally {
@@ -115,6 +119,26 @@ export default function MyLaboratoryPage() {
         value: (
           <Typography variant="body2" fontWeight={600}>
             {lab.plan_name || "—"}
+          </Typography>
+        ),
+      },
+      {
+        key: "cityCode",
+        icon: ScienceOutlinedIcon,
+        label: t("pages.myLaboratory.fields.cityCode"),
+        value: (
+          <Typography variant="body2" fontWeight={600}>
+            {lab.city_code || "—"}
+          </Typography>
+        ),
+      },
+      {
+        key: "labCode",
+        icon: ScienceOutlinedIcon,
+        label: t("pages.myLaboratory.fields.labCode"),
+        value: (
+          <Typography variant="body2" fontWeight={600}>
+            {lab.lab_code || "—"}
           </Typography>
         ),
       },
@@ -155,7 +179,11 @@ export default function MyLaboratoryPage() {
     if (!lab?.id) return;
     setSaving(true);
     try {
-      const { data } = await client.patch(`/laboratories/${lab.id}/`, { name: name.trim() });
+      const { data } = await client.patch(`/laboratories/${lab.id}/`, {
+        name: name.trim(),
+        city_code: cityCode.trim().toUpperCase(),
+        lab_code: labCode.trim().toUpperCase(),
+      });
       setLab(data);
       setOpen(false);
       toast.success(t("toast.updated"));
@@ -229,6 +257,8 @@ export default function MyLaboratoryPage() {
                         startIcon={<EditOutlinedIcon />}
                         onClick={() => {
                           setName(lab.name || "");
+                          setCityCode(lab.city_code || "");
+                          setLabCode(lab.lab_code || "");
                           setOpen(true);
                         }}
                         sx={{
@@ -309,6 +339,27 @@ export default function MyLaboratoryPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoFocus
+            />
+          </FormField>
+          <FormField id="lab-city-code" label={t("pages.myLaboratory.fields.cityCode")}>
+            <ProTextField
+              id="field-lab-city-code"
+              labelPlacement="top"
+              fullWidth
+              value={cityCode}
+              onChange={(e) => setCityCode(e.target.value)}
+              placeholder="YGN"
+              helperText="Used in Case ID prefix (e.g. YGN/PWA/2026/…)"
+            />
+          </FormField>
+          <FormField id="lab-lab-code" label={t("pages.myLaboratory.fields.labCode")}>
+            <ProTextField
+              id="field-lab-lab-code"
+              labelPlacement="top"
+              fullWidth
+              value={labCode}
+              onChange={(e) => setLabCode(e.target.value)}
+              placeholder="PWA"
             />
           </FormField>
         </DialogContent>

@@ -9,12 +9,6 @@ import {
   FABRICATION_COLUMNS,
 } from "@/pages/operations/caseFormConfig";
 
-const ADVANCE_LABELS = {
-  received: "Start fabrication",
-  in_fabrication: "Send to QC",
-  qc: "Mark ready",
-};
-
 export default function FabricationPage() {
   const { t } = useTranslation();
 
@@ -33,7 +27,7 @@ export default function FabricationPage() {
         await client.post(`/cases/${row.id}/advance/`, { to: next });
         toast.success(
           t("pages.fabrication.advanced", {
-            defaultValue: "Case advanced",
+            defaultValue: "Case finished — moved to QC",
           }),
         );
         refresh?.();
@@ -53,32 +47,16 @@ export default function FabricationPage() {
       canCreate={false}
       canEdit={false}
       canDelete={false}
+      showRowNumbers={false}
       listParams={{ pipeline: "fabrication" }}
       trashResourceId="cases"
       extraRowActions={(row, { refresh } = {}) => {
-        if (row.status === "ready") {
-          return (
-            <TableActionButton
-              variant="view"
-              title={t("pages.fabrication.readyForDelivery", {
-                defaultValue: "Ready for delivery",
-              })}
-              onClick={() => {
-                toast.success(
-                  t("pages.fabrication.goDeliveries", {
-                    defaultValue: "Create a delivery from the Deliveries page.",
-                  }),
-                );
-              }}
-            />
-          );
-        }
         if (!FABRICATION_ADVANCE_NEXT[row.status]) return null;
         return (
           <TableActionButton
             variant="status"
-            title={t(`pages.fabrication.advance.${row.status}`, {
-              defaultValue: ADVANCE_LABELS[row.status] || "Advance stage",
+            title={t("pages.fabrication.finished", {
+              defaultValue: "Finished",
             })}
             onClick={() => handleAdvance(row, refresh)}
           />

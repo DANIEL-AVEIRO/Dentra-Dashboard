@@ -700,7 +700,7 @@ export default function ResourceFormPanel({
       t,
     );
     const nextErrors = { ...errors };
-    if (!isDraftSave && form.case_source === "clinic" && !form.clinic) {
+    if (!isDraftSave && !form.clinic) {
       nextErrors.clinic = t("validation.required", {
         field: t("fields.clinic_name"),
       });
@@ -741,10 +741,10 @@ export default function ResourceFormPanel({
             const item = {
               restoration: row.restoration,
               material: row.material,
+              material_size: row.material_size || "",
               tooth_number: row.tooth_number || "",
               shade: row.shade || "",
               quantity: Number(row.quantity) || 1,
-              notes: row.notes || "",
               sort_order: index,
             };
             if (row.unit_price !== "" && row.unit_price != null) {

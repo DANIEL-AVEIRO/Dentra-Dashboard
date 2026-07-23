@@ -9,6 +9,8 @@ export default function LaboratoriesPage() {
       searchPlaceholder="Search laboratories…"
       columns={[
         { key: "name", label: "Laboratory name" },
+        { key: "city_code", label: "City code" },
+        { key: "lab_code", label: "Lab code" },
         { key: "plan_name", label: "Plan" },
         { key: "owner_name", label: "Owner name" },
         { key: "owner_email", label: "Owner email" },
@@ -20,6 +22,17 @@ export default function LaboratoriesPage() {
           label: "Laboratory name",
           required: true,
           placeholder: "e.g. City Dental Lab",
+        },
+        {
+          name: "city_code",
+          label: "City code",
+          placeholder: "e.g. YGN",
+          helperText: "Used in Case ID (YGN/PWA/2026/000001.0)",
+        },
+        {
+          name: "lab_code",
+          label: "Lab code",
+          placeholder: "e.g. PWA",
         },
         {
           name: "plan",

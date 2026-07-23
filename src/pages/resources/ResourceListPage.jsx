@@ -177,6 +177,8 @@ export default function ResourceListPage({
   formPath,
   /** Override pages.* i18n key (defaults to endpoint) */
   pageKey: pageKeyProp,
+  /** Show # column in the table (default true) */
+  showRowNumbers = true,
 }) {
   usePersistedListSearch();
   const navigate = useNavigate();
@@ -1378,6 +1380,7 @@ export default function ResourceListPage({
             rowsPerPage={pageSize}
             onRowsPerPageChange={setPageSize}
             rowsPerPageOptions={pageSizeOptions}
+            showRowNumbers={showRowNumbers}
             rowNumberOffset={(page - 1) * pageSize}
             loading={loading}
             refreshing={refreshing}

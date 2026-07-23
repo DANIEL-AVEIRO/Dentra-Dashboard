@@ -21,16 +21,15 @@ const TOOTH_PATH =
   "M0 0 C8 0 13 6 13 14 C13 20 11 24 8 26 L8 30 C8 34 5 37 0 37 C-5 37 -8 34 -8 30 L-8 26 C-11 24 -13 20 -13 14 C-13 6 -8 0 0 0 Z";
 
 const TYPE_SCALE = {
-  incisor: { sx: 0.72, sy: 1.08 },
-  canine: { sx: 0.82, sy: 1.12 },
-  premolar: { sx: 0.95, sy: 1.02 },
-  molar: { sx: 1.15, sy: 0.98 },
+  incisor: 0.78,
+  canine: 0.86,
+  premolar: 0.95,
+  molar: 1.08,
 };
 
 function ToothShape({ tooth, selected, onToggle, isLower }) {
   const theme = useTheme();
   const scale = TYPE_SCALE[tooth.type] ?? TYPE_SCALE.premolar;
-  const flip = isLower ? -1 : 1;
   const fill = selected
     ? alpha(BRAND_PRIMARY, theme.palette.mode === "light" ? 0.22 : 0.32)
     : alpha(
@@ -54,8 +53,8 @@ function ToothShape({ tooth, selected, onToggle, isLower }) {
         m: 0,
         bgcolor: "transparent",
         cursor: "pointer",
-        width: 34,
-        height: 54,
+        width: 30,
+        height: 52,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -63,7 +62,7 @@ function ToothShape({ tooth, selected, onToggle, isLower }) {
         gap: 0.25,
         borderRadius: 1,
         transition: "transform 0.12s ease",
-        "&:hover": { transform: "scale(1.06)" },
+        "&:hover": { transform: "scale(1.05)" },
         "&:focus-visible": {
           outline: `2px solid ${theme.palette.primary.main}`,
           outlineOffset: 2,
@@ -74,7 +73,7 @@ function ToothShape({ tooth, selected, onToggle, isLower }) {
         <Typography
           variant="caption"
           sx={{
-            fontSize: "0.65rem",
+            fontSize: "0.62rem",
             fontWeight: selected ? 700 : 600,
             color: selected ? "primary.main" : "text.secondary",
             lineHeight: 1,
@@ -85,24 +84,27 @@ function ToothShape({ tooth, selected, onToggle, isLower }) {
       ) : null}
       <Box
         component="svg"
-        viewBox="-16 -4 32 44"
-        sx={{ width: 28, height: 38, display: "block", overflow: "visible" }}
+        viewBox="-16 -2 32 42"
+        sx={{
+          width: 26 * scale,
+          height: 36 * scale,
+          display: "block",
+          transform: isLower ? "scaleY(-1)" : "none",
+        }}
       >
-        <g transform={`scale(${scale.sx}, ${scale.sy * flip})`}>
-          <path
-            d={TOOTH_PATH}
-            fill={fill}
-            stroke={stroke}
-            strokeWidth="1.2"
-            strokeLinejoin="round"
-          />
-        </g>
+        <path
+          d={TOOTH_PATH}
+          fill={fill}
+          stroke={stroke}
+          strokeWidth="1.15"
+          strokeLinejoin="round"
+        />
       </Box>
       {isLower ? (
         <Typography
           variant="caption"
           sx={{
-            fontSize: "0.65rem",
+            fontSize: "0.62rem",
             fontWeight: selected ? 700 : 600,
             color: selected ? "primary.main" : "text.secondary",
             lineHeight: 1,
