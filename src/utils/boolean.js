@@ -6,7 +6,8 @@ export function toBoolean(value, fallback = false) {
   return Boolean(value);
 }
 
-/** Prepare form state for PATCH/POST — boolean fields stay boolean. */
+/** Prepare form state for PATCH/POST — boolean fields stay boolean.
+ * Empty strings become null so optional fields (e.g. phone) can be cleared. */
 export function serializeFormPayload(form, fields = []) {
   const booleanKeys = new Set(
     fields.filter((f) => f.type === "boolean").map((f) => f.name)
@@ -18,7 +19,7 @@ export function serializeFormPayload(form, fields = []) {
       payload[key] = toBoolean(payload[key]);
       return;
     }
-    if (payload[key] === "") delete payload[key];
+    if (payload[key] === "") payload[key] = null;
   });
 
   return payload;

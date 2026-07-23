@@ -23,7 +23,7 @@ export function buildFormData(form, fields = []) {
       }
       return;
     }
-    if (val === "" || val == null) return;
+    if (val == null) return;
     if (typeof val === "boolean") {
       fd.append(key, val ? "true" : "false");
       return;
