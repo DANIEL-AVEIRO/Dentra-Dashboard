@@ -115,7 +115,7 @@ export const formCompactMetricsRowSx = {
   display: "grid",
   gridTemplateColumns: {
     xs: "minmax(0, 1fr)",
-    sm: "repeat(2, minmax(0, 1fr))",
+    md: "repeat(2, minmax(0, 1fr))",
   },
   gap: FORM_FIELD_GAP,
   columnGap: 2.5,
@@ -128,7 +128,7 @@ export const formChargeRowSx = {
   display: "grid",
   gridTemplateColumns: {
     xs: "minmax(0, 1fr)",
-    sm: "repeat(3, minmax(0, 1fr))",
+    md: "repeat(3, minmax(0, 1fr))",
   },
   gap: FORM_FIELD_GAP,
   columnGap: 2.5,
@@ -149,7 +149,7 @@ export const formContactRowSx = {
   display: "grid",
   gridTemplateColumns: {
     xs: "minmax(0, 1fr)",
-    sm: "minmax(0, 1fr) minmax(160px, 220px)",
+    md: "minmax(0, 1fr) minmax(160px, 220px)",
   },
   gap: FORM_FIELD_GAP,
   columnGap: 2.5,
@@ -162,7 +162,7 @@ export const formTwoColRowSx = {
   display: "grid",
   gridTemplateColumns: {
     xs: "minmax(0, 1fr)",
-    sm: "repeat(2, minmax(0, 1fr))",
+    md: "repeat(2, minmax(0, 1fr))",
   },
   gap: FORM_FIELD_GAP,
   columnGap: 2.5,
@@ -187,35 +187,41 @@ export function isFormFieldFullWidth(field) {
 }
 
 /** Shared horizontal inset for create/edit dialog chrome (title, body, footer) */
-export const FORM_DIALOG_PX = { xs: 1.5, sm: 2 };
+export const FORM_DIALOG_PX = { xs: 1.25, sm: 1.75, md: 2 };
 
 export const formDialogTitleSx = {
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
   gap: 1,
-  py: { xs: 1.5, sm: 2 },
+  py: { xs: 1.25, sm: 1.75, md: 2 },
   px: FORM_DIALOG_PX,
   flexShrink: 0,
+  minWidth: 0,
 };
 
 export const dialogFormContentSx = {
   display: "flex",
   flexDirection: "column",
-  gap: 1.25,
+  // Wider gap on mobile so field groups read clearly after margin:none
+  gap: { xs: 2, md: 1.75 },
   px: FORM_DIALOG_PX,
-  pt: { xs: 2, sm: 2 },
+  pt: { xs: 1.75, sm: 2 },
   pb: { xs: 2.5, sm: 2.5 },
   width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
   boxSizing: "border-box",
   scrollbarGutter: "stable",
   "& > *:not(.MuiGrid-root)": {
     width: "100%",
     maxWidth: "100%",
+    minWidth: 0,
   },
   "& .MuiFormControl-root": {
     width: "100%",
     maxWidth: "100%",
+    minWidth: 0,
     marginLeft: 0,
     marginRight: 0,
     marginTop: 0,
@@ -224,10 +230,12 @@ export const dialogFormContentSx = {
   "& .MuiTextField-root": {
     marginTop: 0,
     marginBottom: 0,
+    minWidth: 0,
   },
   "& .MuiAutocomplete-root": {
     width: "100%",
     maxWidth: "100%",
+    minWidth: 0,
     marginTop: 0,
     marginBottom: 0,
   },
@@ -270,9 +278,11 @@ export const pageFormSx = {
 export const formGridContainerSx = {
   width: "100%",
   margin: 0,
-  "& .MuiFormControl-root": {
+  "& .MuiFormControl-root, & .MuiTextField-root, & .MuiAutocomplete-root": {
     width: "100%",
     maxWidth: "100%",
+    marginTop: 0,
+    marginBottom: 0,
   },
 };
 

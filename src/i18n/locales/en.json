@@ -77,6 +77,7 @@
       "partners": "Partners",
       "restorations": "Restorations",
       "materials": "Materials",
+      "shades": "Shades",
       "catalog": "Product catalog",
       "pricing": "Pricing",
       "content": "Content",
@@ -86,7 +87,7 @@
       "system": "System",
       "clinicCare": "Clinic care"
     },
-    "admin": "Admin",
+    "admin": "Dashboard",
     "pickups": "Pickups",
     "deliveries": "Deliveries",
     "returnedWays": "Returned Ways",
@@ -107,14 +108,15 @@
     "appointments": "Appointments",
     "rxTemplates": "Rx templates",
     "clinicUsers": "Clinic users",
-    "workboard": "Workboard",
     "qc": "QC",
     "commissions": "Commissions",
     "commissionRules": "Commission rules",
     "materials": "Materials",
     "materialCategories": "Material categories",
+    "materialSizes": "Material sizes",
     "restorations": "Restorations",
     "restorationCategories": "Restoration categories",
+    "shades": "Shades",
     "priceList": "Price list",
     "regions": "Regions",
     "fabrication": "Fabrication",
@@ -314,6 +316,7 @@
     "columnsMinOne": "At least one column must stay visible.",
     "columnsReset": "Reset columns",
     "dragColumn": "Drag to reorder column",
+    "dragRow": "Drag to reorder row",
     "openFullDetail": "Open full detail",
     "selectAllMatching": "Select all {{count}} matching",
     "allMatchingSelected": "All {{count}} matching rows selected",
@@ -1169,20 +1172,35 @@
         "financial": "Financial"
       },
       "lineItems": {
-        "help": "Add each restoration with its material, size, tooth, and shade. Unit price loads from the price list when both restoration and material are selected. Quantity follows selected teeth.",
+        "help": "Add each restoration with its material, size, tooth, and shade. Unit price auto-fills from the price list when material and material size are selected. Line total = qty × unit price − discount.",
         "add": "Add item",
         "itemLabel": "Item {{index}}",
         "empty": "No work items yet. Add a restoration and material to describe what to fabricate.",
         "selectRestoration": "Select restoration…",
         "selectMaterial": "Select material…",
-        "selectSize": "Select size (10T–26T)…",
+        "selectSize": "Select size…",
         "selectShade": "Select shade…",
+        "priceFromList": "Auto-filled from price list (editable)",
+        "priceLoading": "Looking up price…",
         "grandTotal": "Work items total"
       },
       "financial": {
+        "summaryTitle": "Payment & charges detail",
+        "summaryHelp": "Live totals from work items — gross, discounts, and net amount.",
         "workItemsSubtotal": "Work items subtotal",
-        "totalAmount": "Total amount",
-        "itemCount": "{{count}} priced line(s)"
+        "grossCharges": "Gross charges (qty × unit price)",
+        "totalDiscount": "Total discounts",
+        "avgUnitPrice": "Average unit price",
+        "totalAmount": "Net total amount",
+        "calcHint": "Net = sum of max(0, quantity × unit price − discount) for each priced line.",
+        "itemCount": "{{count}} priced line(s)",
+        "statItems": "{{count}} item(s)",
+        "statPriced": "{{count}} priced",
+        "statUnpriced": "{{count}} missing price",
+        "statUnits": "{{count}} unit(s)",
+        "colItem": "Work item",
+        "missingPrice": "Needs unit price to include in total",
+        "empty": "Add work items above to see a full financial breakdown."
       },
       "notes": {
         "historyTitle": "Note history",
@@ -1200,6 +1218,11 @@
       "subtitle": "Group materials by type (ceramic, metal, resin, etc.)",
       "search": "Search material categories…"
     },
+    "material-sizes": {
+      "title": "Material sizes",
+      "subtitle": "Manage disc thickness / material size options for case work items",
+      "search": "Search material sizes…"
+    },
     "restorations": {
       "title": "Restorations",
       "subtitle": "Manage restoration types your laboratory offers",
@@ -1210,9 +1233,14 @@
       "subtitle": "Group restorations by type (crown, bridge, veneer, etc.)",
       "search": "Search restoration categories…"
     },
+    "shades": {
+      "title": "Shades",
+      "subtitle": "Manage tooth shade options for case work items",
+      "search": "Search shades…"
+    },
     "price-list": {
       "title": "Price list",
-      "subtitle": "Set unit prices for each restoration and material combination",
+      "subtitle": "Set unit prices for each material and material size combination",
       "search": "Search price list…"
     },
     "clinics": {
@@ -1242,16 +1270,6 @@
       "cannotAdvance": "This case cannot be advanced further.",
       "readyForDelivery": "Ready for delivery",
       "goDeliveries": "Create a delivery from the Deliveries page."
-    },
-    "workboard": {
-      "title": "Workboard",
-      "subtitle": "Assign and track fabrication cases",
-      "search": "Search workboard…",
-      "assign": "Assign",
-      "assignTitle": "Assign case",
-      "assigned": "Case assigned",
-      "selectUser": "Select technician…",
-      "printTicket": "Print work ticket"
     },
     "qc": {
       "title": "Quality control",
@@ -1939,6 +1957,8 @@
     "MaterialCategoryModel": "Material categories",
     "RestorationModel": "Restorations",
     "RestorationCategoryModel": "Restoration categories",
+    "ShadeModel": "Shades",
+    "MaterialSizeModel": "Material sizes",
     "PriceListItemModel": "Price list",
     "SiteModel": "Site Settings",
     "SliderModel": "Sliders",
@@ -1958,6 +1978,8 @@
     "material-categories": "Material categories",
     "restorations": "Restorations",
     "restoration-categories": "Restoration categories",
+    "shades": "Shades",
+    "material-sizes": "Material sizes",
     "price-list": "Price list",
     "merchants": "Merchants",
     "riders": "Riders",

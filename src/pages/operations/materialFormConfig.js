@@ -27,12 +27,18 @@ export const MATERIAL_FIELDS = [
     name: "stock_qty",
     labelKey: "fields.stock_qty",
     type: "number",
+    integer: true,
+    step: 1,
+    min: 0,
     compact: true,
   },
   {
     name: "reorder_level",
     labelKey: "fields.reorder_level",
     type: "number",
+    integer: true,
+    step: 1,
+    min: 0,
     compact: true,
   },
   {

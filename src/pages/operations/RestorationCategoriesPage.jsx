@@ -10,6 +10,7 @@ export default function RestorationCategoriesPage() {
       endpoint="restoration-categories"
       columns={RESTORATION_CATEGORY_COLUMNS}
       fields={RESTORATION_CATEGORY_FIELDS}
+      rowReorderField="sort_order"
     />
   );
 }

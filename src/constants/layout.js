@@ -26,16 +26,16 @@ export const TABLE_FILTER_BORDER_RADIUS = TABLE_BORDER_RADIUS;
 export const TABLE_FILTER_HEIGHT = 40;
 export const TABLE_FILTER_CELL_MIN = 148;
 export const TABLE_FILTER_CELL_MAX = 176;
-export const TABLE_FILTER_DATE_WIDTH = { xs: "100%", sm: 158 };
-export const TABLE_FILTER_SELECT_WIDTH = { xs: "100%", sm: TABLE_FILTER_CELL_MAX };
-export const TABLE_FILTER_SEARCH_MIN = { xs: 0, sm: 200 };
-export const TABLE_FILTER_SEARCH_MAX = { xs: "100%", sm: 240 };
+export const TABLE_FILTER_DATE_WIDTH = { xs: "100%", md: 158 };
+export const TABLE_FILTER_SELECT_WIDTH = { xs: "100%", md: TABLE_FILTER_CELL_MAX };
+export const TABLE_FILTER_SEARCH_MIN = { xs: 0, md: 200 };
+export const TABLE_FILTER_SEARCH_MAX = { xs: "100%", md: 240 };
 export const TABLE_FILTER_SEARCH_WIDTH = 240;
 
 /** Responsive columns — auto-fill with fixed max width (no stretch on wide screens). */
 export const TABLE_FILTER_GRID_COLUMNS = {
   xs: "minmax(0, 1fr)",
-  sm: `repeat(auto-fill, minmax(${TABLE_FILTER_CELL_MIN}px, ${TABLE_FILTER_CELL_MAX}px))`,
+  md: `repeat(auto-fill, minmax(${TABLE_FILTER_CELL_MIN}px, ${TABLE_FILTER_CELL_MAX}px))`,
 };
 
 /** Each select cell inside TableFilterSelectGrid */

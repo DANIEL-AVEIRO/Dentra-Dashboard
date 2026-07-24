@@ -1,4 +1,4 @@
-export const RESTORATION_CATEGORY_COLUMNS = [
+export const MATERIAL_SIZE_COLUMNS = [
   { key: "name", labelKey: "fields.name" },
   { key: "code", labelKey: "fields.code" },
   {
@@ -10,7 +10,7 @@ export const RESTORATION_CATEGORY_COLUMNS = [
   },
 ];
 
-export const RESTORATION_CATEGORY_FIELDS = [
+export const MATERIAL_SIZE_FIELDS = [
   { name: "name", labelKey: "fields.name", required: true },
   { name: "code", labelKey: "fields.code" },
   {

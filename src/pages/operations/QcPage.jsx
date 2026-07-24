@@ -13,14 +13,22 @@ import ResourceListPage from "@/pages/resources/ResourceListPage";
 import { TableActionButton } from "@/components/common/TableActions";
 import FormDialogActions from "@/components/common/FormDialogActions";
 import { FormField, ProTextField } from "@/components/common/form";
+import { dialogFormContentSx } from "@/components/common/form/formLayout";
 import ResponsiveDialog from "@/components/common/ResponsiveDialog";
 import client from "@/api/client";
 import { toast, getErrorMessage } from "@/utils/toast";
 import { useTranslation } from "@/context/LanguageContext";
+import { useConfirmDialog } from "@/hooks/useConfirmDialog";
 import { FABRICATION_COLUMNS } from "@/pages/operations/caseFormConfig";
+
+const REDO_TOAST = {
+  received: "Case sent back to Fabrication",
+  in_fabrication: "Case sent back to Fabrication",
+};
 
 export default function QcPage() {
   const { t } = useTranslation();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [open, setOpen] = useState(false);
   const [caseRow, setCaseRow] = useState(null);
   const [items, setItems] = useState([]);
@@ -78,7 +86,7 @@ export default function QcPage() {
     if (!caseRow) return;
     setBusy(true);
     try {
-      await client.post(`/cases/${caseRow.id}/qc/`, {
+      const { data } = await client.post(`/cases/${caseRow.id}/qc/`, {
         finish: true,
         items: items.map((item) => ({
           item_id: item.item_id,
@@ -87,9 +95,14 @@ export default function QcPage() {
           notes: item.notes,
         })),
       });
+      const next = data?.case?.status;
+      const toastMsg =
+        next === "delivered"
+          ? "QC finished — ready for Billing"
+          : "QC finished — moved to Deliveries";
       toast.success(
         t("pages.qc.finished", {
-          defaultValue: "QC finished — moved to Deliveries",
+          defaultValue: toastMsg,
         }),
       );
       setOpen(false);
@@ -100,6 +113,34 @@ export default function QcPage() {
       setBusy(false);
     }
   };
+
+  const handleRedo = useCallback(
+    async (row) => {
+      const ok = await confirm({
+        title: t("pages.qc.redoTitle", { defaultValue: "Redo case?" }),
+        message: t("pages.qc.redoMessage", {
+          defaultValue:
+            "Send case {{caseId}} back to the previous workflow step?",
+          caseId: row.case_id || row.id,
+        }),
+        confirmLabel: t("pages.qc.redo", { defaultValue: "Redo" }),
+        confirmColor: "warning",
+      });
+      if (!ok) return;
+      try {
+        const { data } = await client.post(`/cases/${row.id}/redo/`);
+        toast.success(
+          t("pages.qc.redone", {
+            defaultValue: REDO_TOAST[data?.status] || "Case sent back",
+          }),
+        );
+        setRefreshKey((k) => k + 1);
+      } catch (err) {
+        toast.error(getErrorMessage(err, t("toast.saveFailed")));
+      }
+    },
+    [confirm, t],
+  );
 
   return (
     <>
@@ -116,11 +157,18 @@ export default function QcPage() {
         trashResourceId="cases"
         showRowNumbers={false}
         extraRowActions={(row) => (
-          <TableActionButton
-            variant="status"
-            title={t("pages.qc.finished", { defaultValue: "Finished" })}
-            onClick={() => openQc(row)}
-          />
+          <>
+            <TableActionButton
+              variant="status"
+              title={t("pages.qc.finished", { defaultValue: "Finished" })}
+              onClick={() => openQc(row)}
+            />
+            <TableActionButton
+              variant="restore"
+              title={t("pages.qc.redo", { defaultValue: "Redo" })}
+              onClick={() => handleRedo(row)}
+            />
+          </>
         )}
       />
 
@@ -136,11 +184,11 @@ export default function QcPage() {
           })}{" "}
           {caseRow?.case_id ? `· ${caseRow.case_id}` : ""}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={dialogFormContentSx}>
           {loading ? (
             <Typography color="text.secondary">{t("common.loading")}</Typography>
           ) : (
-            <Stack spacing={2} sx={{ pt: 1 }}>
+            <Stack spacing={2}>
               {items.map((item, idx) => (
                 <Box key={`${item.item_id || item.label}-${idx}`}>
                   <FormControlLabel
@@ -183,6 +231,7 @@ export default function QcPage() {
           />
         </DialogActions>
       </ResponsiveDialog>
+      <ConfirmDialog />
     </>
   );
 }

@@ -10,6 +10,7 @@ export default function MaterialCategoriesPage() {
       endpoint="material-categories"
       columns={MATERIAL_CATEGORY_COLUMNS}
       fields={MATERIAL_CATEGORY_FIELDS}
+      rowReorderField="sort_order"
     />
   );
 }

@@ -375,7 +375,9 @@ export default function ResourceFormPanel({
         <Box key={f.name} sx={{ width: "100%" }}>
           <CaseLineItemsEditor
             value={form[f.name] ?? []}
-            onChange={patch((rows) => setForm({ ...form, [f.name]: rows }))}
+            onChange={patch((rows) =>
+              setForm((prev) => ({ ...prev, [f.name]: rows })),
+            )}
             error={fieldError}
           />
         </Box>
@@ -835,7 +837,7 @@ export default function ResourceFormPanel({
                 handleSave();
               }
             }}
-            sx={{ p: { xs: 2, sm: 2.5 } }}
+            sx={{ p: { xs: 1.5, sm: 2, md: 2.5 }, width: "100%", minWidth: 0, maxWidth: "100%" }}
           >
             <DialogFormLayout
               fields={translatedFields}
@@ -847,13 +849,22 @@ export default function ResourceFormPanel({
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "flex-end",
+                justifyContent: { xs: "stretch", sm: "flex-end" },
+                flexDirection: { xs: "column-reverse", sm: "row" },
                 gap: 1,
                 mt: 2.5,
                 pt: 2,
                 borderTop: 1,
                 borderColor: "divider",
                 flexWrap: "wrap",
+                width: "100%",
+                minWidth: 0,
+                "& > .MuiButton-root, & > .MuiBox-root > .MuiButton-root": {
+                  width: { xs: "100%", sm: "auto" },
+                },
+                "& > *": {
+                  width: { xs: "100%", sm: "auto" },
+                },
               }}
             >
               {showStatusActions ? (

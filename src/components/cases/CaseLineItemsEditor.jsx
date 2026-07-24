@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Box, CircularProgress, Divider, Stack, Typography } from "@mui/material";
 import ActionButton from "@/components/common/ActionButton";
 import TableActionButton from "@/components/common/TableActionButton";
 import SearchableSelect from "@/components/common/SearchableSelect";
@@ -9,10 +9,6 @@ import client from "@/api/client";
 import { useTranslation } from "@/context/LanguageContext";
 import { formatCaseMoney, caseLineTotal } from "@/utils/caseLineItemMoney";
 import { parseToothSelection } from "@/components/cases/toothChartData";
-import {
-  MATERIAL_SIZE_OPTIONS,
-  SHADE_OPTIONS,
-} from "@/pages/operations/caseFormConfig";
 
 const EMPTY_ROW = () => ({
   restoration: "",
@@ -39,30 +35,23 @@ function mapApiRow(item) {
   };
 }
 
-async function lookupUnitPrice(restoration, material) {
-  if (!restoration || !material) return null;
+async function lookupUnitPrice(material, materialSize) {
+  if (!material || !materialSize) return null;
   const { data } = await client.get("/price-list/lookup/", {
-    params: { restoration, material },
+    params: { material, material_size: materialSize },
   });
   if (data?.found && data.unit_price != null) return data.unit_price;
   return null;
 }
-
-const shadeSelectOptions = SHADE_OPTIONS.map((o) => ({
-  value: o.id,
-  label: o.name,
-}));
-
-const sizeSelectOptions = MATERIAL_SIZE_OPTIONS.map((o) => ({
-  value: o.id,
-  label: o.name,
-}));
 
 function LineItemCard({
   row,
   index,
   restorationOptions,
   materialOptions,
+  materialSizeOptions,
+  shadeOptions,
+  priceLoading,
   onPatch,
   onUpdate,
   onRemove,
@@ -125,6 +114,8 @@ function LineItemCard({
               placeholder={t("pages.cases.lineItems.selectRestoration")}
               value={row.restoration}
               options={restorationOptions}
+              valueKey="value"
+              labelKey="label"
               onChange={(next) => onPatch({ restoration: next })}
             />
           </FormField>
@@ -133,15 +124,19 @@ function LineItemCard({
               placeholder={t("pages.cases.lineItems.selectMaterial")}
               value={row.material}
               options={materialOptions}
+              valueKey="value"
+              labelKey="label"
               onChange={(next) => onPatch({ material: next })}
             />
           </FormField>
-          <FormField id={`material-size-${index}`} label={t("fields.material_size")}>
+          <FormField id={`material-size-${index}`} label={t("fields.material_size")} required>
             <SearchableSelect
               placeholder={t("pages.cases.lineItems.selectSize")}
               value={row.material_size}
-              options={sizeSelectOptions}
-              onChange={(next) => onUpdate({ material_size: next })}
+              options={materialSizeOptions}
+              valueKey="value"
+              labelKey="label"
+              onChange={(next) => onPatch({ material_size: next })}
             />
           </FormField>
         </Box>
@@ -176,7 +171,9 @@ function LineItemCard({
             <SearchableSelect
               placeholder={t("pages.cases.lineItems.selectShade")}
               value={row.shade}
-              options={shadeSelectOptions}
+              options={shadeOptions}
+              valueKey="value"
+              labelKey="label"
               onChange={(next) => onUpdate({ shade: next })}
             />
           </FormField>
@@ -190,7 +187,15 @@ function LineItemCard({
               onChange={(e) => onUpdate({ quantity: e.target.value })}
             />
           </FormField>
-          <FormField id={`unit-price-${index}`} label={t("fields.unit_price")}>
+          <FormField
+            id={`unit-price-${index}`}
+            label={t("fields.unit_price")}
+            helperText={
+              priceLoading
+                ? t("pages.cases.lineItems.priceLoading")
+                : t("pages.cases.lineItems.priceFromList")
+            }
+          >
             <ProTextField
               labelPlacement="outlined"
               fullWidth
@@ -199,6 +204,12 @@ function LineItemCard({
               value={row.unit_price}
               onChange={(e) => onUpdate({ unit_price: e.target.value })}
               placeholder="0"
+              disabled={priceLoading}
+              InputProps={{
+                endAdornment: priceLoading ? (
+                  <CircularProgress color="inherit" size={16} sx={{ mr: 1 }} />
+                ) : undefined,
+              }}
             />
           </FormField>
           <FormField id={`discount-${index}`} label={t("fields.discount")}>
@@ -222,15 +233,23 @@ export default function CaseLineItemsEditor({ value = [], onChange, error }) {
   const { t } = useTranslation();
   const [restorations, setRestorations] = useState([]);
   const [materials, setMaterials] = useState([]);
+  const [materialSizes, setMaterialSizes] = useState([]);
+  const [shades, setShades] = useState([]);
+  const [priceLoadingByIndex, setPriceLoadingByIndex] = useState({});
   const rows = Array.isArray(value) && value.length > 0 ? value : [];
+  const rowsRef = useRef(rows);
+  const lookupSeqRef = useRef({});
+  rowsRef.current = rows;
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const [restorationRes, materialRes] = await Promise.all([
+        const [restorationRes, materialRes, sizeRes, shadeRes] = await Promise.all([
           client.get("/restorations/"),
           client.get("/materials/"),
+          client.get("/material-sizes/"),
+          client.get("/shades/"),
         ]);
         if (cancelled) return;
         const toOptions = (list) =>
@@ -240,12 +259,26 @@ export default function CaseLineItemsEditor({ value = [], onChange, error }) {
               value: item.id,
               label: item.code ? `${item.name} (${item.code})` : item.name,
             }));
+        const toNameOptions = (list) =>
+          (list.results ?? list)
+            .filter((item) => item.is_active !== false)
+            .map((item) => ({
+              value: item.name,
+              label:
+                item.code && item.code !== item.name
+                  ? `${item.name} (${item.code})`
+                  : item.name,
+            }));
         setRestorations(toOptions(restorationRes.data));
         setMaterials(toOptions(materialRes.data));
+        setMaterialSizes(toNameOptions(sizeRes.data));
+        setShades(toNameOptions(shadeRes.data));
       } catch {
         if (!cancelled) {
           setRestorations([]);
           setMaterials([]);
+          setMaterialSizes([]);
+          setShades([]);
         }
       }
     })();
@@ -256,45 +289,99 @@ export default function CaseLineItemsEditor({ value = [], onChange, error }) {
 
   const restorationOptions = useMemo(() => restorations, [restorations]);
   const materialOptions = useMemo(() => materials, [materials]);
+  const materialSizeOptions = useMemo(() => materialSizes, [materialSizes]);
+  const shadeOptions = useMemo(() => shades, [shades]);
+
+  const commitRows = useCallback(
+    (nextRows) => {
+      rowsRef.current = nextRows;
+      onChange(nextRows);
+    },
+    [onChange],
+  );
 
   const updateRow = useCallback(
     (index, patch) => {
-      const next = rows.map((row, i) => (i === index ? { ...row, ...patch } : row));
-      onChange(next);
+      const next = rowsRef.current.map((row, i) =>
+        i === index ? { ...row, ...patch } : row,
+      );
+      commitRows(next);
     },
-    [rows, onChange],
+    [commitRows],
   );
 
   const applyRowPatch = useCallback(
     async (index, patch) => {
-      const current = rows[index];
+      const current = rowsRef.current[index] ?? EMPTY_ROW();
       const next = { ...current, ...patch };
+      const materialOrSizeChanged =
+        "material" in patch || "material_size" in patch;
+      const bothSelected = Boolean(next.material && next.material_size);
       const comboChanged =
-        ("restoration" in patch || "material" in patch) &&
-        next.restoration &&
-        next.material &&
-        (next.restoration !== current.restoration || next.material !== current.material);
+        materialOrSizeChanged &&
+        bothSelected &&
+        (next.material !== current.material ||
+          next.material_size !== current.material_size);
 
-      if (comboChanged) {
-        try {
-          const price = await lookupUnitPrice(next.restoration, next.material);
-          next.unit_price = price != null ? price : "";
-        } catch {
-          next.unit_price = "";
-        }
+      if (materialOrSizeChanged && !bothSelected) {
+        next.unit_price = "";
       }
 
-      updateRow(index, next);
+      commitRows(
+        rowsRef.current.map((row, i) => (i === index ? next : row)),
+      );
+
+      if (!comboChanged) return;
+
+      const seq = (lookupSeqRef.current[index] || 0) + 1;
+      lookupSeqRef.current[index] = seq;
+      setPriceLoadingByIndex((prev) => ({ ...prev, [index]: true }));
+
+      try {
+        const price = await lookupUnitPrice(next.material, next.material_size);
+        if (lookupSeqRef.current[index] !== seq) return;
+        const latest = rowsRef.current[index];
+        if (
+          !latest ||
+          latest.material !== next.material ||
+          latest.material_size !== next.material_size
+        ) {
+          return;
+        }
+        commitRows(
+          rowsRef.current.map((row, i) =>
+            i === index
+              ? { ...row, unit_price: price != null ? String(price) : "" }
+              : row,
+          ),
+        );
+      } catch {
+        if (lookupSeqRef.current[index] !== seq) return;
+        commitRows(
+          rowsRef.current.map((row, i) =>
+            i === index ? { ...row, unit_price: "" } : row,
+          ),
+        );
+      } finally {
+        if (lookupSeqRef.current[index] === seq) {
+          setPriceLoadingByIndex((prev) => ({ ...prev, [index]: false }));
+        }
+      }
     },
-    [rows, updateRow],
+    [commitRows],
   );
 
   const addRow = () => {
-    onChange([...rows, EMPTY_ROW()]);
+    commitRows([...rowsRef.current, EMPTY_ROW()]);
   };
 
   const removeRow = (index) => {
-    onChange(rows.filter((_, i) => i !== index));
+    commitRows(rowsRef.current.filter((_, i) => i !== index));
+    setPriceLoadingByIndex((prev) => {
+      const next = { ...prev };
+      delete next[index];
+      return next;
+    });
   };
 
   return (
@@ -357,6 +444,9 @@ export default function CaseLineItemsEditor({ value = [], onChange, error }) {
               index={index}
               restorationOptions={restorationOptions}
               materialOptions={materialOptions}
+              materialSizeOptions={materialSizeOptions}
+              shadeOptions={shadeOptions}
+              priceLoading={Boolean(priceLoadingByIndex[index])}
               onPatch={(patch) => applyRowPatch(index, patch)}
               onUpdate={(patch) => updateRow(index, patch)}
               onRemove={() => removeRow(index)}

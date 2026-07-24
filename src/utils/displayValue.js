@@ -119,6 +119,8 @@ const FK_NAME_FALLBACK = {
   role: "role_name",
   plan: "plan_name",
   category: "category_name",
+  material: "material_name",
+  material_size: "material_size_name",
   to_user: "to_user_name",
   clinic: "clinic_name",
   dentist: "dentist_name",

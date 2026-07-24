@@ -74,7 +74,9 @@ function PresetButton({ selected, disabled, onClick, children, theme, primary, i
           fontSize: "inherit",
           lineHeight: "inherit",
           color: "inherit",
-          whiteSpace: "nowrap",
+          whiteSpace: { xs: "normal", sm: "nowrap" },
+          textAlign: "center",
+          overflowWrap: "anywhere",
         }}
       >
         {children}
@@ -137,9 +139,13 @@ export default function DateFieldWithPresets({
         aria-label={t("datePresets.groupLabel", { defaultValue: "Due date shortcuts" })}
         sx={{
           display: "grid",
-          gridTemplateColumns: `repeat(${presetButtons.length}, minmax(0, 1fr))`,
+          gridTemplateColumns: {
+            xs: "repeat(2, minmax(0, 1fr))",
+            sm: `repeat(${presetButtons.length}, minmax(0, 1fr))`,
+          },
           gap: 0.5,
           width: "100%",
+          minWidth: 0,
           p: 0.5,
           minHeight: FIELD_MIN_HEIGHT,
           borderRadius: `${FIELD_RADIUS}px`,

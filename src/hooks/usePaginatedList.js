@@ -50,6 +50,7 @@ export function usePaginatedList(
 
   return {
     rows,
+    setRows,
     count,
     page,
     setPage,

@@ -17,6 +17,20 @@ export function caseLineTotal(row) {
   return Math.max(0, qty * price - discount);
 }
 
+export function caseLineGross(row) {
+  const qty = Number(row?.quantity) || 0;
+  const price = Number(row?.unit_price);
+  if (!qty || !Number.isFinite(price)) return null;
+  return qty * price;
+}
+
+export function caseLineDiscount(row) {
+  const gross = caseLineGross(row);
+  if (gross == null) return 0;
+  const discount = Number(row?.discount) || 0;
+  return Math.min(Math.max(0, discount), gross);
+}
+
 export function computeWorkItemsTotal(lineItems = []) {
   if (!Array.isArray(lineItems)) return 0;
   return lineItems.reduce((sum, row) => {
@@ -25,7 +39,28 @@ export function computeWorkItemsTotal(lineItems = []) {
   }, 0);
 }
 
+export function computeWorkItemsGross(lineItems = []) {
+  if (!Array.isArray(lineItems)) return 0;
+  return lineItems.reduce((sum, row) => {
+    const gross = caseLineGross(row);
+    return gross != null ? sum + gross : sum;
+  }, 0);
+}
+
+export function computeWorkItemsDiscount(lineItems = []) {
+  if (!Array.isArray(lineItems)) return 0;
+  return lineItems.reduce((sum, row) => sum + caseLineDiscount(row), 0);
+}
+
 export function countPricedLineItems(lineItems = []) {
   if (!Array.isArray(lineItems)) return 0;
   return lineItems.filter((row) => caseLineTotal(row) != null).length;
+}
+
+export function sumLineItemQuantity(lineItems = []) {
+  if (!Array.isArray(lineItems)) return 0;
+  return lineItems.reduce((sum, row) => {
+    const qty = Number(row?.quantity);
+    return sum + (Number.isFinite(qty) && qty > 0 ? qty : 0);
+  }, 0);
 }

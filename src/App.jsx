@@ -25,11 +25,12 @@ import MaterialsPage from "@/pages/operations/MaterialsPage";
 import MaterialCategoriesPage from "@/pages/operations/MaterialCategoriesPage";
 import RestorationsPage from "@/pages/operations/RestorationsPage";
 import RestorationCategoriesPage from "@/pages/operations/RestorationCategoriesPage";
+import ShadesPage from "@/pages/operations/ShadesPage";
+import MaterialSizesPage from "@/pages/operations/MaterialSizesPage";
 import PriceListPage from "@/pages/operations/PriceListPage";
 import CasesPage from "@/pages/operations/CasesPage";
 import CaseFormPage from "@/pages/operations/CaseFormPage";
 import FabricationPage from "@/pages/operations/FabricationPage";
-import WorkboardPage from "@/pages/operations/WorkboardPage";
 import QcPage from "@/pages/operations/QcPage";
 import CommissionsPage from "@/pages/operations/CommissionsPage";
 import CommissionRulesPage from "@/pages/operations/CommissionRulesPage";
@@ -110,12 +111,13 @@ function AppRoutes() {
         <Route path="materials" element={<MaterialsPage />} />
         <Route path="restoration-categories" element={<RestorationCategoriesPage />} />
         <Route path="restorations" element={<RestorationsPage />} />
+        <Route path="shades" element={<ShadesPage />} />
+        <Route path="material-sizes" element={<MaterialSizesPage />} />
         <Route path="price-list" element={<PriceListPage />} />
         <Route path="cases/new" element={<CaseFormPage />} />
         <Route path="cases/:id/edit" element={<CaseFormPage />} />
         <Route path="cases" element={<CasesPage />} />
         <Route path="fabrication" element={<FabricationPage />} />
-        <Route path="workboard" element={<WorkboardPage />} />
         <Route path="qc" element={<QcPage />} />
         <Route path="deliveries" element={<DeliveriesPage />} />
         <Route path="billing" element={<BillingPage />} />

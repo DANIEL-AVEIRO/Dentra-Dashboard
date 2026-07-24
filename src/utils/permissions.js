@@ -70,6 +70,9 @@ export function filterNavSections(sections, user) {
         if (item.platformOnly && !isPlatformStaff(user)) return false;
         if (item.labOnly && (isClinicUser(user) || !isLabUser(user))) return false;
         if (item.labOwnerOnly && !isLabOwner(user)) return false;
+        if (item.requiresLabFlag && isLabUser(user) && user[item.requiresLabFlag] === false) {
+          return false;
+        }
         return true;
       });
 

@@ -116,38 +116,39 @@ export const getTheme = (mode, brandInput = {}) => {
     },
     typography: {
       fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-      fontSize: 16,
+      htmlFontSize: 16,
+      fontSize: 14,
       h4: {
         fontFamily: '"Plus Jakarta Sans", "Inter", sans-serif',
-        fontSize: "1.5rem",
+        fontSize: "1.35rem",
         fontWeight: 700,
         lineHeight: 1.35,
         letterSpacing: "-0.02em",
       },
       h5: {
         fontFamily: '"Plus Jakarta Sans", "Inter", sans-serif',
-        fontSize: "1.25rem",
+        fontSize: "1.125rem",
         fontWeight: 700,
         lineHeight: 1.4,
         letterSpacing: "-0.01em",
       },
       h6: {
         fontFamily: '"Plus Jakarta Sans", "Inter", sans-serif',
-        fontSize: "1.125rem",
+        fontSize: "1rem",
         fontWeight: 600,
         lineHeight: 1.45,
       },
       subtitle1: {
         fontFamily: '"Plus Jakarta Sans", "Inter", sans-serif',
-        fontSize: "1rem",
+        fontSize: "0.9375rem",
         fontWeight: 600,
         lineHeight: 1.4,
       },
-      subtitle2: { fontSize: "0.875rem", fontWeight: 600, lineHeight: 1.4 },
-      body1: { fontSize: "1rem", lineHeight: 1.5 },
-      body2: { fontSize: "0.875rem", lineHeight: 1.5 },
-      caption: { fontSize: "0.8125rem", lineHeight: 1.45 },
-      button: { fontSize: "0.9375rem", fontWeight: 600, letterSpacing: "0.01em" },
+      subtitle2: { fontSize: "0.8125rem", fontWeight: 600, lineHeight: 1.4 },
+      body1: { fontSize: "0.9375rem", lineHeight: 1.5 },
+      body2: { fontSize: "0.8125rem", lineHeight: 1.5 },
+      caption: { fontSize: "0.75rem", lineHeight: 1.45 },
+      button: { fontSize: "0.875rem", fontWeight: 600, letterSpacing: "0.01em" },
     },
     shape: { borderRadius: 10 },
     transitions: {
@@ -171,7 +172,7 @@ export const getTheme = (mode, brandInput = {}) => {
       MuiCssBaseline: {
         styleOverrides: {
           body: {
-            fontSize: "1rem",
+            fontSize: "0.9375rem",
             transition: transition(
               "background-color, color, background-image",
               THEME_SWITCH_MS
@@ -378,7 +379,8 @@ export const getTheme = (mode, brandInput = {}) => {
         },
       },
       MuiTextField: {
-        defaultProps: { margin: "dense", size: "small" },
+        // none — FormField owns external labels; dense mt pushed label away from input
+        defaultProps: { margin: "none", size: "small" },
       },
       MuiOutlinedInput: {
         styleOverrides: {
@@ -410,7 +412,7 @@ export const getTheme = (mode, brandInput = {}) => {
         },
       },
       MuiFormControl: {
-        defaultProps: { margin: "dense", size: "small" },
+        defaultProps: { margin: "none", size: "small" },
       },
       MuiInputLabel: {
         styleOverrides: {

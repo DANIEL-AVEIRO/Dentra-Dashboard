@@ -16,6 +16,7 @@ import SearchableSelect, {
   normalizeOptions,
 } from "@/components/common/SearchableSelect";
 import { FormField, ProTextField } from "@/components/common/form";
+import { dialogFormContentSx } from "@/components/common/form/formLayout";
 import { FIELD_MIN_HEIGHT, FIELD_RADIUS } from "@/components/common/form/fieldStyles";
 import { useTranslation } from "@/context/LanguageContext";
 import { apiFieldErrorsForForm } from "@/utils/apiErrors";
@@ -255,8 +256,8 @@ export default function InlineCreateSelect({
             defaultValue: inlineCreate.title || "Add new",
           })}
         </DialogTitle>
-        <DialogContent sx={{ pt: "8px !important" }}>
-          <Stack spacing={1.5}>
+        <DialogContent sx={dialogFormContentSx}>
+          <Stack spacing={2}>
             {createFields.map((field) => (
               <FormField
                 key={field.name}

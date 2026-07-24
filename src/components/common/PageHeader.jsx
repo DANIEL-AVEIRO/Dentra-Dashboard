@@ -60,7 +60,7 @@ export default function PageHeader({
                   fontWeight={800}
                   sx={{
                     minWidth: 0,
-                    fontSize: { xs: "1.05rem", sm: "1.2rem" },
+                    fontSize: { xs: "0.95rem", sm: "1.1rem" },
                     lineHeight: 1.3,
                   }}
                 >

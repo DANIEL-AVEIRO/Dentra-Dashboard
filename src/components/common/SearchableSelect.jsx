@@ -521,7 +521,7 @@ export function FilterSelect({
       })}
       sx={{
         minWidth: { xs: "100%", sm: TABLE_FILTER_SELECT_WIDTH },
-        maxWidth: { xs: "100%", sm: TABLE_FILTER_SELECT_WIDTH.sm },
+        maxWidth: { xs: "100%", sm: TABLE_FILTER_SELECT_WIDTH.md },
         flexShrink: 0,
         ...sx,
       }}

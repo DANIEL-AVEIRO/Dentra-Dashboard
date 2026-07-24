@@ -389,7 +389,7 @@ export default function ProfilePage() {
                   })}
                 >
                   <Grid container spacing={FORM_GAP} sx={formGridContainerSx}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6}>
                       <FormField id="username" label={t("fields.username")}>
                         <ProTextField
                           id="field-username"
@@ -402,7 +402,7 @@ export default function ProfilePage() {
                         />
                       </FormField>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6}>
                       <FormField id="email" label={t("fields.email")}>
                         <ProTextField
                           id="field-email"
@@ -416,7 +416,7 @@ export default function ProfilePage() {
                         />
                       </FormField>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6}>
                       <FormField id="phone" label={t("fields.phone")}>
                         <ProTextField
                           id="field-phone"
@@ -458,7 +458,7 @@ export default function ProfilePage() {
                     </Typography>
                   </Box>
                   <Grid container spacing={FORM_GAP} sx={formGridContainerSx}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6}>
                       <FormField
                         id="current_password"
                         label={t("fields.current_password")}
@@ -484,7 +484,7 @@ export default function ProfilePage() {
                         />
                       </FormField>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} md={6}>
                       <FormField
                         id="new_password"
                         label={t("fields.new_password")}

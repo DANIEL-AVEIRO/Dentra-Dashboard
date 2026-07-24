@@ -8,12 +8,6 @@ import { CASE_FIELDS } from "@/pages/operations/caseFormConfig";
 
 const CASE_CREATE_ACTIONS = [
   {
-    status: "draft",
-    labelKey: "pages.cases.saveDraft",
-    defaultLabel: "Save Draft",
-    intent: "save",
-  },
-  {
     status: "received",
     labelKey: "pages.cases.createCase",
     defaultLabel: "Create Case",

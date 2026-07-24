@@ -13,7 +13,7 @@ export default function TableFilterSelectGrid({ children, columns, sx }) {
         gap: 1,
         flex: "0 1 auto",
         minWidth: 0,
-        width: { xs: "100%", sm: "fit-content" },
+        width: { xs: "100%", md: "fit-content" },
         maxWidth: "100%",
         alignItems: "end",
         ...sx,

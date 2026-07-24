@@ -1,7 +1,6 @@
 export const PRICE_LIST_COLUMNS = [
-  { key: "restoration_name", labelKey: "fields.restoration" },
   { key: "material_name", labelKey: "fields.material" },
-  { key: "clinic_name", labelKey: "fields.clinic_name" },
+  { key: "material_size_name", labelKey: "fields.material_size" },
   { key: "unit_price", labelKey: "fields.unit_price" },
   {
     key: "is_active",
@@ -14,13 +13,6 @@ export const PRICE_LIST_COLUMNS = [
 
 export const PRICE_LIST_FIELDS = [
   {
-    name: "restoration",
-    labelKey: "fields.restoration",
-    type: "select",
-    optionsFrom: "restorations",
-    required: true,
-  },
-  {
     name: "material",
     labelKey: "fields.material",
     type: "select",
@@ -28,10 +20,11 @@ export const PRICE_LIST_FIELDS = [
     required: true,
   },
   {
-    name: "clinic",
-    labelKey: "fields.clinic_name",
+    name: "material_size",
+    labelKey: "fields.material_size",
     type: "select",
-    optionsFrom: "clinics",
+    optionsFrom: "material-sizes",
+    required: true,
   },
   {
     name: "unit_price",

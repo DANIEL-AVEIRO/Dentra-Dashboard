@@ -13,6 +13,7 @@ import TableExportActions from "@/components/common/TableExportActions";
 import TableRefreshButton from "@/components/common/TableRefreshButton";
 import TableActiveFilterChips from "@/components/common/TableActiveFilterChips";
 import TableAutoRefresh from "@/components/common/TableAutoRefresh";
+import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "@/context/LanguageContext";
 import {
   TABLE_FILTER_HEIGHT,
@@ -20,6 +21,7 @@ import {
   TABLE_FILTER_SEARCH_WIDTH,
 } from "@/constants/layout";
 import { tablePanelToolbarSx } from "@/constants/tablePanel";
+import { isPlatformStaff } from "@/utils/permissions";
 
 const filterItemSx = {
   flexShrink: 0,
@@ -65,10 +67,13 @@ export default function TableFilters({
   onAutoRefreshIntervalChange,
 }) {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const resolvedSearchPlaceholder = searchPlaceholder ?? t("filters.search");
   const set = (key) => (e) => onFilterChange(key, e.target.value);
 
-  const showExport = Boolean(exportEndpoint);
+  const canExport =
+    isPlatformStaff(user) || Boolean(user?.export_function);
+  const showExport = Boolean(exportEndpoint) && canExport;
   const canClear = Boolean(onReset);
   const filtersActive = Boolean(hasActiveFilters);
   const showDateSection = dateFields.length > 0;
@@ -136,7 +141,7 @@ export default function TableFilters({
                 sx={{
                   ...filterItemSx,
                   width: { xs: "100%", lg: TABLE_FILTER_SEARCH_WIDTH },
-                  minWidth: { lg: TABLE_FILTER_SEARCH_MIN.sm },
+                  minWidth: { lg: TABLE_FILTER_SEARCH_MIN.md },
                   maxWidth: { xs: "100%", lg: TABLE_FILTER_SEARCH_WIDTH },
                   flexShrink: 0,
                 }}

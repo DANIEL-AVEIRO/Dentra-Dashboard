@@ -19,13 +19,23 @@ import { TableActionButton } from "@/components/common/TableActions";
 import client from "@/api/client";
 import { toast, getErrorMessage } from "@/utils/toast";
 import { useTranslation } from "@/context/LanguageContext";
+import { useConfirmDialog } from "@/hooks/useConfirmDialog";
 import { formatCaseMoney } from "@/utils/caseLineItemMoney";
 import { pageShellSx } from "@/constants/pageLayout";
 import { INVOICE_COLUMNS } from "@/pages/operations/financeFormConfig";
 import { printInvoice } from "@/utils/printDocuments";
 
+const REDO_TOAST = {
+  ready: "Case sent back to Deliveries",
+  shipped: "Case sent back to Deliveries",
+  qc: "Case sent back to QC",
+  received: "Case sent back to Fabrication",
+  in_fabrication: "Case sent back to Fabrication",
+};
+
 export default function BillingPage() {
   const { t } = useTranslation();
+  const { confirm, ConfirmDialog } = useConfirmDialog();
   const [tab, setTab] = useState(0);
   const [unbilled, setUnbilled] = useState([]);
   const [selected, setSelected] = useState(() => new Set());
@@ -148,6 +158,34 @@ export default function BillingPage() {
     [t],
   );
 
+  const handleRedo = useCallback(
+    async (row) => {
+      const ok = await confirm({
+        title: t("pages.billing.redoTitle", { defaultValue: "Redo case?" }),
+        message: t("pages.billing.redoMessage", {
+          defaultValue:
+            "Send case {{caseId}} back to the previous workflow step?",
+          caseId: row.case_id || row.id,
+        }),
+        confirmLabel: t("pages.billing.redo", { defaultValue: "Redo" }),
+        confirmColor: "warning",
+      });
+      if (!ok) return;
+      try {
+        const { data } = await client.post(`/cases/${row.id}/redo/`);
+        toast.success(
+          t("pages.billing.redone", {
+            defaultValue: REDO_TOAST[data?.status] || "Case sent back",
+          }),
+        );
+        await loadUnbilled();
+      } catch (err) {
+        toast.error(getErrorMessage(err, t("toast.saveFailed")));
+      }
+    },
+    [confirm, loadUnbilled, t],
+  );
+
   return (
     <Box className="page-enter" sx={pageShellSx}>
       <PageHeader
@@ -187,16 +225,28 @@ export default function BillingPage() {
           </Stack>
           <Stack spacing={1}>
             {unbilled.map((row) => (
-              <FormControlLabel
+              <Stack
                 key={row.id}
-                control={
-                  <Checkbox
-                    checked={selected.has(row.id)}
-                    onChange={() => toggle(row.id)}
-                  />
-                }
-                label={`${row.case_id} · ${row.patient_name || "—"} · ${row.clinic_name || "—"} · ${formatCaseMoney(row.amount)}`}
-              />
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                spacing={1}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={selected.has(row.id)}
+                      onChange={() => toggle(row.id)}
+                    />
+                  }
+                  label={`${row.case_id} · ${row.patient_name || "—"} · ${row.clinic_name || "—"} · ${formatCaseMoney(row.amount)}`}
+                />
+                <TableActionButton
+                  variant="restore"
+                  title={t("pages.billing.redo", { defaultValue: "Redo" })}
+                  onClick={() => handleRedo(row)}
+                />
+              </Stack>
             ))}
             {!loadingUnbilled && unbilled.length === 0 ? (
               <Typography color="text.secondary">
@@ -302,6 +352,7 @@ export default function BillingPage() {
           </Box>
         </Box>
       </ResponsiveDialog>
+      <ConfirmDialog />
     </Box>
   );
 }

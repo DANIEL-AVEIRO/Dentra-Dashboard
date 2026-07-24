@@ -19,39 +19,6 @@ export const CASE_PRIORITY_OPTIONS = [
   { id: "vip", name: "VIP", color: "error" },
 ];
 
-/** VITA Classical + common bleach shades */
-export const SHADE_OPTIONS = [
-  "A1",
-  "A2",
-  "A3",
-  "A3.5",
-  "A4",
-  "B1",
-  "B2",
-  "B3",
-  "B4",
-  "C1",
-  "C2",
-  "C3",
-  "C4",
-  "D2",
-  "D3",
-  "D4",
-  "OM1",
-  "OM2",
-  "OM3",
-  "BL1",
-  "BL2",
-  "BL3",
-  "BL4",
-].map((id) => ({ id, name: id }));
-
-/** Zirconia / disc thickness sizes */
-export const MATERIAL_SIZE_OPTIONS = Array.from({ length: 17 }, (_, i) => {
-  const id = `${10 + i}T`;
-  return { id, name: id };
-});
-
 export const CASE_TYPE_COLUMN = {
   statusList: [
     { value: "new_case", color: "primary" },
@@ -185,18 +152,17 @@ export const DELIVERY_FIELDS = [
 
 export const CASE_FIELDS = [
   {
-    name: "case_id",
-    labelKey: "fields.case_id",
-    required: false,
-    helperTextKey: "pages.cases.caseIdHelper",
-  },
-  {
     name: "case_type",
     labelKey: "fields.case_type",
     type: "select",
     options: CASE_TYPE_OPTIONS,
     required: true,
     default: "new_case",
+  },
+  {
+    name: "patient_name",
+    labelKey: "fields.patient_name",
+    required: false,
   },
   {
     name: "clinic",
@@ -243,11 +209,6 @@ export const CASE_FIELDS = [
     },
   },
   {
-    name: "patient_name",
-    labelKey: "fields.patient_name",
-    required: false,
-  },
-  {
     name: "technicians",
     labelKey: "fields.technicians",
     type: "multiSelect",
@@ -274,23 +235,6 @@ export const CASE_FIELDS = [
     type: "caseLineItems",
     fullWidth: true,
     groupTitleKey: "pages.cases.sections.workItems",
-  },
-  {
-    name: "clinic_note",
-    labelKey: "fields.clinic_note",
-    type: "caseNotes",
-    historyField: "clinic_notes",
-    fullWidth: true,
-    rows: 3,
-    groupTitleKey: "pages.cases.sections.notes",
-  },
-  {
-    name: "internal_note",
-    labelKey: "fields.internal_note",
-    type: "caseNotes",
-    historyField: "internal_notes",
-    fullWidth: true,
-    rows: 3,
   },
   {
     name: "financial_summary",

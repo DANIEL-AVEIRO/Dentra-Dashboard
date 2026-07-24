@@ -16,6 +16,8 @@ const ENDPOINT_AUDIT_MODEL = {
   "material-categories": "MaterialCategoryModel",
   restorations: "RestorationModel",
   "restoration-categories": "RestorationCategoryModel",
+  shades: "ShadeModel",
+  "material-sizes": "MaterialSizeModel",
   "price-list": "PriceListItemModel",
 };
 

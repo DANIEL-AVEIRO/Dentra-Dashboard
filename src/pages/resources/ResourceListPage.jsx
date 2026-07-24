@@ -179,6 +179,8 @@ export default function ResourceListPage({
   pageKey: pageKeyProp,
   /** Show # column in the table (default true) */
   showRowNumbers = true,
+  /** When set (e.g. "sort_order"), enable drag-and-drop row reordering */
+  rowReorderField = null,
 }) {
   usePersistedListSearch();
   const navigate = useNavigate();
@@ -218,7 +220,9 @@ export default function ResourceListPage({
   const tableSort = useTableMultiSort(
     trashMode
       ? { defaultField: "deleted_at", defaultDesc: true }
-      : { defaultField: "created_at", defaultDesc: true },
+      : rowReorderField
+        ? { defaultField: rowReorderField, defaultDesc: false }
+        : { defaultField: "created_at", defaultDesc: true },
   );
 
   const listParams = {
@@ -229,7 +233,7 @@ export default function ResourceListPage({
     ...extraListParams,
   };
 
-  const { rows, count, loading, refreshing, refresh } = usePaginatedList(
+  const { rows, setRows, count, loading, refreshing, refresh } = usePaginatedList(
     endpoint,
     {
       params: listParams,
@@ -326,7 +330,70 @@ export default function ResourceListPage({
         );
       }
     },
-    [endpoint, refresh, t],
+    [endpoint, refresh, t, translatedFields],
+  );
+
+  const handleReorderRows = useCallback(
+    async (fromIndex, toIndex) => {
+      if (
+        !rowReorderField ||
+        trashMode ||
+        fromIndex === toIndex ||
+        fromIndex < 0 ||
+        toIndex < 0
+      ) {
+        return;
+      }
+      const next = [...rows];
+      const [moved] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, moved);
+      const offset = (page - 1) * pageSize;
+      const withOrder = next.map((row, index) => ({
+        ...row,
+        [rowReorderField]: offset + index,
+      }));
+      const previous = rows;
+      setRows(withOrder);
+      const previousById = new Map(
+        previous.map((row) => [String(row.id), row]),
+      );
+      const changed = withOrder.filter((row) => {
+        const prev = previousById.get(String(row.id));
+        return (
+          Number(prev?.[rowReorderField]) !== Number(row[rowReorderField])
+        );
+      });
+      try {
+        await Promise.all(
+          changed.map((row) =>
+            client.patch(
+              `/${endpoint}/${row.id}/`,
+              { [rowReorderField]: row[rowReorderField] },
+              { skipTopLoader: true },
+            ),
+          ),
+        );
+        toast.success(t("toast.updated"));
+      } catch (err) {
+        setRows(previous);
+        toast.error(
+          getErrorMessage(err, t("toast.saveFailed"), translatedFields),
+        );
+        refresh();
+      }
+    },
+    [
+      rowReorderField,
+      trashMode,
+      rows,
+      page,
+      pageSize,
+      setRows,
+      endpoint,
+      t,
+      translatedFields,
+      refresh,
+    ],
   );
 
   useEffect(() => {
@@ -615,6 +682,14 @@ export default function ResourceListPage({
         : serializeFormPayload(form, translatedFields);
       if (!useMultipart && editing && !payload.password)
         delete payload.password;
+      if (
+        !editing &&
+        rowReorderField &&
+        (payload[rowReorderField] === "" ||
+          payload[rowReorderField] == null)
+      ) {
+        payload[rowReorderField] = count;
+      }
       const config = useMultipart
         ? { headers: { "Content-Type": "multipart/form-data" } }
         : {};
@@ -1136,11 +1211,28 @@ export default function ResourceListPage({
         type={f.type || "text"}
         placeholder={f.placeholder}
         value={form[f.name]}
-        onChange={patch((e) => applyFieldChange(f, e.target.value))}
+        onChange={patch((e) => {
+          let next = e.target.value;
+          if (f.integer && next !== "" && next != null) {
+            next = String(next).replace(/[^\d]/g, "");
+          }
+          applyFieldChange(f, next);
+        })}
         required={isRequired}
         error={Boolean(fieldError)}
         disabled={f.disabled}
         sx={compactFieldSx(f)}
+        slotProps={
+          f.type === "number"
+            ? {
+                htmlInput: {
+                  step: f.step ?? (f.integer ? 1 : undefined),
+                  min: f.min,
+                  inputMode: f.integer ? "numeric" : undefined,
+                },
+              }
+            : undefined
+        }
         {...multilineTextFieldProps(f)}
       />,
     );
@@ -1395,6 +1487,9 @@ export default function ResourceListPage({
             previewRow={previewRow}
             onPreviewRowChange={setPreviewRow}
             rowPreview={resourceRowPreview}
+            onReorderRows={
+              rowReorderField && !trashMode ? handleReorderRows : undefined
+            }
             actions={renderRowActions}
           />
         )}

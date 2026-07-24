@@ -39,9 +39,16 @@ export default function OptionButtonGroup({
       role="radiogroup"
       sx={{
         display: "grid",
-        gridTemplateColumns: `repeat(${Math.max(normalized.length, 1)}, minmax(0, 1fr))`,
+        gridTemplateColumns: {
+          xs:
+            normalized.length > 2
+              ? "minmax(0, 1fr)"
+              : `repeat(${Math.max(normalized.length, 1)}, minmax(0, 1fr))`,
+          sm: `repeat(${Math.max(normalized.length, 1)}, minmax(0, 1fr))`,
+        },
         gap: 0.5,
         width: "100%",
+        minWidth: 0,
         p: 0.5,
         minHeight: FIELD_MIN_HEIGHT,
         borderRadius: `${FIELD_RADIUS}px`,
@@ -115,7 +122,9 @@ export default function OptionButtonGroup({
                 fontSize: "inherit",
                 lineHeight: "inherit",
                 color: "inherit",
-                whiteSpace: "nowrap",
+                whiteSpace: { xs: "normal", sm: "nowrap" },
+                textAlign: "center",
+                overflowWrap: "anywhere",
               }}
             >
               {opt.label}

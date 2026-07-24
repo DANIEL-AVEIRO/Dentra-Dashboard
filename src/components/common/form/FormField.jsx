@@ -25,6 +25,11 @@ export default function FormField({
         p: 0,
         minWidth: 0,
         width: "100%",
+        // Kill theme/control vertical margins so label stays glued to its input
+        "& .MuiFormControl-root, & .MuiTextField-root, & .MuiAutocomplete-root": {
+          marginTop: 0,
+          marginBottom: 0,
+        },
       }}
     >
       {label ? (
@@ -38,7 +43,7 @@ export default function FormField({
             fontSize: "0.8125rem",
             letterSpacing: "0.02em",
             color: "text.primary",
-            mb: description ? 0.25 : 0.75,
+            mb: description ? 0.25 : 0.5,
             lineHeight: 1.35,
             wordBreak: "break-word",
           }}
@@ -55,7 +60,7 @@ export default function FormField({
         <Typography
           variant="caption"
           color="text.secondary"
-          sx={{ display: "block", mb: 0.75, lineHeight: 1.4 }}
+          sx={{ display: "block", mb: 0.5, lineHeight: 1.4 }}
         >
           {description}
         </Typography>

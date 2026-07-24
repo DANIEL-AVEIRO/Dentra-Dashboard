@@ -108,7 +108,7 @@ export function buildPickerSlotProps({
         maxWidth: fullWidth
           ? "100%"
           : filterBar
-            ? { xs: "100%", sm: TABLE_FILTER_DATE_WIDTH.sm }
+            ? { xs: "100%", sm: TABLE_FILTER_DATE_WIDTH.md }
             : { xs: "100%", sm: 220 },
         flexShrink: fullWidth || filterBar ? undefined : 0,
         ...sx,

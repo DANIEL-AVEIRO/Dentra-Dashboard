@@ -1,7 +1,6 @@
 export const MATERIAL_CATEGORY_COLUMNS = [
   { key: "name", labelKey: "fields.name" },
   { key: "code", labelKey: "fields.code" },
-  { key: "sort_order", labelKey: "fields.sort_order" },
   {
     key: "is_active",
     labelKey: "fields.status",
@@ -14,13 +13,6 @@ export const MATERIAL_CATEGORY_COLUMNS = [
 export const MATERIAL_CATEGORY_FIELDS = [
   { name: "name", labelKey: "fields.name", required: true },
   { name: "code", labelKey: "fields.code" },
-  {
-    name: "sort_order",
-    labelKey: "fields.sort_order",
-    type: "number",
-    compact: true,
-    default: 0,
-  },
   {
     name: "description",
     labelKey: "fields.description",

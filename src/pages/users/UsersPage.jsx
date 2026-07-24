@@ -73,7 +73,7 @@ export default function UsersPage() {
       }}
       fields={[
         { name: "username", label: "Username", required: true },
-        { name: "email", label: "Email", type: "email" },
+        { name: "email", label: "Email", type: "email", required: true },
         { name: "phone", label: "Phone" },
         {
           name: "password",

@@ -13,11 +13,13 @@ import {
   TableSortLabel,
   Tooltip,
   Typography,
+  alpha,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import ViewCompactIcon from "@mui/icons-material/ViewCompact";
 import ViewComfyIcon from "@mui/icons-material/ViewComfy";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import { ArrowEmptyTableIcon } from "@/components/icons/ArrowTableIcons";
 import { ProSearchField } from "@/components/common/form";
 import TableColumnToggle from "@/components/common/TableColumnToggle";
@@ -148,6 +150,8 @@ export default function ResourceTable({
   /** Controlled preview row (optional — for view buttons outside the table) */
   previewRow: previewRowProp,
   onPreviewRowChange,
+  /** When set, rows can be reordered via drag handle */
+  onReorderRows,
 }) {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -155,6 +159,8 @@ export default function ResourceTable({
   const effectiveIncludeMeta = includeMetaColumns && !isMobileTable;
   const resolvedEmpty = emptyMessage ?? t("table.noRecords");
   const [localSearch, setLocalSearch] = useState(search ?? "");
+  const [dragIndex, setDragIndex] = useState(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
   const internalDensityState = useTableDensity();
   const density = densityProp ?? internalDensityState.density;
   const isCompact = density === "compact";
@@ -167,10 +173,12 @@ export default function ResourceTable({
   const displayColumns = displayColumnsProp ?? internalColumnVisibility.displayColumns;
   const hasSelect = selectable && selectedIds && onToggleRow && onToggleAllPage;
   const showRowIndex = showRowNumbers;
+  const canReorderRows = typeof onReorderRows === "function" && !loading && !refreshing;
   const colSpan =
     displayColumns.length +
     (hasSelect ? 1 : 0) +
     (showRowIndex ? 1 : 0) +
+    (canReorderRows ? 1 : 0) +
     (actions ? 1 : 0);
 
   const resolvedCellOptions = {
@@ -400,6 +408,19 @@ export default function ResourceTable({
         >
           <TableHead>
             <TableRow>
+              {canReorderRows ? (
+                <TableCell
+                  sx={{
+                    ...tableCheckboxCellSx(),
+                    bgcolor: headerBg,
+                    backgroundImage: "none",
+                    borderBottom: tableHeadBorder(theme),
+                    width: 40,
+                    minWidth: 40,
+                    px: 0.5,
+                  }}
+                />
+              ) : null}
               {hasSelect && (
                 <TableCell
                   sx={{
@@ -518,6 +539,12 @@ export default function ResourceTable({
                 ]
                   .filter(Boolean)
                   .join(" ");
+                const isDragging = dragIndex === index;
+                const isDragOver =
+                  canReorderRows &&
+                  dragOverIndex === index &&
+                  dragIndex != null &&
+                  dragIndex !== index;
 
                 return (
                   <TableRow
@@ -527,11 +554,91 @@ export default function ResourceTable({
                     onClick={handleRowClick(row)}
                     className={rowClassName}
                     style={{ "--row-delay": `${rowDelayMs}ms` }}
+                    onDragOver={
+                      canReorderRows
+                        ? (e) => {
+                            if (dragIndex == null) return;
+                            e.preventDefault();
+                            e.dataTransfer.dropEffect = "move";
+                            if (dragOverIndex !== index) setDragOverIndex(index);
+                          }
+                        : undefined
+                    }
+                    onDragLeave={
+                      canReorderRows
+                        ? () => {
+                            if (dragOverIndex === index) setDragOverIndex(null);
+                          }
+                        : undefined
+                    }
+                    onDrop={
+                      canReorderRows
+                        ? (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const from =
+                              dragIndex ??
+                              Number(e.dataTransfer.getData("text/plain"));
+                            if (
+                              Number.isInteger(from) &&
+                              from !== index
+                            ) {
+                              onReorderRows(from, index);
+                            }
+                            setDragIndex(null);
+                            setDragOverIndex(null);
+                          }
+                        : undefined
+                    }
                     sx={{
                       ...tableRowSx(theme),
                       ...(effectiveOnRowClick ? { cursor: "pointer" } : {}),
+                      opacity: isDragging ? 0.45 : 1,
+                      bgcolor: isDragOver
+                        ? alpha(theme.palette.primary.main, 0.08)
+                        : undefined,
+                      outline: isDragOver
+                        ? `2px solid ${alpha(theme.palette.primary.main, 0.35)}`
+                        : undefined,
+                      outlineOffset: -2,
                     }}
                   >
+                    {canReorderRows ? (
+                      <TableCell
+                        sx={{
+                          ...tableCheckboxCellSx({ borderColor: "divider" }),
+                          width: 40,
+                          minWidth: 40,
+                          px: 0.5,
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Box
+                          draggable
+                          onDragStart={(e) => {
+                            setDragIndex(index);
+                            e.dataTransfer.effectAllowed = "move";
+                            e.dataTransfer.setData("text/plain", String(index));
+                          }}
+                          onDragEnd={() => {
+                            setDragIndex(null);
+                            setDragOverIndex(null);
+                          }}
+                          aria-label={t("table.dragRow")}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "text.disabled",
+                            cursor: "grab",
+                            touchAction: "none",
+                            "&:active": { cursor: "grabbing" },
+                          }}
+                        >
+                          <DragIndicatorIcon fontSize="small" />
+                        </Box>
+                      </TableCell>
+                    ) : null}
                     {hasSelect && (
                       <TableCell sx={tableCheckboxCellSx({ borderColor: "divider" })}>
                         <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -587,6 +694,7 @@ export default function ResourceTable({
             )}
             {summaryFooter && rows.length > 0 ? (
               <TableRow>
+                {canReorderRows ? <TableCell sx={tableCheckboxCellSx()} /> : null}
                 {hasSelect ? <TableCell sx={tableCheckboxCellSx()} /> : null}
                 {showRowIndex ? (
                   <TableCell sx={tableRowIndexCellSx()} />

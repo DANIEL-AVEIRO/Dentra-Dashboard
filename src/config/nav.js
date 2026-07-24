@@ -22,10 +22,11 @@ import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import BuildOutlinedIcon from "@mui/icons-material/BuildOutlined";
 import StyleOutlinedIcon from "@mui/icons-material/StyleOutlined";
 import LayersOutlinedIcon from "@mui/icons-material/LayersOutlined";
+import StraightenOutlinedIcon from "@mui/icons-material/StraightenOutlined";
 import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
-import ViewKanbanOutlinedIcon from "@mui/icons-material/ViewKanbanOutlined";
+import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
-import PercentOutlinedIcon from "@mui/icons-material/PercentOutlined";
+// import PercentOutlinedIcon from "@mui/icons-material/PercentOutlined"; // used by commissions (hidden)
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import EventOutlinedIcon from "@mui/icons-material/EventOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
@@ -101,16 +102,13 @@ export const navSections = [
         path: "/fabrication",
         labelKey: "nav.fabrication",
         icon: PrecisionManufacturingOutlinedIcon,
-      },
-      {
-        path: "/workboard",
-        labelKey: "nav.workboard",
-        icon: ViewKanbanOutlinedIcon,
+        requiresLabFlag: "enable_fabrication",
       },
       {
         path: "/qc",
         labelKey: "nav.qc",
         icon: VerifiedOutlinedIcon,
+        requiresLabFlag: "enable_qc",
       },
     ],
   },
@@ -123,6 +121,7 @@ export const navSections = [
         path: "/deliveries",
         labelKey: "nav.deliveries",
         icon: LocalShippingOutlinedIcon,
+        requiresLabFlag: "enable_deliveries",
       },
     ],
   },
@@ -158,16 +157,17 @@ export const navSections = [
         labelKey: "nav.clinicStatements",
         icon: AccountBalanceOutlinedIcon,
       },
-      {
-        path: "/commissions",
-        labelKey: "nav.commissions",
-        icon: PercentOutlinedIcon,
-      },
-      {
-        path: "/commission-rules",
-        labelKey: "nav.commissionRules",
-        icon: PercentOutlinedIcon,
-      },
+      // Temporarily hidden
+      // {
+      //   path: "/commissions",
+      //   labelKey: "nav.commissions",
+      //   icon: PercentOutlinedIcon,
+      // },
+      // {
+      //   path: "/commission-rules",
+      //   labelKey: "nav.commissionRules",
+      //   icon: PercentOutlinedIcon,
+      // },
       {
         path: "/expenses",
         labelKey: "nav.expenses",
@@ -278,6 +278,23 @@ export const navSections = [
         path: "/materials",
         labelKey: "nav.materials",
         icon: CategoryOutlinedIcon,
+      },
+      {
+        path: "/material-sizes",
+        labelKey: "nav.materialSizes",
+        icon: StraightenOutlinedIcon,
+      },
+    ],
+  },
+  {
+    id: "shades",
+    titleKey: "nav.sections.shades",
+    labOnly: true,
+    items: [
+      {
+        path: "/shades",
+        labelKey: "nav.shades",
+        icon: PaletteOutlinedIcon,
       },
     ],
   },

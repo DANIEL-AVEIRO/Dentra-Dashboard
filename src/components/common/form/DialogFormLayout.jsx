@@ -1,10 +1,11 @@
-import { Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { BRAND_PRIMARY } from "@/theme";
 import {
   DIALOG_FORM_TWO_COLUMN_MIN,
   computeFieldGridSizes,
   dialogFormGridSx,
+  formFieldStackSx,
   isUploadField,
 } from "@/components/common/form/formLayout";
 import UploadDocumentGallery, {
@@ -66,13 +67,14 @@ function renderFieldsBlock(
     const dataFields = fields.filter((f) => !isUploadField(f));
     const uploadFields = fields.filter(isUploadField);
     return (
-      <>
-        {dataFields.length > 0 &&
-          renderFieldsBlock(dataFields, twoColumn, renderField, {
-            formValues,
-            existingRow,
-            onBulkSlotFiles,
-          })}
+      <Box sx={formFieldStackSx}>
+        {dataFields.length > 0
+          ? renderFieldsBlock(dataFields, twoColumn, renderField, {
+              formValues,
+              existingRow,
+              onBulkSlotFiles,
+            })
+          : null}
         <UploadDocumentGallery
           fields={uploadFields}
           renderField={renderField}
@@ -80,7 +82,7 @@ function renderFieldsBlock(
           existingRow={existingRow}
           onBulkSlotFiles={onBulkSlotFiles}
         />
-      </>
+      </Box>
     );
   }
 
@@ -93,7 +95,8 @@ function renderFieldsBlock(
       });
       nodes.push(renderField(f));
     });
-    return nodes;
+    // Mobile / narrow: explicit stack gap — do not rely on TextField margins
+    return <Box sx={formFieldStackSx}>{nodes}</Box>;
   }
 
   const gridSizes = computeFieldGridSizes(fields);
@@ -107,14 +110,14 @@ function renderFieldsBlock(
     });
 
     nodes.push(
-      <Grid item xs={12} sm={gridSizes[index] ?? 12} key={f.name}>
+      <Grid item xs={12} md={gridSizes[index] ?? 12} key={f.name}>
         {renderField(f)}
       </Grid>,
     );
   });
 
   return (
-    <Grid container spacing={2} sx={dialogFormGridSx}>
+    <Grid container spacing={{ xs: 2, md: 2 }} sx={dialogFormGridSx}>
       {nodes}
     </Grid>
   );
@@ -128,9 +131,10 @@ export default function DialogFormLayout({
   onBulkSlotFiles,
 }) {
   const theme = useTheme();
-  const phone = useMediaQuery(theme.breakpoints.down("sm"));
+  /** Keep single column through phones + small tablets so fields are not cramped */
+  const narrow = useMediaQuery(theme.breakpoints.down("md"));
   const visible = fields.filter((f) => !f.hideInForm);
-  const twoColumn = visible.length >= DIALOG_FORM_TWO_COLUMN_MIN && !phone;
+  const twoColumn = visible.length >= DIALOG_FORM_TWO_COLUMN_MIN && !narrow;
 
   return (
     <>

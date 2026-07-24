@@ -35,6 +35,9 @@ export const pageSectionPaperSx = {
   borderColor: "divider",
   bgcolor: "background.paper",
   overflow: "hidden",
+  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
 };
 
 export const filterZoneSx = (theme) => {
